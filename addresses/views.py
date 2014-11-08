@@ -18,9 +18,9 @@ def address_overview(request, btc_address):
     for transaction in transactions:
         if transaction['tx_input_n'] >= 0:
             # TODO: confirm this logic
-            recieved_satoshis += transaction['value']
-        else:
             sent_satoshis += transaction['value']
+        else:
+            recieved_satoshis += transaction['value']
 
     return {
             'btc_address': btc_address,
