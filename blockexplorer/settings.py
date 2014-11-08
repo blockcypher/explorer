@@ -35,7 +35,7 @@ else:
 
 ALLOWED_HOSTS = [
         '.blockcypher.com',
-        'blockexplorer.herokuapp.com',
+        'blockcypher.herokuapp.com',
         '127.0.0.1',
         ]
 
