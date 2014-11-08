@@ -55,6 +55,9 @@
           <td>{{ transaction.confirmations|intcomma }}</td>
         </tr>
       {% endfor %}
+      {% if has_more %}
+        <tr><td colspan="3">...</td></tr>
+      {% endif %}
 
     </table>
   </div>
