@@ -27,9 +27,9 @@
       <td>Received</td>
       <td>
         {% if not has_more %}
-          {{ confirmed_recieved_satoshis|satoshis_to_btc_rounded }} BTC
+          {{ total_recieved_satoshis|satoshis_to_btc_rounded }} BTC
           {% if unconfirmed_recieved_satoshis %}
-            + {{ unconfirmed_recieved_satoshis|satoshis_to_btc_rounded }}
+            ({{ unconfirmed_recieved_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
           {% endif %}
         {% endif %}
       </td>
@@ -38,22 +38,27 @@
       <td>Sent</td>
       <td>
         {% if not has_more %}
-          {{ confirmed_sent_satoshis|satoshis_to_btc_rounded }} BTC
+          {{ total_sent_satoshis|satoshis_to_btc_rounded }} BTC
           {% if unconfirmed_sent_satoshis %}
-            + {{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }}
+            ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
           {% endif %}
         {% endif %}
       </td>
     </tr>
     <tr>
       <td>Balance</td>
-      <td>{{ confirmed_balance_satoshis|satoshis_to_btc_rounded }} BTC</td>
+      <td>
+        {{ total_balance_satoshis|satoshis_to_btc_rounded }} BTC
+        {% if unconfirmed_balance_satoshis %}
+          ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
+        {% endif %}
+      </td>
     </tr>
   </table>
 </div>
 
 
-{% if confirmed_transactions or unconfirmed_transactions %}
+{% if all_transactions %}
 
   <h2>Transactions</h2>
 
@@ -62,21 +67,13 @@
       <th>Hash</th>
       <th>Amount</th>
       <th>Confirmations</th>
-      {% for unconfirmed_transaction in unconfirmed_transactions %}
+      {% for transaction in all_transactions %}
         <tr>
-          <td><a href="{% url 'transaction_overview' unconfirmed_transaction.tx_hash %}">{{ unconfirmed_transaction.tx_hash }}</a></td>
+          <td><a href="{% url 'transaction_overview' transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
           <td>
-            {% if unconfirmed_transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ unconfirmed_transaction.value|satoshis_to_btc_rounded }} BTC</td>
-          <td>{{ unconfirmed_transaction.confirmations|intcomma }}</td>
-        </tr>
-      {% endfor %}      {% for confirmed_transaction in confirmed_transactions %}
-        <tr>
-          <td><a href="{% url 'transaction_overview' confirmed_transaction.tx_hash %}">{{ confirmed_transaction.tx_hash }}</a></td>
-          <td>
-            {% if confirmed_transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ confirmed_transaction.value|satoshis_to_btc_rounded }} BTC</td>
-          <td>{{ confirmed_transaction.confirmations|intcomma }}</td>
+            {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
+            {{ transaction.value|satoshis_to_btc_rounded }} BTC</td>
+          <td>{{ transaction.confirmations|intcomma }}</td>
         </tr>
       {% endfor %}
       {% if has_more %}
