@@ -10,8 +10,7 @@ def transaction_overview(request, tx_hash):
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
-    import pprint
-    pprint.pprint(transaction_details, width=1)
+    # import pprint; pprint.pprint(transaction_details, width=1)
 
     return {
             'tx_hash': tx_hash,
@@ -23,7 +22,7 @@ def transaction_overview(request, tx_hash):
             'recieved_satoshis': 0,
             'fee_in_satoshis': transaction_details['fees'],
             'block_height': transaction_details['block_height'],
-            'block_hash': transaction_details['block_hash'],
+            'block_hash': transaction_details.get('block_hash'),
             'inputs': transaction_details['inputs'],
             'outputs': transaction_details['outputs'],
             'num_confirmations': transaction_details['confirmations'],

@@ -32,10 +32,12 @@
           {% endif %}
         </td>
       </tr>
-      <tr>
-        <td>In Block</td>
-        <td>{{ block_height|intcomma }}</td>
-      </tr>
+      {% if block_height > 0 %}
+        <tr>
+          <td>In Block</td>
+          <td>{{ block_height|intcomma }}</td>
+        </tr>
+      {% endif %}
       <tr>
         <td>Relayed By</td>
         <td>{{ relayed_by }}</td>
