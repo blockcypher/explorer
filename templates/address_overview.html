@@ -15,7 +15,8 @@
     <tr>
       <td>Address</td>
       <td>
-        <a href="bitcoin:{{ btc_address }}">{{ btc_address }}</a> <br />
+        <a href="{% url 'address_overview' btc_address %}">{{ btc_address }}</a>
+        (<a href="bitcoin:{{ btc_address }}">pay</a>)<br />
         <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ btc_address }}&choe=UTF-8&chs=300x300" />
       </td>
     </tr>

@@ -12,7 +12,9 @@
 
   <div class="table-responsive">
     <table class="table table-bordered">
-      <th colspan="2">{{ tx_hash }}</th>
+      <th colspan="2">
+        <a href="{% url 'transaction_overview' tx_hash %}">{{ tx_hash }}</a>
+      </th>
       <tr>
         <td>Amount Transacted</td>
         <td>{{ total_satoshis|satoshis_to_btc_rounded }} BTC</td>
@@ -59,6 +61,11 @@
           {% for output in outputs %}
             {# FIXME: |first is a hack #}
             {{ output.value|satoshis_to_btc_rounded }} BTC to <a href="{% url 'address_overview' output.addresses|first %}">{{ output.addresses|first }}</a>
+            {% if output.spent_by %}
+              (<a href="{% url 'transaction_overview' output.spent_by %}">spent</a>)
+            {% else %}
+              (unspent)
+            {% endif %}
             <br />
           {% endfor %}
           {% if output|length < num_outputs %}...{% endif %}
@@ -69,7 +76,7 @@
 
 {% else %}
   <p>
-    Transactions not found.
+    Transaction not found.
     Are you sure that's a valid transaction hash?
   </p>
 {% endif %}
