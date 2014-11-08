@@ -12,7 +12,7 @@ class SearchForm(forms.Form):
         required=True,
         min_length=2,
         max_length=128,
-        widget=forms.TextInput(attrs={'placeholder': '1BTCorgHwCg6u2YSAWKgS17qUad6kHmtQW', 'class': 'input-lg'}),
+        widget=forms.TextInput(attrs={'class': 'input-lg', 'autofocus': ''}),
     )
 
     def clean_search_string(self):

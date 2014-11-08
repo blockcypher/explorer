@@ -10,7 +10,7 @@ from bitcoins.transaction import is_valid_tx_hash
 
 @render_to('home.html')
 def home(request):
-    form = SearchForm()
+    form = SearchForm(initial={'search_string': '16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5'})
     if request.method == 'POST':
         form = SearchForm(data=request.POST)
         if form.is_valid():
