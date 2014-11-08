@@ -46,6 +46,8 @@ def address_overview(request, btc_address):
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
             'all_transactions': all_transactions,
-            'num_txns': address_details['n_tx'],
+            'num_confirmed_txns': address_details['n_tx'],
+            'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
+            'num_all_txns': address_details['final_n_tx'],
             'has_more': address_details.get('hasMore'),
             }

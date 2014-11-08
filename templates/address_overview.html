@@ -22,7 +22,12 @@
     </tr>
     <tr>
       <td># Transactions</td>
-      <td>{{ num_txns }}</td>
+      <td>
+        {{ num_all_txns }}
+        {% if num_unconfirmed_txns %}
+          ({{ num_unconfirmed_txns }} transactions unconfirmed)
+        {% endif %}
+      </td>
     </tr>
     <tr>
       <td>Received</td>
