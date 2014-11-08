@@ -26,17 +26,38 @@
       <tr>
         <td>Confirmations</td>
         <td>
-          {{ num_confirmations|intcomma }}
+          {{ num_confirmations }}
           {% if confirmed_at %}
-            (confirmed {{ confirmed_at|naturaltime }})
+            {{ confirmed_at }}
+            - confirmed {{ confirmed_at|naturaltime }}
           {% endif %}
         </td>
       </tr>
-      {% if block_height > 0 %}
+      {% if block_height %}
         <tr>
           <td>In Block</td>
           <td>{{ block_height|intcomma }}</td>
         </tr>
+      {% else %}
+        <tr>
+          <td>Confidence</td>
+          <td>
+            {{ confidence_pct|floatformat }}% chance of making it into a block
+          </td>
+        </tr>
+        <tr>
+          <td>Miner Preference</td>
+          <td>{{ preference }}</td>
+        </tr>
+        <tr>
+          <td>Memory Pools With Tx</td>
+          <td>{{ receive_cnt }}</td>
+        </tr>
+        <tr>
+          <td>Double-Spend Detected</td>
+          <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
+        </tr>
+
       {% endif %}
       <tr>
         <td>Relayed By</td>

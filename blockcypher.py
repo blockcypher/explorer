@@ -45,6 +45,11 @@ def get_transactions_details(tx_hash):
     response_dict = json.loads(r.text)
 
     # format this string as a datetime object
-    response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
+    if response_dict['block_height'] > 0:
+        response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
+    else:
+        # Blockcypher reports fake times if it's not in a block
+        response_dict['confirmed'] = None
+        response_dict['block_height'] = None
 
     return response_dict
