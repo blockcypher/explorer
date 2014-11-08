@@ -1,0 +1,129 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="{% block meta_content %}{# FIXME: add content #}{% endblock meta_content %}">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
+
+    <title>
+      {% block title %}{% trans "Bitcoin Block Explorer" %}{% endblock %} | Powered by BlockCypher
+    </title>
+
+    {# Webfonts #}
+    <link href='//fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+
+    {# Bootstrap core CSS #}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    {% block extra_head %}{% endblock extra_head %}
+
+  </head>
+
+  <body>
+    {#  Fixed navbar #}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <a class="navbar-brand" href="{% url "home" %}">
+            <strong class="logo">
+              BlockCypher.info
+            </strong>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="nav-collapse">
+
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">{% trans "Contact Us" %}</a></li>
+            <li id="profile-menu" class="dropdown navbar-form">
+              {% if tcp__ENABLE_TRANSLATIONS %}
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_language_info for LANGUAGE_CODE as lang %}
+                <button class="dropdown-toggle btn-default btn" data-toggle="dropdown">
+                  <strong>{{lang.name_local}}</strong> 
+                  <b class="caret"></b>
+                </button>
+                <div class="dropdown-menu">
+                  <form class="form-horizontal" action="{% url 'set_language' %}" method="post">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ redirect_to }}" />
+
+                    <div class="switch-toggle well">
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                      <input id="{{ language.code }}" name="language" value="{{ language.code }}" type="radio" onclick="this.form.submit()"{% if language.code == LANGUAGE_CODE %} checked{% endif %}>
+                      <label for="{{ language.code }}">
+                        {{ language.name_local }}
+                      </label>
+                    {% endfor %}
+                      <a class="btn btn-primary"></a>
+                    </div>
+
+                    <p>{% trans "Translations are currently in Beta."%}</p>
+                  </form>
+                  <div class="clearfix"></div>
+                </div>
+              {% endif %}
+            </li>
+          </ul>
+
+
+        </div>
+      </div>
+
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    {% if is_home %}
+      <div class="main-container home">
+      {# The messages partial is included in index.html #}
+    {% else %}
+      <div class="main-container">
+      {% include "partials/messages.html" %}
+    {% endif %}
+
+      {# Begin page content #}
+      <div class="container">
+        {% block content %}
+        {% endblock content %}
+      </div>
+    </div>
+
+    {# Footer #}
+    <footer class="page-footer container-fluid">
+      <div class="container">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="#">{% trans "Contact" %}</a></li>
+          <li><a href="#">{% trans "Privacy and Terms" %}</a></li>
+        </ul>
+
+        <p class="navbar-text navbar-right">
+          Powered by the <a href="http://www.blockcypher.com/">Blockcypher Bitcoin API</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    {% block extra_js %}{% endblock extra_js %}
+    {% include "partials/ga.html" %}
+  </body>
+</html>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+
+{% block content %}
+
+<h1>Transaction Details</h1>
+
+{% if received_at %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <th colspan="2">{{ tx_hash }}</th>
+      <tr>
+        <td>Amount Transacted</td>
+        <td>{{ total_satoshis|satoshis_to_btc_rounded }} BTC</td>
+      </tr>
+      <tr>
+        <td>Fees</td>
+        <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} BTC</td>
+      </tr>
+      <tr>
+        <td>Confirmations</td>
+        <td>
+          {{ num_confirmations|intcomma }}
+          {% if confirmed_at %}
+            (confirmed {{ confirmed_at|naturaltime }})
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>In Block</td>
+        <td>{{ block_height|intcomma }}</td>
+      </tr>
+      <tr>
+        <td>Relayed By</td>
+        <td>{{ relayed_by }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <h4>Overview</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <th>Inputs Consumed ({{ num_inputs }})</th>
+      <th>Outputs Created ({{ num_outputs }})</th>
+      <tr>
+        <td>
+          {% for input in inputs %}
+            {# FIXME: |first is a hack #}
+            {{ input.output_value|satoshis_to_btc_rounded }} BTC from <a href="{% url 'address_overview' input.addresses|first %}">{{ input.addresses|first }}</a>
+            <br />
+          {% endfor %}
+          {% if inputs|length < num_inputs %}...{% endif %}
+        </td>
+        <td>
+          {% for output in outputs %}
+            {# FIXME: |first is a hack #}
+            {{ output.value|satoshis_to_btc_rounded }} BTC to <a href="{% url 'address_overview' output.addresses|first %}">{{ output.addresses|first }}</a>
+            <br />
+          {% endfor %}
+          {% if output|length < num_outputs %}...{% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+{% else %}
+  <p>
+    Transactions not found.
+    Are you sure that's a valid transaction hash?
+  </p>
+{% endif %}
+
+{% endblock content %}
+

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+
+{% block content %}
+
+<h1>Address Details</h1>
+
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <th colspan="2">Summary</th>
+    <tr>
+      <td>Address</td>
+      <td>
+        <a href="bitcoin:{{ btc_address }}">{{ btc_address }}</a> <br />
+        <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ btc_address }}&choe=UTF-8&chs=300x300" />
+      </td>
+    </tr>
+    <tr>
+      <td># Transactions</td>
+      <td>{% if not has_more %}{{ num_transactions }}{% endif %}</td>
+    </tr>
+    <tr>
+      <td>Sent</td>
+      <td>{% if not has_more %}{{ sent_satoshis|satoshis_to_btc_rounded }} BTC{% endif %}</td>
+    </tr>
+    <tr>
+      <td>Recieved</td>
+      <td>{% if not has_more %}{{ recieved_satoshis|satoshis_to_btc_rounded }} BTC{% endif %}</td>
+    </tr>
+    <tr>
+      <td>Balance</td>
+      <td>{{ confirmed_balance_satoshis|satoshis_to_btc_rounded }} BTC</td>
+    </tr>
+  </table>
+</div>
+
+
+{% if transactions %}
+
+  <h2>Transactions</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <th>Hash</th>
+      <th>Amount</th>
+      <th>Confirmations</th>
+      {% for transaction in transactions %}
+        <tr>
+          <td><a href="{% url 'transaction_overview' transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
+          <td>{{ transaction.value|satoshis_to_btc_rounded }} BTC</td>
+          <td>{{ transaction.confirmations|intcomma }}</td>
+        </tr>
+      {% endfor %}
+
+    </table>
+  </div>
+
+{% else %}
+  <p>No transactions detected. <a href="#">Sign up for alerts of future transactions</a>.</p>
+{% endif %}
+
+{% endblock content %}

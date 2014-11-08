@@ -1,0 +1,49 @@
+# https://github.com/github/gitignore/blob/master/Python.gitignore
+
+# These I added myself
+/venv/
+staticfiles
+\.env
+\.DS_Store
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Django stuff:
+*.log
+*.pot

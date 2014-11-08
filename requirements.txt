@@ -1,0 +1,17 @@
+Django==1.7.1
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-annoying==0.8.0
+django-crispy-forms==1.4.0
+django-debug-toolbar==1.2.2
+django-storages==1.1.8
+django-toolbelt==0.0.1
+gnureadline==6.3.3
+gunicorn==19.1.1
+ipython==2.3.0
+newrelic==2.36.0.30
+psycopg2==2.5.4
+raven==5.1.1
+requests==2.4.3
+sqlparse==0.1.13
+static3==0.5.1
