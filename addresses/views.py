@@ -6,29 +6,46 @@ from blockcypher import get_address_details
 @render_to('address_overview.html')
 def address_overview(request, btc_address):
 
-    # FIXME: this doesn't cover pagination and will fail silently-ish on those cases!
-    address_details = get_address_details(btc_address)
-
-    transactions = address_details['txrefs']
+    # TODO: this doesn't cover pagination >500 and will fail silently-ish on those cases!
+    address_details = get_address_details(btc_address, max_txns=500)
 
     # import pprint; pprint.pprint(address_details, width=1)
 
+    confirmed_transactions = address_details.get('txrefs', [])
+    unconfirmed_transactions = address_details.get('unconfirmed_txrefs', [])
+
+    all_transactions = unconfirmed_transactions + confirmed_transactions
+
     # doesn't cover pagination
-    sent_satoshis, recieved_satoshis = 0, 0
-    for transaction in transactions:
+    confirmed_sent_satoshis, confirmed_recieved_satoshis = 0, 0
+    unconfirmed_sent_satoshis, unconfirmed_recieved_satoshis = 0, 0
+    for transaction in all_transactions:
         if transaction['tx_input_n'] >= 0:
-            # TODO: confirm this logic
-            sent_satoshis += transaction['value']
+            # It's sent
+            if transaction['confirmations'] > 6:
+                confirmed_sent_satoshis += transaction['value']
+            else:
+                unconfirmed_sent_satoshis += transaction['value']
         else:
-            recieved_satoshis += transaction['value']
+            # It's received
+            if transaction['confirmations'] > 6:
+                confirmed_recieved_satoshis += transaction['value']
+            else:
+                unconfirmed_recieved_satoshis += transaction['value']
 
     return {
             'btc_address': btc_address,
-            'sent_satoshis': sent_satoshis,
-            'recieved_satoshis': recieved_satoshis,
-            'confirmed_balance_satoshis': address_details['final_balance'],
-            'unconfirmed_balance_satoshis': address_details['balance'],
-            'num_transactions': len(transactions),
-            'transactions': transactions,
+            'confirmed_sent_satoshis': confirmed_sent_satoshis,
+            'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
+            'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
+            'confirmed_recieved_satoshis': confirmed_recieved_satoshis,
+            'unconfirmed_recieved_satoshis': unconfirmed_recieved_satoshis,
+            'total_recieved_satoshis': unconfirmed_recieved_satoshis + confirmed_recieved_satoshis,
+            # TODO: confirm these 3 are correct:
+            'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
+            'confirmed_balance_satoshis': address_details['balance'],
+            'total_balance_satoshis': address_details['final_balance'],
+            'all_transactions': all_transactions,
+            'num_txns': address_details['n_tx'],
             'has_more': address_details.get('hasMore'),
             }
