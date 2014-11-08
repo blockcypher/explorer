@@ -9,7 +9,7 @@ import requests
 import json
 
 
-def get_address_details(btc_address):
+def get_address_details(btc_address, max_txns=None):
 
     BASE_URL = 'https://api.blockcypher.com/v1/btc/main/addrs'
 
@@ -17,10 +17,13 @@ def get_address_details(btc_address):
 
     url_to_hit = '%s/%s' % (BASE_URL, btc_address)
 
+    params = {}
+    if max_txns:
+        params['limit'] = max_txns
     if BLOCKCYPHER_API_KEY:
-        BASE_URL += '?token=%s' % BLOCKCYPHER_API_KEY
+        params['token'] = BLOCKCYPHER_API_KEY
 
-    r = requests.get(url_to_hit)
+    r = requests.get(url_to_hit, params=params, verify=True)
 
     return json.loads(r.text)
 
@@ -33,10 +36,11 @@ def get_transactions_details(tx_hash):
 
     url_to_hit = '%s/%s' % (BASE_URL, tx_hash)
 
+    params = {}
     if BLOCKCYPHER_API_KEY:
-        BASE_URL += '?token=%s' % BLOCKCYPHER_API_KEY
+        params['token'] = BLOCKCYPHER_API_KEY
 
-    r = requests.get(url_to_hit)
+    r = requests.get(url_to_hit, params=params, verify=True)
 
     response_dict = json.loads(r.text)
 
