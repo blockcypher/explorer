@@ -1,6 +1,6 @@
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from bitcoins.utils import is_valid_btc_address, is_valid_tx_hash, is_valid_block_representation
+from bitcoins.utils import is_valid_btc_address, is_valid_tx_hash
 
 from dateutil import parser
 
@@ -61,7 +61,7 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             tx_hash)
 
-    # print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -74,6 +74,7 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
     # format this string as a datetime object
     if response_dict['block_height'] > 0:
         response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
+        response_dict['received'] = parser.parse(response_dict['received'])
     else:
         # Blockcypher reports fake times if it's not in a block
         response_dict['confirmed'] = None
@@ -106,7 +107,7 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
 
     response_dict = json.loads(r.text)
 
-    if response_dict.get('received_time'):
-        response_dict['received_time'] = parser.parse(response_dict['received_time'])
+    if response_dict.get('confirmed'):
+        response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
 
     return response_dict
