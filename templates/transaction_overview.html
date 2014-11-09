@@ -75,15 +75,12 @@
       <tr>
         <td>
           {% for input in inputs %}
+            {{ input.output_value|satoshis_to_btc_rounded }}
+            {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if input.addresses|length == 0 %}
-              {# HACK for the coinbase! #}
-              {# FIXME: blockcypher currently returning incorrect # here #}
-              {{ total_satoshis|satoshis_to_btc_rounded }}
-              {{ coin_symbol|coin_symbol_to_currency_name }}
+              {# the coinbase! #}
               from Block Reward
             {% else %}
-              {{ input.output_value|satoshis_to_btc_rounded }}
-              {{ coin_symbol|coin_symbol_to_currency_name }}
               {# TODO: |first is a hack #}
               from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
             {% endif %}

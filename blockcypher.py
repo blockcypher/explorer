@@ -61,7 +61,7 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             tx_hash)
 
-    print(url_to_hit)
+    # print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
