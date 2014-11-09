@@ -27,9 +27,9 @@
     <tr>
       <td># Transactions</td>
       <td>
-        {{ num_all_txns }}
+        {{ num_all_txns|intcomma }}
         {% if num_unconfirmed_txns %}
-          ({{ num_unconfirmed_txns }} transactions unconfirmed)
+          ({{ num_unconfirmed_txns|intcomma }} transactions unconfirmed)
         {% endif %}
       </td>
     </tr>
@@ -70,7 +70,7 @@
 
 {% if all_transactions %}
 
-  <h2>Transactions</h2>
+  <h2>{{ num_all_txns|intcomma }} Transactions</h2>
 
   <div class="table-responsive">
     <table class="table table-bordered">
