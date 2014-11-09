@@ -4,15 +4,23 @@ from django.utils.translation import ugettext_lazy as _
 from bitcoins.address import is_valid_btc_address
 from bitcoins.transaction import is_valid_tx_hash
 
+from blockcypher import COIN_CHOICES
+
 
 class SearchForm(forms.Form):
     search_string = forms.CharField(
-        label=_('Search String'),
-        help_text=_('Enter a bitcoin address or transaction hash'),
+        label=_('What to Search For'),
+        help_text=_('Enter an address or transaction hash'),
         required=True,
         min_length=2,
         max_length=128,
-        widget=forms.TextInput(attrs={'class': 'input-lg', 'autofocus': ''}),
+        widget=forms.TextInput(attrs={'autofocus': ''}),
+    )
+
+    coin_symbol = forms.ChoiceField(
+        label=_('Blockchain to Search'),
+        required=True,
+        choices=COIN_CHOICES,
     )
 
     def clean_search_string(self):

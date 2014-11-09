@@ -8,14 +8,38 @@ from dateutil import parser
 import requests
 import json
 
+COIN_SYMBOL_MAPPINGS = {
+        # format like such
+        # 'coin_symbol': ('Display Name', 'Blockcypher Code', 'Blockcypher Network', 'Currency Name/Abbrev'),
+        'btc': ('Bitcoin', 'btc', 'main', 'BTC'),
+        'btc-testnet': ('Bitcoin Testnet', 'btc', 'test3', 'BTC'),
+        'ltc': ('Litecoin', 'ltc', 'main', 'LTC'),
+        'ltc-testnet': ('Litecoin Testnet', 'ltc', 'test', 'LTC'),
+        'uro': ('Uro', 'uro', 'main', 'URO'),
+        'bcy': ('BlockCypher Testnet', 'bcy', 'test', 'BCY'),
+        }
 
-def get_address_details(btc_address, max_txns=None):
+# WET, but maintains order
+COIN_SYMBOL_ORDER_LIST = ('btc', 'btc-testnet', 'ltc', 'ltc-testnet', 'uro', 'bcy')
 
-    BASE_URL = 'https://api.blockcypher.com/v1/btc/main/addrs'
+# Django-Style List
+COIN_CHOICES = []
+for coin_symbol in COIN_SYMBOL_ORDER_LIST:
+    COIN_CHOICES.append((coin_symbol, COIN_SYMBOL_MAPPINGS[coin_symbol][0]))
 
-    assert is_valid_btc_address(btc_address)
 
-    url_to_hit = '%s/%s' % (BASE_URL, btc_address)
+def get_address_details(address, coin_symbol='btc', max_txns=None):
+
+    # This check appears to work for other blockchains
+    # TODO: verify and/or improve
+    assert is_valid_btc_address(address)
+
+    url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
+            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            address)
+
+    print(url_to_hit)
 
     params = {}
     if max_txns:
@@ -28,13 +52,16 @@ def get_address_details(btc_address, max_txns=None):
     return json.loads(r.text)
 
 
-def get_transactions_details(tx_hash):
-
-    BASE_URL = 'https://api.blockcypher.com/v1/btc/main/txs'
+def get_transactions_details(tx_hash, coin_symbol='btc'):
 
     assert is_valid_tx_hash(tx_hash)
 
-    url_to_hit = '%s/%s' % (BASE_URL, tx_hash)
+    url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/txs/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
+            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            tx_hash)
+
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:

@@ -4,10 +4,10 @@ from blockcypher import get_address_details
 
 
 @render_to('address_overview.html')
-def address_overview(request, btc_address):
+def address_overview(request, coin_symbol, address):
 
     # TODO: this doesn't cover pagination >500 and will fail silently-ish on those cases!
-    address_details = get_address_details(btc_address, max_txns=500)
+    address_details = get_address_details(address=address, coin_symbol=coin_symbol, max_txns=500)
 
     # import pprint; pprint.pprint(address_details, width=1)
 
@@ -34,14 +34,14 @@ def address_overview(request, btc_address):
                 unconfirmed_recieved_satoshis += transaction['value']
 
     return {
-            'btc_address': btc_address,
+            'coin_symbol': coin_symbol,
+            'address': address,
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
             'confirmed_recieved_satoshis': confirmed_recieved_satoshis,
             'unconfirmed_recieved_satoshis': unconfirmed_recieved_satoshis,
             'total_recieved_satoshis': unconfirmed_recieved_satoshis + confirmed_recieved_satoshis,
-            # TODO: confirm these 3 are correct:
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],

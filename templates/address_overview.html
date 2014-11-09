@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<h1>Address Details</h1>
+<h1>{{ coin_symbol|coin_symbol_to_display_name }} Address</h1>
 
 
 <div class="table-responsive">
@@ -15,9 +15,12 @@
     <tr>
       <td>Address</td>
       <td>
-        <a href="{% url 'address_overview' btc_address %}">{{ btc_address }}</a>
-        (<a href="bitcoin:{{ btc_address }}">pay</a>)<br />
-        <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ btc_address }}&choe=UTF-8&chs=300x300" />
+        <a href="{% url 'address_overview' coin_symbol address %}">{{ address }}</a>
+        {% if coin_symbol = 'btc_main' %}
+          {# TODO: support this for other blockchains#}
+          (<a href="bitcoin:{{ address }}">pay</a>)<br />
+        {% endif %}
+        <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ address }}&choe=UTF-8&chs=300x300" />
       </td>
     </tr>
     <tr>
@@ -33,9 +36,9 @@
       <td>Received</td>
       <td>
         {% if not has_more %}
-          {{ total_recieved_satoshis|satoshis_to_btc_rounded }} BTC
+          {{ total_recieved_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
           {% if unconfirmed_recieved_satoshis %}
-            ({{ unconfirmed_recieved_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
+            ({{ unconfirmed_recieved_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
           {% endif %}
         {% endif %}
       </td>
@@ -44,9 +47,9 @@
       <td>Sent</td>
       <td>
         {% if not has_more %}
-          {{ total_sent_satoshis|satoshis_to_btc_rounded }} BTC
+          {{ total_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
           {% if unconfirmed_sent_satoshis %}
-            ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
+            ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
           {% endif %}
         {% endif %}
       </td>
@@ -54,9 +57,9 @@
     <tr>
       <td>Balance</td>
       <td>
-        {{ total_balance_satoshis|satoshis_to_btc_rounded }} BTC
+        {{ total_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
         {% if unconfirmed_balance_satoshis %}
-          ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} BTC unconfirmed)
+          ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
         {% endif %}
       </td>
     </tr>
@@ -75,10 +78,10 @@
       <th>Confirmations</th>
       {% for transaction in all_transactions %}
         <tr>
-          <td><a href="{% url 'transaction_overview' transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
+          <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ transaction.value|satoshis_to_btc_rounded }} BTC</td>
+            {{ transaction.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           <td>{{ transaction.confirmations|intcomma }}</td>
         </tr>
       {% endfor %}

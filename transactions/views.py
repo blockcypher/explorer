@@ -4,9 +4,9 @@ from blockcypher import get_transactions_details
 
 
 @render_to('transaction_overview.html')
-def transaction_overview(request, tx_hash):
+def transaction_overview(request, coin_symbol, tx_hash):
 
-    transaction_details = get_transactions_details(tx_hash)
+    transaction_details = get_transactions_details(tx_hash=tx_hash, coin_symbol=coin_symbol)
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
@@ -19,6 +19,7 @@ def transaction_overview(request, tx_hash):
         confidence_pct = None
 
     return {
+            'coin_symbol': coin_symbol,
             'tx_hash': tx_hash,
             'received_at': transaction_details['received'],
             'confirmed_at': transaction_details.get('confirmed'),

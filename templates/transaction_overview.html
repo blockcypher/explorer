@@ -6,22 +6,22 @@
 
 {% block content %}
 
-<h1>Transaction Details</h1>
+<h1>{{ coin_symbol|coin_symbol_to_display_name }} Transaction</h1>
 
 {% if received_at %}
 
   <div class="table-responsive">
     <table class="table table-bordered">
       <th colspan="2">
-        <a href="{% url 'transaction_overview' tx_hash %}">{{ tx_hash }}</a>
+        <a href="{% url 'transaction_overview' coin_symbol tx_hash %}">{{ tx_hash }}</a>
       </th>
       <tr>
         <td>Amount Transacted</td>
-        <td>{{ total_satoshis|satoshis_to_btc_rounded }} BTC</td>
+        <td>{{ total_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
       </tr>
       <tr>
         <td>Fees</td>
-        <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} BTC</td>
+        <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
       </tr>
       <tr>
         <td>Confirmations</td>
@@ -65,7 +65,7 @@
     </table>
   </div>
 
-  <h4>Overview</h4>
+  <h4>Details</h4>
   <div class="table-responsive">
     <table class="table table-bordered">
       <th>Inputs Consumed ({{ num_inputs }})</th>
@@ -73,18 +73,20 @@
       <tr>
         <td>
           {% for input in inputs %}
-            {# FIXME: |first is a hack #}
-            {{ input.output_value|satoshis_to_btc_rounded }} BTC from <a href="{% url 'address_overview' input.addresses|first %}">{{ input.addresses|first }}</a>
+            {# TODO: |first is a hack #}
+            {{ input.output_value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
             <br />
           {% endfor %}
           {% if inputs|length < num_inputs %}...{% endif %}
         </td>
         <td>
           {% for output in outputs %}
-            {# FIXME: |first is a hack #}
-            {{ output.value|satoshis_to_btc_rounded }} BTC to <a href="{% url 'address_overview' output.addresses|first %}">{{ output.addresses|first }}</a>
+            {# TODO: |first is a hack #}
+            {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            to <a href="{% url 'address_overview' coin_symbol output.addresses|first %}">{{ output.addresses|first }}</a>
             {% if output.spent_by %}
-              (<a href="{% url 'transaction_overview' output.spent_by %}">spent</a>)
+              (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
             {% else %}
               (unspent)
             {% endif %}
