@@ -26,7 +26,7 @@
       <tr>
         <td>Confirmations</td>
         <td>
-          {{ num_confirmations }}
+          {{ num_confirmations|intcomma }}
           {% if confirmed_at %}
             - confirmed {{ confirmed_at|naturaltime }}
           {% endif %}
@@ -35,7 +35,9 @@
       {% if block_height %}
         <tr>
           <td>In Block</td>
-          <td>{{ block_height|intcomma }}</td>
+          <td>
+            <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
+          </td>
         </tr>
       {% else %}
         <tr>
@@ -73,9 +75,18 @@
       <tr>
         <td>
           {% for input in inputs %}
-            {# TODO: |first is a hack #}
-            {{ input.output_value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-            from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
+            {% if input.output_index == 0 %}
+              {# HACK for the coinbase! #}
+              {# FIXME: blockcypher currently returning incorrect # here #}
+              {{ total_satoshis|satoshis_to_btc_rounded }}
+              {{ coin_symbol|coin_symbol_to_currency_name }}
+              from Block Reward
+            {% else %}
+              {{ input.output_value|satoshis_to_btc_rounded }}
+              {{ coin_symbol|coin_symbol_to_currency_name }}
+              {# TODO: |first is a hack #}
+              from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
+            {% endif %}
             <br />
           {% endfor %}
           {% if inputs|length < num_inputs %}...{% endif %}

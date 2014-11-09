@@ -1,12 +1,12 @@
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from bitcoins.address import is_valid_btc_address
-from bitcoins.transaction import is_valid_tx_hash
+from bitcoins.utils import is_valid_btc_address, is_valid_tx_hash, is_valid_block_representation
 
 from dateutil import parser
 
 import requests
 import json
+
 
 COIN_SYMBOL_MAPPINGS = {
         # format like such
@@ -39,7 +39,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             address)
 
-    print(url_to_hit)
+    # print(url_to_hit)
 
     params = {}
     if max_txns:
@@ -78,5 +78,35 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
         # Blockcypher reports fake times if it's not in a block
         response_dict['confirmed'] = None
         response_dict['block_height'] = None
+
+    return response_dict
+
+
+def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
+    """
+    block_representation may be the block number of block hash
+    """
+
+    # assert is_valid_block_representation(block_representation)
+
+    url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
+            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            block_representation)
+
+    # print(url_to_hit)
+
+    params = {}
+    if BLOCKCYPHER_API_KEY:
+        params['token'] = BLOCKCYPHER_API_KEY
+    if max_txns:
+        params['limit'] = max_txns
+
+    r = requests.get(url_to_hit, params=params, verify=True)
+
+    response_dict = json.loads(r.text)
+
+    if response_dict.get('received_time'):
+        response_dict['received_time'] = parser.parse(response_dict['received_time'])
 
     return response_dict

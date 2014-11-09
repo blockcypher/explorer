@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+
+{% block content %}
+
+<h1>{{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}</h1>
+
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <th colspan="2">Summary</th>
+    <tr>
+      <td>Height</td>
+      <td>
+        <a href="{% url 'block_overview' coin_symbol block_details.height %}">{{ block_details.height|intcomma }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Block Hash</td>
+      <td>
+        <a href="{% url 'block_overview' coin_symbol block_details.hash %}">{{ block_details.hash }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Recieved At</td>
+      <td>
+        {{ block_details.received_time|naturaltime }}
+      </td>
+    </tr>
+    <tr>
+      <td>Num Transactions</td>
+      <td>
+        {{ block_details.n_tx }}
+      </td>
+    </tr>
+    <tr>
+      <td>Total Transacted</td>
+      <td>
+        {{ block_details.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      </td>
+    </tr>
+    <tr>
+      <td>Fees</td>
+      <td>
+        {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      </td>
+    </tr>
+    <tr>
+      <td>Previous Block Hash</td>
+      <td>
+        <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}">{{ block_details.prev_block }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Nonce</td>
+      <td>
+        {{ block_details.nonce }}
+      </td>
+    </tr>
+    <tr>
+      <td>Bits</td>
+      <td>
+        {{ block_details.bits }}
+      </td>
+    </tr>
+    <tr>
+      <td>Merkle Root</td>
+      <td>
+        {{ block_details.mrkl_root }}
+      </td>
+    </tr>
+    <tr>
+      <td>Version</td>
+      <td>
+        {{ block_details.ver }}
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2>{{ block_details.n_tx }} Transactions</h2>
+
+{% if block_details.txids %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <th>Hash</th>
+      {% for tx_hash in block_details.txids %}
+        <tr>
+          <td>
+            <a href="{% url 'transaction_overview' coin_symbol tx_hash %}">{{ tx_hash }}</a>
+          </td>
+        </tr>
+      {% endfor %}
+      {% if block_details.n_tx != block_details.txids|length %}
+        <tr><td colspan="3">...</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+{% else %}
+  <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
+{% endif %}
+
+{% endblock content %}
+
