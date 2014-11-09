@@ -17,7 +17,7 @@ def block_overview(request, coin_symbol, block_representation):
             coin_symbol=coin_symbol,
             max_txns=500)
 
-    # import pprint; pprint.pprint(block_details, width=1)
+    #import pprint; pprint.pprint(block_details, width=1)
 
     if 'error' in block_details:
         msg = _('Sorry, that block hash was not found')
