@@ -58,12 +58,13 @@
           <td>Double-Spend Detected</td>
           <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
         </tr>
-
       {% endif %}
-      <tr>
-        <td>Relayed By</td>
-        <td>{{ relayed_by }}</td>
-      </tr>
+      {% if relayed_by %}
+        <tr>
+          <td>Relayed By</td>
+          <td>{{ relayed_by }}</td>
+        </tr>
+      {% endif %}
     </table>
   </div>
 
