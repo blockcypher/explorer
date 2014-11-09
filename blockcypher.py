@@ -39,7 +39,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             address)
 
-    # print(url_to_hit)
+    #print(url_to_hit)
 
     params = {}
     if max_txns:
@@ -61,7 +61,7 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             tx_hash)
 
-    print(url_to_hit)
+    #print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -95,7 +95,7 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             block_representation)
 
-    # print(url_to_hit)
+    #print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -107,7 +107,7 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
 
     response_dict = json.loads(r.text)
 
-    if response_dict.get('confirmed'):
-        response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
+    if response_dict.get('received_time'):
+        response_dict['received_time'] = parser.parse(response_dict['received_time'])
 
     return response_dict
