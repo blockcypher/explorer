@@ -18,12 +18,26 @@ def transaction_overview(request, coin_symbol, tx_hash):
     else:
         confidence_pct = None
 
+    received_at = transaction_details['received']
+    confirmed_at = transaction_details.get('confirmed')
+
+    if received_at >= confirmed_at:
+        diff = received_at - confirmed_at
+    else:
+        diff = confirmed_at - received_at
+
+    if diff.seconds < 60*20:
+        time_to_use = received_at
+    else:
+        time_to_use = confirmed_at
+
     return {
             'coin_symbol': coin_symbol,
             'tx_hash': tx_hash,
-            'received_at': transaction_details['received'],
-            'confirmed_at': transaction_details.get('confirmed'),
             'double_spend_detected': transaction_details['double_spend'],
+            'received_at': received_at,
+            'confirmed_at': confirmed_at,
+            'time_to_use': time_to_use,
             'total_satoshis': transaction_details['total'],
             'sent_satoshis': 0,
             'recieved_satoshis': 0,

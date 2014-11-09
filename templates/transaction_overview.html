@@ -8,7 +8,7 @@
 
 <h1>{{ coin_symbol|coin_symbol_to_display_name }} Transaction</h1>
 
-{% if received_at %}
+{% if block_hash %}
 
   <div class="table-responsive">
     <table class="table table-bordered">
@@ -27,8 +27,8 @@
         <td>Confirmations</td>
         <td>
           {{ num_confirmations|intcomma }}
-          {% if confirmed_at %}
-            - confirmed {{ confirmed_at|naturaltime }}
+          {% if time_to_use %}
+            - confirmed {{ time_to_use|naturaltime }}
           {% endif %}
         </td>
       </tr>
