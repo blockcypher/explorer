@@ -1,3 +1,8 @@
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
+
 from annoying.decorators import render_to
 
 from blockcypher import get_address_details
@@ -10,6 +15,11 @@ def address_overview(request, coin_symbol, address):
     address_details = get_address_details(address=address, coin_symbol=coin_symbol, max_txns=500)
 
     # import pprint; pprint.pprint(address_details, width=1)
+
+    if 'error' in address_details:
+        msg = _('Sorry, that address was not found')
+        messages.warning(request, msg)
+        return HttpResponseRedirect(reverse('home'))
 
     confirmed_transactions = address_details.get('txrefs', [])
     unconfirmed_transactions = address_details.get('unconfirmed_txrefs', [])
