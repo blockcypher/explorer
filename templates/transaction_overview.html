@@ -75,7 +75,7 @@
       <tr>
         <td>
           {% for input in inputs %}
-            {% if input.output_index == 0 %}
+            {% if input.addresses|length == 0 %}
               {# HACK for the coinbase! #}
               {# FIXME: blockcypher currently returning incorrect # here #}
               {{ total_satoshis|satoshis_to_btc_rounded }}
