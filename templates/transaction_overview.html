@@ -15,14 +15,25 @@
       <th colspan="2">
         <a href="{% url 'transaction_overview' coin_symbol tx_hash %}">{{ tx_hash }}</a>
       </th>
-      <tr>
-        <td>Amount Transacted</td>
-        <td>{{ total_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-      </tr>
-      <tr>
-        <td>Fees</td>
-        <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-      </tr>
+      {% if is_coinbase_tx %}
+        <tr>
+          <td>Amount Transacted</td>
+          <td>{{ total_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+        </tr>
+        <tr>
+          <td>Fees Collected</td>
+          <td>{{ fee_in_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td>Amount Transacted</td>
+          <td>{{ total_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+        </tr>
+        <tr>
+          <td>Fees</td>
+          <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+        </tr>
+      {% endif %}
       <tr>
         <td>Confirmations</td>
         <td>

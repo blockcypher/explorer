@@ -20,6 +20,10 @@ def transaction_overview(request, coin_symbol, tx_hash):
 
     received_at = transaction_details['received']
     confirmed_at = transaction_details.get('confirmed')
+    inputs = transaction_details['inputs']
+    outputs = transaction_details['outputs']
+    total_satoshis = transaction_details['total']
+    fee_in_satoshis = transaction_details['fees']
 
     if received_at >= confirmed_at:
         diff = received_at - confirmed_at
@@ -31,21 +35,30 @@ def transaction_overview(request, coin_symbol, tx_hash):
     else:
         time_to_use = confirmed_at
 
+    if inputs[0]['addresses']:
+        is_coinbase_tx = False
+        total_satoshis_coinbase, fee_in_satoshis_coinbase = None, None
+    else:
+        is_coinbase_tx = True
+        total_satoshis_coinbase = inputs[0]['output_value']
+        fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
+
     return {
             'coin_symbol': coin_symbol,
             'tx_hash': tx_hash,
+            'is_coinbase_tx': is_coinbase_tx,
             'double_spend_detected': transaction_details['double_spend'],
             'received_at': received_at,
             'confirmed_at': confirmed_at,
             'time_to_use': time_to_use,
-            'total_satoshis': transaction_details['total'],
-            'sent_satoshis': 0,
-            'recieved_satoshis': 0,
-            'fee_in_satoshis': transaction_details['fees'],
+            'total_satoshis': total_satoshis,
+            'total_satoshis_coinbase': total_satoshis_coinbase,
+            'fee_in_satoshis': fee_in_satoshis,
+            'fee_in_satoshis_coinbase': fee_in_satoshis_coinbase,
             'block_height': transaction_details['block_height'],
             'block_hash': transaction_details.get('block_hash'),
-            'inputs': transaction_details['inputs'],
-            'outputs': transaction_details['outputs'],
+            'inputs': inputs,
+            'outputs': outputs,
             'num_confirmations': transaction_details['confirmations'],
             'relayed_by': transaction_details['relayed_by'],
             'num_inputs': transaction_details['vin_sz'],
