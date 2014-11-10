@@ -38,9 +38,12 @@
         <td>Confirmations</td>
         <td>
           {{ num_confirmations|intcomma }}
-          {% if time_to_use %}
-            - broadcast {{ time_to_use|naturaltime }}
-          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Received</td>
+        <td>
+          {{ time_to_use|naturaltime }}
         </td>
       </tr>
       {% if block_height %}
