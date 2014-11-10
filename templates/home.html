@@ -12,4 +12,17 @@
   </p>
 </form>
 
+<br />
+<p>
+Bored? Check out current block on the
+<a href="{% url 'latest_block' 'btc' %}">Bitcoin</a>,
+<a href="{% url 'latest_block' 'btc-testnet' %}">Bitcoin Testnet</a>,
+<a href="{% url 'latest_block' 'ltc' %}">Litecoin</a>,
+<a href="{% url 'latest_block' 'uro' %}">URO</a>, or
+<a href="{% url 'latest_block' 'bcy' %}">Blockcypher Testnet</a>
+networks.
+</p>
+<br />
+<br />
+
 {% endblock content %}

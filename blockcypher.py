@@ -67,7 +67,8 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/txs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol][1],
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
-            tx_hash)
+            tx_hash,
+            )
 
     #print(url_to_hit)
 
@@ -107,9 +108,10 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol][1],
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
-            block_representation)
+            block_representation,
+            )
 
-    print(url_to_hit)
+    #print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -125,3 +127,23 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
         response_dict['received_time'] = parser.parse(response_dict['received_time'])
 
     return response_dict
+
+
+def get_latest_block_height(coin_symbol):
+
+    url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
+            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            )
+
+    #print(url_to_hit)
+
+    params = {}
+    if BLOCKCYPHER_API_KEY:
+        params['token'] = BLOCKCYPHER_API_KEY
+
+    r = requests.get(url_to_hit, params=params, verify=True)
+
+    response_dict = json.loads(r.text)
+
+    return response_dict['height']
