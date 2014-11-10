@@ -6,7 +6,7 @@ from hashlib import sha256
 SATOSHIS_PER_BTC = 10**8
 SATOSHIS_PER_MILLIBITCOIN = 10**5
 
-HASH_CHARS_RE = re.compile('^[0-9a-f]*$')
+HEX_CHARS_RE = re.compile('^[0-9a-f]*$')
 
 
 def satoshis_to_btc(satoshis, decimals=4):
@@ -20,7 +20,7 @@ def satoshis_to_btc(satoshis, decimals=4):
 
 
 def uses_only_hash_chars(string):
-    return HASH_CHARS_RE.match(string)
+    return HEX_CHARS_RE.match(string)
 
 
 def is_valid_hash(string):
@@ -44,7 +44,7 @@ def is_valid_block_num(block_num):
 
 
 def is_valid_block_hash(block_hash):
-    return is_valid_hash(block_hash) and block_hash[:5] == '00000'
+    return is_valid_hash(block_hash) and block_hash[:6] == '000000'
 
 
 def is_valid_block_representation(block_representation):
