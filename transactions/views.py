@@ -10,7 +10,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
-    # import pprint; pprint.pprint(transaction_details, width=1)
+    #import pprint; pprint.pprint(transaction_details, width=1)
 
     confidence = transaction_details.get('confidence')
     if confidence:
@@ -25,15 +25,18 @@ def transaction_overview(request, coin_symbol, tx_hash):
     total_satoshis = transaction_details['total']
     fee_in_satoshis = transaction_details['fees']
 
-    if received_at >= confirmed_at:
-        diff = received_at - confirmed_at
-    else:
-        diff = confirmed_at - received_at
+    if confirmed_at:
+        if received_at >= confirmed_at:
+            diff = received_at - confirmed_at
+        else:
+            diff = confirmed_at - received_at
 
-    if diff.seconds < 60*20:
-        time_to_use = received_at
+        if diff.seconds < 60*20:
+            time_to_use = received_at
+        else:
+            time_to_use = confirmed_at
     else:
-        time_to_use = confirmed_at
+        time_to_use = received_at
 
     if inputs[0]['addresses']:
         is_coinbase_tx = False

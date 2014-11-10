@@ -80,6 +80,9 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
         response_dict['confirmed'] = None
         response_dict['block_height'] = None
 
+    if response_dict.get('received'):
+        response_dict['received'] = parser.parse(response_dict['received'])
+
     return response_dict
 
 
