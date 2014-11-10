@@ -71,15 +71,14 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
 
     response_dict = json.loads(r.text)
 
-    # format this string as a datetime object
     if response_dict['block_height'] > 0:
         response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
-        response_dict['received'] = parser.parse(response_dict['received'])
     else:
         # Blockcypher reports fake times if it's not in a block
         response_dict['confirmed'] = None
         response_dict['block_height'] = None
 
+    # format this string as a datetime object
     if response_dict.get('received'):
         response_dict['received'] = parser.parse(response_dict['received'])
 
