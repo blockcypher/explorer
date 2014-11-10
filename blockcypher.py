@@ -1,6 +1,6 @@
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from bitcoins.utils import is_valid_btc_address, is_valid_tx_hash
+from bitcoins.utils import is_valid_address, is_valid_tx_hash, is_valid_sha_block_representation, is_valid_scrypt_block_representation
 
 from dateutil import parser
 
@@ -10,17 +10,25 @@ import json
 
 COIN_SYMBOL_MAPPINGS = {
         # format like such
-        # 'coin_symbol': ('Display Name', 'Blockcypher Code', 'Blockcypher Network', 'Currency Name/Abbrev'),
-        'btc': ('Bitcoin', 'btc', 'main', 'BTC'),
-        'btc-testnet': ('Bitcoin Testnet', 'btc', 'test3', 'BTC'),
-        'ltc': ('Litecoin', 'ltc', 'main', 'LTC'),
-        'ltc-testnet': ('Litecoin Testnet', 'ltc', 'test', 'LTC'),
-        'uro': ('Uro', 'uro', 'main', 'URO'),
-        'bcy': ('BlockCypher Testnet', 'bcy', 'test', 'BCY'),
+        # 'coin_symbol': ('Display Name', 'Blockcypher Code', 'Blockcypher Network', 'Currency Name/Abbrev', 'POW'),
+        'btc': ('Bitcoin', 'btc', 'main', 'BTC', 'sha'),
+        'btc-testnet': ('Bitcoin Testnet', 'btc', 'test3', 'BTC', 'sha'),
+        'ltc': ('Litecoin', 'ltc', 'main', 'LTC', 'scrypt'),
+        'uro': ('Uro', 'uro', 'main', 'URO', 'sha'),
+        'bcy': ('BlockCypher Testnet', 'bcy', 'test', 'BCY', 'sha'),
         }
 
-# WET, but maintains order
-COIN_SYMBOL_ORDER_LIST = ('btc', 'btc-testnet', 'ltc', 'ltc-testnet', 'uro', 'bcy')
+# TODO: DRY this out (but maintain order for dropdown)
+COIN_SYMBOL_ORDER_LIST = ('btc', 'btc-testnet', 'ltc', 'uro', 'bcy')
+
+SHA_COINS, SCRYPT_COINS = [], []
+for coin_symbol in COIN_SYMBOL_MAPPINGS:
+    if COIN_SYMBOL_MAPPINGS[coin_symbol][4] == 'sha':
+        SHA_COINS.append(coin_symbol)
+    elif COIN_SYMBOL_MAPPINGS[coin_symbol][4] == 'scrypt':
+        SCRYPT_COINS.append(coin_symbol)
+    else:
+        raise Exception('Logic Error: Not Possible')
 
 # Django-Style List
 COIN_CHOICES = []
@@ -32,7 +40,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
 
     # This check appears to work for other blockchains
     # TODO: verify and/or improve
-    assert is_valid_btc_address(address)
+    assert is_valid_address(address)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol][1],
@@ -71,15 +79,15 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
 
     response_dict = json.loads(r.text)
 
-    if response_dict['block_height'] > 0:
-        response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
-    else:
-        # Blockcypher reports fake times if it's not in a block
-        response_dict['confirmed'] = None
-        response_dict['block_height'] = None
+    if not 'error' in response_dict:
+        if response_dict['block_height'] > 0:
+            response_dict['confirmed'] = parser.parse(response_dict['confirmed'])
+        else:
+            # Blockcypher reports fake times if it's not in a block
+            response_dict['confirmed'] = None
+            response_dict['block_height'] = None
 
-    # format this string as a datetime object
-    if response_dict.get('received'):
+        # format this string as a datetime object
         response_dict['received'] = parser.parse(response_dict['received'])
 
     return response_dict
@@ -90,14 +98,18 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
     block_representation may be the block number of block hash
     """
 
-    # assert is_valid_block_representation(block_representation)
+    # defensive checks
+    if coin_symbol in SHA_COINS:
+        assert is_valid_sha_block_representation(block_representation)
+    elif coin_symbol in SCRYPT_COINS:
+        assert is_valid_scrypt_block_representation(block_representation)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol][1],
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             block_representation)
 
-    #print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:

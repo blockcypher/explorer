@@ -43,12 +43,21 @@ def is_valid_block_num(block_num):
     return 0 <= bn_as_int <= 10**8
 
 
-def is_valid_block_hash(block_hash):
+def is_valid_sha_block_hash(block_hash):
     return is_valid_hash(block_hash) and block_hash[:6] == '000000'
 
 
-def is_valid_block_representation(block_representation):
-    return is_valid_block_num(block_representation) or is_valid_block_hash(block_representation)
+def is_valid_scrypt_block_hash(block_hash):
+    " Unfortunately this is indistiguishable from a regular hash "
+    return is_valid_hash(block_hash)
+
+
+def is_valid_sha_block_representation(block_representation):
+    return is_valid_block_num(block_representation) or is_valid_sha_block_hash(block_representation)
+
+
+def is_valid_scrypt_block_representation(block_representation):
+    return is_valid_block_num(block_representation) or is_valid_scrypt_block_hash(block_representation)
 
 
 ### Addresses ###
@@ -70,7 +79,7 @@ def btc_address_valid(bc):
     return bcbytes[-4:] == sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
 
 
-def is_valid_btc_address(b58_address):
+def is_valid_address(b58_address):
     try:
         return btc_address_valid(b58_address)
     except:

@@ -1,3 +1,8 @@
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
+
 from annoying.decorators import render_to
 
 from blockcypher import get_transactions_details
@@ -11,6 +16,12 @@ def transaction_overview(request, coin_symbol, tx_hash):
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
     #import pprint; pprint.pprint(transaction_details, width=1)
+
+    if 'error' in transaction_details:
+        # Corner case, such as a validly formed tx hash with no matching transaction
+        msg = _('No transaction found with the hash %(tx_hash)s' % {'tx_hash': tx_hash})
+        messages.warning(request, msg)
+        return HttpResponseRedirect(reverse('home'))
 
     confidence = transaction_details.get('confidence')
     if confidence:
