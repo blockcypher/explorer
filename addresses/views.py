@@ -14,17 +14,14 @@ def address_overview(request, coin_symbol, address):
     # TODO: this doesn't cover pagination >500 and will fail silently-ish on those cases!
     address_details = get_address_details(address=address, coin_symbol=coin_symbol, max_txns=500)
 
-    # import pprint; pprint.pprint(address_details, width=1)
+    #import pprint; pprint.pprint(address_details, width=1)
 
     if 'error' in address_details:
         msg = _('Sorry, that address was not found')
         messages.warning(request, msg)
         return HttpResponseRedirect(reverse('home'))
 
-    confirmed_transactions = address_details.get('txrefs', [])
-    unconfirmed_transactions = address_details.get('unconfirmed_txrefs', [])
-
-    all_transactions = unconfirmed_transactions + confirmed_transactions
+    all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
 
     # doesn't cover pagination
     confirmed_sent_satoshis, confirmed_recieved_satoshis = 0, 0

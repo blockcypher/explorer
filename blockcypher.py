@@ -57,7 +57,25 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
 
     r = requests.get(url_to_hit, params=params, verify=True)
 
-    return json.loads(r.text)
+    response_dict = json.loads(r.text)
+
+    confirmed_txrefs = []
+    for confirmed_txref in response_dict.get('txrefs', []):
+        confirmed_txref['confirmed'] = parser.parse(confirmed_txref['confirmed'])
+        confirmed_txrefs.append(confirmed_txref)
+
+    unconfirmed_txrefs = []
+    for unconfirmed_txref in response_dict.get('unconfirmed_txrefs', []):
+        unconfirmed_txref['confirmed'] = parser.parse(unconfirmed_txref['confirmed'])
+        unconfirmed_txrefs.append(unconfirmed_txref)
+
+    if confirmed_txrefs:
+        response_dict['txrefs'] = confirmed_txrefs
+
+    if unconfirmed_txrefs:
+        response_dict['unconfirmed_txrefs'] = unconfirmed_txrefs
+
+    return response_dict
 
 
 def get_transactions_details(tx_hash, coin_symbol='btc'):

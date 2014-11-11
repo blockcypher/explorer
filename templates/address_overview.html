@@ -77,13 +77,35 @@
       <th>Hash</th>
       <th>Amount</th>
       <th>Confirmations</th>
+      <th>Time</th>
+      <th>Block</th>
       {% for transaction in all_transactions %}
         <tr>
           <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
             {{ transaction.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-          <td>{{ transaction.confirmations|intcomma }}</td>
+          <td>
+            {% if transaction.confirmations %}
+              {{ transaction.confirmations|intcomma }}
+            {% else %}
+              None
+            {% endif %}
+          </td>
+          <td>
+            {% if transaction.block_height %}
+              {{ transaction.confirmed|naturaltime }}
+            {% else %}
+              Pending
+            {% endif %}
+          </td>
+          <td>
+            {% if transaction.block_height %}
+              <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma}}</a>
+            {% else %}
+              Pending
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
       {% if has_more %}
