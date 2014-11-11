@@ -7,6 +7,8 @@ from annoying.decorators import render_to
 
 from blockcypher import get_transactions_details
 
+from binascii import unhexlify
+
 
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
@@ -52,15 +54,18 @@ def transaction_overview(request, coin_symbol, tx_hash):
     if inputs[0]['addresses']:
         is_coinbase_tx = False
         total_satoshis_coinbase, fee_in_satoshis_coinbase = None, None
+        coinbase_msg = None
     else:
         is_coinbase_tx = True
         total_satoshis_coinbase = inputs[0]['output_value']
         fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
+        coinbase_msg = str(unhexlify(inputs[0]['script']))
 
     return {
             'coin_symbol': coin_symbol,
             'tx_hash': tx_hash,
             'is_coinbase_tx': is_coinbase_tx,
+            'coinbase_msg': coinbase_msg,
             'double_spend_detected': transaction_details['double_spend'],
             'received_at': received_at,
             'confirmed_at': confirmed_at,
