@@ -25,4 +25,104 @@ networks.
 <br />
 <br />
 
+<div id="newtx-section" style="display:none">
+  <h4>Latest Transactions</h4>
+
+  <table class="table table-striped">
+    <tr id="latest-txs">
+      <th>Transaction Hash</th>
+      <th>BTC</th>
+      <th>Time</th>
+    </tr>
+    <tr class="new-tx" style="display;none"></tr>
+  </table>
+
+  <br />
+  <p>
+  Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+  </p>
+</div>
+
 {% endblock content %}
+
+{% block extra_js %}
+  <script>
+
+    function satoshis_to_btc(satoshis) {
+      // Round to 4 decimal places
+      var btc = satoshis/(Math.pow(10,8));
+      return Math.round(btc*10000)/10000;
+    }
+
+    function convert_time_to_seconds_ago(epoch) {
+      return (Date.now() - Date.parse(epoch))/1000;
+    }
+
+    function format_seconds_ago(seconds_ago) {
+      if( seconds_ago < 60) {
+        return  '<1 min ago';
+      } else if (seconds_ago < 120) {
+        return '<2 mins ago';
+      } else if (seconds_ago < 180) {
+        return '<3 mins ago';
+      } else if (seconds_ago < 240) {
+        return '<4 mins ago';
+      } else if (seconds_ago < 300) {
+        return '<5 mins ago';
+      } else if (seconds_ago < 600) {
+        return '<10 mins ago';
+      } else {
+        return '>5 minutes ago';
+      }
+    }
+
+    $(document).ready(function(){
+
+      console.log('Creating webshocket...');
+      var ws = new WebSocket("ws://socket.blockcypher.com/v1/btc/main");
+      console.log('Webshocket created');
+
+      var total_ws_received = 0;
+
+      ws.onmessage = function(evt) {
+        total_ws_received += 1;
+        var tx = JSON.parse(evt.data);
+
+        if ( $('#' + tx.hash).length == 0 ) {
+          $('#newtx-section').fadeIn(); // only matters the first time
+          var btc_rounded = satoshis_to_btc(tx.total);
+          var seconds_ago = convert_time_to_seconds_ago(tx.received)
+          var time_ago_formatted = format_seconds_ago(seconds_ago);
+
+          to_insert = '<tr class="new-tx" id="'+tx.hash+'"><td><a href="/btc/tx/'+tx.hash+'">'+tx.hash.substring(0,12)+'</a>...</td><td>'+btc_rounded+' BTC</td><td class="timing" received="'+tx.received+'">'+time_ago_formatted+'</td></tr>';
+          $('.new-tx').first().before(to_insert);
+          // New row effect:
+          $('.new-tx').first().hide().fadeIn();
+
+          if ( $('.new-tx').length > 10 ) {
+            // Trim end of list once long
+            $('.new-tx').last().fadeOut().remove();
+          }
+
+          if (total_ws_received > 10000) {
+            ws.close();
+          }
+
+          var times_array = $('.timing');
+          var times_length = times_array.length;
+          for (var i = 0; i < times_length; i++) {
+            times_array[i].innerHTML = format_seconds_ago(convert_time_to_seconds_ago(times_array[i].getAttribute('received')));
+          }
+
+
+        }
+      }
+
+      console.log('Setting websocket event...');
+      setInterval(function() { ws.send(JSON.stringify({event: "unconfirmed-tx"})) }, 3000);
+      console.log('Websocket event set');
+
+    })
+
+  </script>
+{% endblock extra_js %}
