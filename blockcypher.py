@@ -47,7 +47,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
             COIN_SYMBOL_MAPPINGS[coin_symbol][2],
             address)
 
-    #print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if max_txns:
@@ -88,7 +88,7 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
             tx_hash,
             )
 
-    #print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
