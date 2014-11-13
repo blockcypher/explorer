@@ -1,21 +1,20 @@
 /* Custom CSS here */
-
+.bg-white {
+	background: #fff;
+}
 .bg-primary-gradient {
-	background: #3f116b;
-	/*6e35a5*/
-
-	background: rgb(110,53,165); /* Old browsers */
-	background: -moz-radial-gradient(center, ellipse cover,  rgba(110,53,165,1) 0%, rgba(63,17,107,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(110,53,165,1)), color-stop(100%,rgba(63,17,107,1))); /* Chrome,Safari4+ */
-	background: -webkit-radial-gradient(center, ellipse cover,  rgba(110,53,165,1) 0%,rgba(63,17,107,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-radial-gradient(center, ellipse cover,  rgba(110,53,165,1) 0%,rgba(63,17,107,1) 100%); /* Opera 12+ */
-	background: -ms-radial-gradient(center, ellipse cover,  rgba(110,53,165,1) 0%,rgba(63,17,107,1) 100%); /* IE10+ */
-	background: radial-gradient(ellipse at center,  rgba(110,53,165,1) 0%,rgba(63,17,107,1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6e35a5', endColorstr='#3f116b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
+	background: #6e35a5; /* Old browsers */
+	background: -moz-radial-gradient(center, ellipse cover,  #6e35a5 0%, #3f116b 100%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#6e35a5), color-stop(100%,#3f116b)); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  #6e35a5 0%,#3f116b 100%); /* Chrome10+,Safari5.1+ */
+	background: radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
 	color:#fff;
-	padding:100px 0;
+	padding:80px 0;
+}
 
+.btn-primary {
+	background: #0b8ed8;
+	border-color:#0b8ed8;
 }
 
 /* Layout */
@@ -40,6 +39,7 @@
 }
 .main-footer a {
 	color: #515151;
+	text-decoration: underline;
 }
 .main-footer .fa {
 	font-size: 20px;
@@ -56,11 +56,20 @@
 }
 .block-currency-logos>li>a {
 	display: inline-block;
-	overflow: hidden;
-	height:116px;
-	width:116px;
-	line-height:116px;
-	background:#ddd;
-	white-space: nowrap;
-	border-radius: 50%;
+	height:120px;
+	width:120px;
+	background-size:120px 120px;
+	padding-top:140px;
 }
+.block-currency-logos>li>a span {
+	display: block;
+	white-space: nowrap;
+}
+.btc {
+	background: url(../img/Bitcoin.svg) center no-repeat;
+}
+.ltc {
+	background: url(../img/Litecoin.svg) center no-repeat;
+}
+
+

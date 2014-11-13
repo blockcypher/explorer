@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="331px" height="331px" viewBox="0 0 331 331" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>Litecoin</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Imported-Layers" sketch:type="MSLayerGroup" transform="translate(1.000000, 1.000000)">
+            <path d="M329.102,164.503 C329.102,255.425 255.396,329.131 164.475,329.131 C73.553,329.131 -0.153,255.425 -0.153,164.503 C-0.153,73.582 73.553,-0.124 164.475,-0.124 C255.396,-0.124 329.102,73.582 329.102,164.503" id="Fill-1" fill="#BEBEBE" sketch:type="MSShapeGroup"></path>
+            <path d="M294.15,164.505 C294.15,236.118 236.093,294.179 164.476,294.179 C92.86,294.179 34.799,236.118 34.799,164.505 C34.799,92.885 92.86,34.828 164.476,34.828 C236.093,34.828 294.15,92.885 294.15,164.505" id="Fill-2" fill="#BEBEBE" sketch:type="MSShapeGroup"></path>
+            <path d="M154.854,208.482 L165.547,168.218 L190.863,158.969 L197.16,135.306 L196.946,134.719 L172.025,143.824 L189.98,76.216 L139.059,76.216 L115.578,164.446 L95.973,171.608 L89.495,196.003 L109.085,188.846 L95.246,240.844 L230.768,240.844 L239.455,208.482 L154.854,208.482" id="Fill-3" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

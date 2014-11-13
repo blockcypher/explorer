@@ -4,87 +4,117 @@
 {% load i18n %}
 
 <div class="bg-primary-gradient">
-<div class="container">
+  <div class="container">
 
-<!--   <form role="form" method="post" action="{% url "home" %}">
-    {% load crispy_forms_tags %}
-    {{ form|crispy }}
-    {% csrf_token %}
-    <p class="text-center">
-      <button type="submit" class="btn btn-primary btn-lg">{% trans "Search" %} </button>
-    </p>
-  </form> -->
+  <!--   <form role="form" method="post" action="{% url "home" %}">
+      {% load crispy_forms_tags %}
+      {{ form|crispy }}
+      {% csrf_token %}
+      <p class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "Search" %} </button>
+      </p>
+    </form> -->
 
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
 
-      <h1>Important title here</h1>
-      <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
+        <h1>Important title here</h1>
+        <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
 
-      <form role="form" method="post" action="{% url "home" %}">
-        <div class="input-group input-group-lg">
-          <div class="input-group-btn">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Currency <span class="caret"></span></button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">Bitcoin</a></li>
-              <li><a href="#">Bitcoin Testnet</a></li>
-              <li><a href="#">Litecoin</a></li>
-              <li><a href="#">URO</a></li>
-              <li><a href="#">Blockcypher Testnet</a></li>
-            </ul>
-          </div><!-- /btn-group -->
-          <input type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
-        </div><!-- /input-group -->
+        <form role="form" method="post" action="{% url "home" %}">
+          {% csrf_token %}
+          <div class="input-group input-group-lg">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Currency <span class="caret"></span></button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Bitcoin</a></li>
+                <li><a href="#">Bitcoin Testnet</a></li>
+                <li><a href="#">Litecoin</a></li>
+                <li><a href="#">URO</a></li>
+                <li><a href="#">Blockcypher Testnet</a></li>
+              </ul>
+            </div><!-- /btn-group -->
+            <input type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
+          </div><!-- /input-group -->
 
-        <p class="text-center">
-          <button type="submit" class="btn btn-primary btn-lg" style="margin:30px 0;">{% trans "Search" %} </button>
-        </p>
+          <p class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg" style="margin:30px 0;">
+              <i class="fa fa-search"></i> 
+              {% trans "Search" %}
+            </button>
+          </p>
 
-      </form>
-    </div><!-- /.col-lg-6 -->
-  </div>
-
-  <div class="row">
-    <div class="col-lg-10 col-md-offset-1 text-center">
-      <ul class="block-currency-logos">
-        <li><a href="#">Bitcoin</a></li>
-        <li><a href="#">Bitcoin Testnet</a></li>
-        <li><a href="#">Litecoin</a></li>
-        <li><a href="#">URO</a></li>
-        <li><a href="#">Blockcypher Testnet</a></li>
-      </ul>
+        </form>
+      </div>
     </div>
   </div>
-
-<!--   <p>
-  Bored? Check out current block on the
-  <a href="{% url 'latest_block' 'btc' %}">Bitcoin</a>,
-  <a href="{% url 'latest_block' 'btc-testnet' %}">Bitcoin Testnet</a>,
-  <a href="{% url 'latest_block' 'ltc' %}">Litecoin</a>,
-  <a href="{% url 'latest_block' 'uro' %}">URO</a>, or
-  <a href="{% url 'latest_block' 'bcy' %}">Blockcypher Testnet</a>
-  networks.
-  </p> -->
-
-<!-- <div id="newtx-section" style="display:none">
-    <h4>Latest Transactions</h4>
-
-    <table class="table table-striped">
-      <tr id="latest-txs">
-        <th>Transaction Hash</th>
-        <th>BTC</th>
-        <th>Time</th>
-      </tr>
-      <tr class="new-tx" style="display;none"></tr>
-    </table>
-
-    <br />
-    <p>
-    Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
-    </p>
-  </div> -->
-
 </div>
+
+<div class="bg-white">
+  <div class="container">
+
+    <div class="row text-center">
+      <h2>Explore Latest blocks</h2>
+      <div class="col-lg-10 col-md-offset-1">
+        <ul class="block-currency-logos">
+          <li>
+            <a href="{% url 'latest_block' 'btc' %}" class="btc">
+              <span>Bitcoin</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'latest_block' 'btc-testnet' %}" class="btc">
+              <span>Bitcoin Testnet</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'latest_block' 'ltc' %}" class="ltc">
+              <span>Litecoin</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'latest_block' 'uro' %}" class="btc">
+              <span>URO</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'latest_block' 'bcy' %}" class="btc">
+              <span>Blockcypher Testnet</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  <!--   <p>
+    Bored? Check out current block on the
+    <a href="{% url 'latest_block' 'btc' %}">Bitcoin</a>,
+    <a href="{% url 'latest_block' 'btc-testnet' %}">Bitcoin Testnet</a>,
+    <a href="{% url 'latest_block' 'ltc' %}">Litecoin</a>,
+    <a href="{% url 'latest_block' 'uro' %}">URO</a>, or
+    <a href="{% url 'latest_block' 'bcy' %}">Blockcypher Testnet</a>
+    networks.
+    </p> -->
+
+  <!-- <div id="newtx-section" style="display:none">
+      <h4>Latest Transactions</h4>
+
+      <table class="table table-striped">
+        <tr id="latest-txs">
+          <th>Transaction Hash</th>
+          <th>BTC</th>
+          <th>Time</th>
+        </tr>
+        <tr class="new-tx" style="display;none"></tr>
+      </table>
+
+      <br />
+      <p>
+      Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+      </p>
+    </div> -->
+
+  </div>
 </div>
 {% endblock content %}
 
