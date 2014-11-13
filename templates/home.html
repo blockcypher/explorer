@@ -3,6 +3,7 @@
 {% block content %}
 {% load i18n %}
 
+<div class="bg-primary-gradient">
 <div class="container">
 
 <!--   <form role="form" method="post" action="{% url "home" %}">
@@ -16,10 +17,14 @@
 
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
+
+      <h1>Important title here</h1>
+      <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
+
       <form role="form" method="post" action="{% url "home" %}">
         <div class="input-group input-group-lg">
           <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Currency <span class="caret"></span></button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Currency <span class="caret"></span></button>
             <ul class="dropdown-menu" role="menu">
               <li><a href="#">Bitcoin</a></li>
               <li><a href="#">Bitcoin Testnet</a></li>
@@ -61,7 +66,7 @@
   networks.
   </p> -->
 
-<!--   <div id="newtx-section" style="display:none">
+<!-- <div id="newtx-section" style="display:none">
     <h4>Latest Transactions</h4>
 
     <table class="table table-striped">
@@ -79,6 +84,7 @@
     </p>
   </div> -->
 
+</div>
 </div>
 {% endblock content %}
 
