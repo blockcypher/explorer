@@ -84,35 +84,30 @@
           </li>
         </ul>
       </div>
+
+      <hr style="clear:both;">
+
+      <div class="row">
+        <div id="newtx-section" style="display:none">
+          <h2 class="text-center">Latest Transactions</h2>
+
+          <table class="table table-striped">
+            <tr id="latest-txs">
+              <th>Transaction Hash</th>
+              <th>BTC</th>
+              <th>Time</th>
+            </tr>
+            <tr class="new-tx" style="display;none"></tr>
+          </table>
+
+          <br />
+          <p>
+          Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+          </p>
+        </div>
+
+      </div>
     </div>
-
-  <!--   <p>
-    Bored? Check out current block on the
-    <a href="{% url 'latest_block' 'btc' %}">Bitcoin</a>,
-    <a href="{% url 'latest_block' 'btc-testnet' %}">Bitcoin Testnet</a>,
-    <a href="{% url 'latest_block' 'ltc' %}">Litecoin</a>,
-    <a href="{% url 'latest_block' 'uro' %}">URO</a>, or
-    <a href="{% url 'latest_block' 'bcy' %}">Blockcypher Testnet</a>
-    networks.
-    </p> -->
-
-  <!-- <div id="newtx-section" style="display:none">
-      <h4>Latest Transactions</h4>
-
-      <table class="table table-striped">
-        <tr id="latest-txs">
-          <th>Transaction Hash</th>
-          <th>BTC</th>
-          <th>Time</th>
-        </tr>
-        <tr class="new-tx" style="display;none"></tr>
-      </table>
-
-      <br />
-      <p>
-      Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
-      </p>
-    </div> -->
 
   </div>
 </div>
@@ -167,7 +162,7 @@
           var seconds_ago = convert_time_to_seconds_ago(tx.received)
           var time_ago_formatted = format_seconds_ago(seconds_ago);
 
-          to_insert = '<tr class="new-tx" id="'+tx.hash+'"><td><a href="/btc/tx/'+tx.hash+'">'+tx.hash.substring(0,12)+'</a>...</td><td>'+btc_rounded+' BTC</td><td class="timing" received="'+tx.received+'">'+time_ago_formatted+'</td></tr>';
+          to_insert = '<tr class="new-tx" id="'+tx.hash+'"><td><a href="/btc/tx/'+tx.hash+'">'+tx.hash.substring(0,12)+'...</a></td><td>'+btc_rounded+' BTC</td><td class="timing" received="'+tx.received+'">'+time_ago_formatted+'</td></tr>';
           $('.new-tx').first().before(to_insert);
           // New row effect:
           $('.new-tx').first().hide().fadeIn();

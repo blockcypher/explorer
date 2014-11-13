@@ -6,6 +6,8 @@
 
 {% block content %}
 
+<div class="container">
+
 <h1>{{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}</h1>
 
 
@@ -104,6 +106,8 @@
 {% else %}
   <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
 {% endif %}
+
+</div>
 
 {% endblock content %}
 
