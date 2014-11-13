@@ -165,3 +165,13 @@ def get_latest_block_height(coin_symbol):
     response_dict = json.loads(r.text)
 
     return response_dict['height']
+
+
+def get_websocket_address(coin_symbol):
+
+    assert coin_symbol
+
+    return 'wss://socket.blockcypher.com/v1/%s/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
+            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            )
