@@ -1,3 +1,7 @@
+function setCoin(coin){
+  $('#coin_symbol').val(coin);
+}
+
 function satoshis_to_btc(satoshis) {
   // Round to 4 decimal places
   var btc = satoshis/(Math.pow(10,8));
