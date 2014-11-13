@@ -7,7 +7,7 @@ from annoying.decorators import render_to
 
 from homepage.forms import SearchForm
 
-from blockcypher import get_transactions_details, get_block_details, SHA_COINS, SCRYPT_COINS
+from blockcypher import get_transactions_details, get_block_details, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
 
 from bitcoins.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 
@@ -84,3 +84,23 @@ def home(request):
                 return HttpResponseRedirect(redirect_url)
 
     return {'form': form}
+
+
+@render_to('coin_overview.html')
+def coin_overview(request, coin_symbol):
+    initial = {
+            'coin_symbol': coin_symbol,
+            'search_string': COIN_SYMBOL_MAPPINGS[coin_symbol]['example_address']
+            }
+    form = SearchForm(initial=initial)
+
+    latest_bh = get_latest_block_height(coin_symbol=coin_symbol)
+
+    recent_blocks = [get_block_details(x, coin_symbol=coin_symbol, max_txns=1) for x in reversed(range(latest_bh-4, latest_bh+1))]
+    #import pprint; pprint.pprint(recent_blocks, width=1)
+
+    return {
+            'coin_symbol': coin_symbol,
+            'form': form,
+            'recent_blocks': recent_blocks,
+            }
