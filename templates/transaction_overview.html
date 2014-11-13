@@ -36,7 +36,7 @@
       {% endif %}
       <tr>
         <td>Received</td>
-        <td>
+        <td id="received-at" received="{{ time_to_use|date:"U" }}">
           {{ time_to_use|naturaltime }}
         </td>
       </tr>
@@ -175,7 +175,7 @@
         if ( data.hash ) {
 
           // Update # confirmations
-          console.log('Transaction now has ' + data.confirmations + 'confirmations');
+          console.log('Transaction now has ' + data.confirmations + ' confirmations');
           $('#num-confs').text(data.confirmations);
           $('#num-confs').hide().fadeIn();
 
@@ -210,6 +210,18 @@
         }
 
       };
+
+      function update_timing() {
+        epoch = $('#received-at').attr('received');
+        // console.log('Updating timing to new epoch: ' + ' epoch');
+        var seconds_ago = convert_epoch_to_seconds_ago(parseInt(epoch));
+        $('#received-at').text(seconds_ago + ' seconds ago');
+
+        setTimeout(update_timing, 1000);
+
+      }
+
+      update_timing();
 
     })
 
