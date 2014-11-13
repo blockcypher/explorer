@@ -10,6 +10,9 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
 
+    <link rel="icon" type="image/png" href="{% static "img/favicon_16x16.png" %}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{% static "img/favicon_32x32.png" %}" sizes="32x32">
+
     <title>
       {% block title %}{% trans "Bitcoin Block Explorer" %}{% endblock %} | Powered by BlockCypher
     </title>
@@ -20,13 +23,19 @@
     {# Bootstrap core CSS #}
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
 
+    {# FontAwesome #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    {# Custom css #}
+    <link href="{% static "css/custom.css" %}" rel="stylesheet">
+
     {% block extra_head %}{% endblock extra_head %}
 
   </head>
 
   <body>
     {#  Fixed navbar #}
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-collapse">
@@ -85,12 +94,6 @@
 
     </div>
 
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-
     {% if is_home %}
       <div class="main-container home">
       {# The messages partial is included in index.html #}
@@ -107,16 +110,26 @@
     </div>
 
     {# Footer #}
-    <footer class="page-footer container-fluid">
+    <footer class="main-footer">
       <div class="container">
-        <ul class="nav navbar-nav navbar-left">
-          <li><a href="#">{% trans "Contact" %}</a></li>
-          <li><a href="#">{% trans "Privacy and Terms" %}</a></li>
-        </ul>
-
-        <p class="navbar-text navbar-right">
-          Powered by the <a href="http://www.blockcypher.com/">Blockcypher Bitcoin API</a>
-        </p>
+        <div class="row">
+          <div class="col-md-12 col-sm-6 col-md-6">
+            <p>We are social 
+              <a href="https://twitter.com/blockcypher">
+                <i class="fa fa-twitter"></i>
+              </a> 
+              <a href="https://www.facebook.com/blockcypher">
+                <i class="fa fa-facebook"></i>
+              </a> 
+            </p>
+          </div>
+          <div class="col-md-12 col-sm-6 col-md-6">
+            <p class="text-right">
+              Powered by the <a href="http://www.blockcypher.com/">Blockcypher Bitcoin API</a><br>
+              © 2014 - BlockCypher
+            </p>
+          </div>
+        </div>
       </div>
     </footer>
 

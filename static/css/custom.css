@@ -1,0 +1,46 @@
+/* Custom CSS here */
+
+/* Layout */
+.main-container {
+	margin-top:50px;
+	padding:30px 0;
+}
+
+/* Header */
+/* Navbar */
+.navbar {
+	border-bottom:1px solid #dad3dc;
+	background: #fff;
+	padding:6px 0;
+}
+
+/* Footer */
+.main-footer {
+	background: #000;
+	padding:30px;
+	color: #515151;
+}
+.main-footer a {
+	color: #515151;
+}
+.main-footer .fa {
+	font-size: 20px;
+	text-decoration: none;
+	padding-left: 5px;
+}
+/* Homepage */
+.block-currency-logos {
+	list-style: none;
+}
+.block-currency-logos>li {
+	display: inline-block;
+	margin:1em 1%;
+}
+.block-currency-logos>li>a {
+	display: inline-block;
+	overflow: hidden;
+	height:116px;
+	width:116px;
+	background:#ddd;
+	white-space: nowrap;
+}
