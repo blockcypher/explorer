@@ -37,44 +37,41 @@
         </tr>
       {% endif %}
       <tr>
-        <td>Confirmations</td>
-        <td>
-          {{ num_confirmations|intcomma }}
-        </td>
-      </tr>
-      <tr>
         <td>Received</td>
         <td>
           {{ time_to_use|naturaltime }}
         </td>
       </tr>
-      {% if block_height %}
-        <tr>
-          <td>In Block</td>
-          <td>
-            <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
-          </td>
-        </tr>
-      {% else %}
-        <tr>
-          <td>Confidence</td>
-          <td>
-            {{ confidence_pct|floatformat }}% chance of making it into a block
-          </td>
-        </tr>
-        <tr>
-          <td>Miner Preference</td>
-          <td>{{ preference }}</td>
-        </tr>
-        <tr>
-          <td>Memory Pools With Tx</td>
-          <td>{{ receive_cnt }}</td>
-        </tr>
-        <tr>
-          <td>Double-Spend Detected</td>
-          <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
-        </tr>
-      {% endif %}
+      <tr>
+        <td>Confirmations</td>
+        <td id="num-confs">
+          {{ num_confirmations|intcomma }}
+        </td>
+      </tr>
+      <tr {% if block_hash %} style="display:none;"{% endif %}>
+        <td>Double-Spend Detected</td>
+        <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
+      </tr>
+      <tr{% if not block_hash %} style="display:none;"{% endif %}>
+        <td>In Block</td>
+        <td>
+          <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
+        </td>
+      </tr>
+      <tr {% if block_hash %} style="display:none;"{% endif %} id="confidence-section">
+        <td>Confidence</td>
+        <td>
+          {{ confidence_pct|floatformat }}% chance of making it into a block
+        </td>
+      </tr>
+      <tr {% if block_hash %} style="display:none;"{% endif %} id="preference-section">
+        <td>Miner Preference</td>
+        <td>{{ preference }}</td>
+      </tr>
+      <tr {% if block_hash %} style="display:none;"{% endif %} id="pools-section">
+        <td>Memory Pools With Tx</td>
+        <td>{{ receive_cnt }}</td>
+      </tr>
       {% if relayed_by %}
         <tr>
           <td>Relayed By</td>
@@ -117,7 +114,7 @@
             {% endif %}
             <br />
           {% endfor %}
-          {% if output|length < num_outputs %}...{% endif %}
+          {% if outputs|length < num_outputs %}...{% endif %}
         </td>
       </tr>
     </table>
@@ -140,3 +137,85 @@
 
 {% endblock content %}
 
+
+{% block extra_js %}
+  <script>
+
+    $(document).ready(function(){
+
+      var total_ws_received = 0;
+      var MAX_WS_TO_RECEIVE = 1000;
+
+      function create_ws() {
+        console.log('Creating new websocket...');
+        ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
+      }
+
+      create_ws();
+
+      function send_ping() {
+        // Send pings at regular interval:
+        if (total_ws_received < MAX_WS_TO_RECEIVE) {
+          console.log('Sending websocket ping...');
+          ws.send(JSON.stringify({event: "ping"}));
+          // Trigger self recursively
+          setTimeout(send_ping, 20000);
+        } else {
+          console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
+        }
+      }
+
+      ws.onmessage = function(evt) {
+
+        var data = JSON.parse(evt.data);
+        console.log('Websocket Received: ' + evt.data);
+
+        // Weak protection against too much activity
+        total_ws_received += 1;
+        if (total_ws_received > MAX_WS_TO_RECEIVE) {
+          ws.close();
+        }
+
+        if ( data.hash ) {
+
+          // Update # confirmations
+          console.log('Transaction now has ' + data.confirmations + 'confirmations');
+          $('#num-confs').text(data.confirmations);
+          $('#num-confs').hide().fadeIn();
+
+          // Hide miner pref, memory pools, confidence
+          $('#preference-section').fadeOut();
+          $('#pools-section').fadeOut();
+          $('#confidence-section').fadeOut();
+
+
+        }
+
+      }
+
+      ws.onopen = function() {
+        console.log('Connection established.');
+        ws.send(JSON.stringify(
+          {
+            'hash': "{{ tx_hash }}",
+            'event': 'tx-confirmation',
+            {# UGLY HACK #}
+            'address': "{{ outputs.0.addresses.0 }}",
+          }
+        ));
+        send_ping();
+      };
+
+      ws.onclose = function() {
+        console.log('Connection closed');
+        if (total_ws_received < MAX_WS_TO_RECEIVE) {
+          console.log('Creating new websocket to replace old one...');
+          create_ws();
+        }
+
+      };
+
+    })
+
+  </script>
+{% endblock extra_js %}
