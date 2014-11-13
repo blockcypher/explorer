@@ -20,7 +20,11 @@
 /* Layout */
 .main-container {
 	margin-top:50px;
-	padding: 2em 0 0 0;
+	padding: 30px 0;
+}
+.main-container.home {
+	margin-top:50px;
+	padding: 0;
 }
 
 /* Header */

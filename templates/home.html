@@ -9,10 +9,10 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
 
-        <h1>Important title here</h1>
+        <h1>One search to rule them all.</h1>
         <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
 
-        <form role="form" method="post" action="{% url "home" %}">
+        <form role="search" method="post" action="{% url "home" %}">
           {% csrf_token %}
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
@@ -24,9 +24,9 @@
                 <li><a href="#">URO</a></li>
                 <li><a href="#">Blockcypher Testnet</a></li>
               </ul>
-            </div><!-- /btn-group -->
+            </div>
             <input type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
-          </div><!-- /input-group -->
+          </div>
 
           <p class="text-center">
             <button type="submit" class="btn btn-primary btn-lg" style="margin:30px 0;">

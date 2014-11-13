@@ -89,13 +89,27 @@
             </li>
           </ul>
 
+          {% if not is_home %}
+          <form class="navbar-form navbar-right" role="search" method="post" action="{% url "home" %}">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+          {% endif %}
 
         </div>
       </div>
 
     </div>
 
-    <div class="main-container">
+    {% if is_home %}
+      <div class="main-container home">
+    {% else %}
+      <div class="main-container">
+    {% endif %}
 
       {# Begin page content #}
       {% include "partials/messages.html" %}
