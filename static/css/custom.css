@@ -68,8 +68,17 @@
 .btc {
 	background: url(../img/Bitcoin.svg) center no-repeat;
 }
+.btc-testnet {
+	background: url(../img/btc-testnet.svg) center no-repeat;
+}
 .ltc {
 	background: url(../img/Litecoin.svg) center no-repeat;
+}
+.uro {
+	background: url(../img/uro.svg) center no-repeat;
+}
+.blockcypher {
+	background: url(../img/blockcypher.jpg) center no-repeat;
 }
 
 
