@@ -16,8 +16,8 @@
       <td>Address</td>
       <td>
         <a href="{% url 'address_overview' coin_symbol address %}">{{ address }}</a>
-        {% if coin_symbol = 'btc_main' %}
-          {# TODO: support this for other blockchains#}
+        {% if coin_symbol = 'btc' %}
+          {# TODO: support this for other blockchains #}
           (<a href="bitcoin:{{ address }}">pay</a>)<br />
         {% endif %}
         <br />
@@ -79,8 +79,9 @@
       <th>Confirmations</th>
       <th>Time</th>
       <th>Block</th>
+      <tr class="tx-row" style="display;none"></tr>
       {% for transaction in all_transactions %}
-        <tr>
+      <tr class="tx-row" id="{{ transaction.tx_hash }}">
           <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
@@ -120,3 +121,96 @@
 {% endif %}
 
 {% endblock content %}
+
+
+{% block extra_js %}
+  <script>
+
+    $(document).ready(function(){
+
+      var total_ws_received = 0;
+      var MAX_WS_TO_RECEIVE = 1000;
+
+      function create_ws() {
+        console.log('Creating new websocket...');
+        ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
+      }
+
+      create_ws();
+
+      function send_ping() {
+        // Send pings at regular interval:
+        if (total_ws_received < MAX_WS_TO_RECEIVE) {
+          console.log('Sending websocket ping...');
+          ws.send(JSON.stringify({event: "ping"}));
+          // Trigger self recursively
+          setTimeout(send_ping, 20000);
+        } else {
+          console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
+        }
+      }
+
+      ws.onmessage = function(evt) {
+
+        var data = JSON.parse(evt.data);
+        console.log('Websocket Received: ' + evt.data);
+
+        // Weak protection against too much activity
+        total_ws_received += 1;
+        if (total_ws_received > MAX_WS_TO_RECEIVE) {
+          ws.close();
+        }
+
+        if ( data.hash && $('#' + data.hash).length == 0 ) {
+
+          var btc_rounded = satoshis_to_btc(data.total);
+
+          if (data.tx_input_n >= 0) {
+            sign_to_use = '+';
+          } else {
+            sign_to_use = '-';
+          }
+
+          var seconds_ago = convert_time_to_seconds_ago(data.received)
+          var time_ago_formatted = format_seconds_ago(seconds_ago);
+
+          new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
+            $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
+            $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
+            $('<td>').text('None'),
+            $('<td>').text('Pending'),
+            $('<td>').text('Pending')
+          )
+
+          $('.tx-row').first().before(new_tx_row);
+          // New row effect:
+          $('.tx-row').first().hide().fadeIn();
+
+        }
+
+      }
+
+      ws.onopen = function() {
+        console.log('Connection established.');
+        ws.send(JSON.stringify(
+          {
+            'address': "{{ address }}",
+            'event': 'unconfirmed-tx'
+          }
+        ));
+        send_ping();
+      };
+
+      ws.onclose = function() {
+        console.log('Connection closed');
+        if (total_ws_received < MAX_WS_TO_RECEIVE) {
+          console.log('Creating new websocket to replace old one...');
+          create_ws();
+        }
+
+      };
+
+    })
+
+  </script>
+{% endblock extra_js %}

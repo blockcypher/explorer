@@ -8,32 +8,78 @@ import requests
 import json
 
 
-COIN_SYMBOL_MAPPINGS = {
-        # format like such
-        # 'coin_symbol': ('Display Name', 'Blockcypher Code', 'Blockcypher Network', 'Currency Name/Abbrev', 'POW'),
-        'btc': ('Bitcoin', 'btc', 'main', 'BTC', 'sha'),
-        'btc-testnet': ('Bitcoin Testnet', 'btc', 'test3', 'BTC', 'sha'),
-        'ltc': ('Litecoin', 'ltc', 'main', 'LTC', 'scrypt'),
-        'uro': ('Uro', 'uro', 'main', 'URO', 'sha'),
-        'bcy': ('BlockCypher Testnet', 'bcy', 'test', 'BCY', 'sha'),
-        }
+# Ordered List of Coin Symbol Dictionaries
+COIN_SYMBOL_ODICT_LIST = [
+        {
+            'coin_symbol': 'btc',
+            'display_name': 'Bitcoin',
+            'blockcypher_code': 'btc',
+            'blockcypher_network': 'main',
+            'currency_abbrev': 'BTC',
+            'pow': 'sha',
+            'example_address': '16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5',
+            },
+        {
+            'coin_symbol': 'btc-testnet',
+            'display_name': 'Bitcoin Testnet',
+            'blockcypher_code': 'btc',
+            'blockcypher_network': 'test3',
+            'currency_abbrev': 'BTC',
+            'pow': 'sha',
+            'example_address': '2N1rjhumXA3ephUQTDMfGhufxGQPZuZUTMk',
+            },
+        {
+            'coin_symbol': 'ltc',
+            'display_name': 'Litecoin',
+            'blockcypher_code': 'ltc',
+            'blockcypher_network': 'main',
+            'currency_abbrev': 'LTC',
+            'pow': 'scrypt',
+            'example_address': 'LcFFkbRUrr8j7TMi8oXUnfR4GPsgcXDepo',
+            },
+        {
+            'coin_symbol': 'uro',
+            'display_name': 'Uro',
+            'blockcypher_code': 'uro',
+            'blockcypher_network': 'main',
+            'currency_abbrev': 'URO',
+            'pow': 'sha',
+            'example_address': 'Uhf1LGdgmWe33hB9VVtubyzq1GduUAtaAJ',
+            },
+        {
+            'coin_symbol': 'bcy',
+            'display_name': 'BlockCypher Testnet',
+            'blockcypher_code': 'bcy',
+            'blockcypher_network': 'test',
+            'currency_abbrev': 'BCY',
+            'pow': 'sha',
+            'example_address': 'CFr99841LyMkyX5ZTGepY58rjXJhyNGXHf',
+            },
+        ]
 
-# TODO: DRY this out (but maintain order for dropdown)
-COIN_SYMBOL_ORDER_LIST = ('btc', 'btc-testnet', 'ltc', 'uro', 'bcy')
+# all fields required
+REQUIRED_FIELDS = ('coin_symbol', 'display_name', 'blockcypher_code', 'blockcypher_network', 'currency_abbrev', 'pow', 'example_address')
 
-SHA_COINS, SCRYPT_COINS = [], []
-for coin_symbol in COIN_SYMBOL_MAPPINGS:
-    if COIN_SYMBOL_MAPPINGS[coin_symbol][4] == 'sha':
-        SHA_COINS.append(coin_symbol)
-    elif COIN_SYMBOL_MAPPINGS[coin_symbol][4] == 'scrypt':
-        SCRYPT_COINS.append(coin_symbol)
-    else:
-        raise Exception('Logic Error: Not Possible')
+# Make sure no fields are missing
+for coin_symbol_dict in COIN_SYMBOL_ODICT_LIST:
+    for required_field in REQUIRED_FIELDS:
+        assert required_field in coin_symbol_dict
 
-# Django-Style List
+
+COIN_SYMBOL_LIST = [x['coin_symbol'] for x in COIN_SYMBOL_ODICT_LIST]
+SHA_COINS = [x['coin_symbol'] for x in COIN_SYMBOL_ODICT_LIST if x['pow'] == 'sha']
+SCRYPT_COINS = [x['coin_symbol'] for x in COIN_SYMBOL_ODICT_LIST if x['pow'] == 'scrypt']
+
+# For django-style lists
 COIN_CHOICES = []
-for coin_symbol in COIN_SYMBOL_ORDER_LIST:
-    COIN_CHOICES.append((coin_symbol, COIN_SYMBOL_MAPPINGS[coin_symbol][0]))
+for coin_symbol_dict in COIN_SYMBOL_ODICT_LIST:
+    COIN_CHOICES.append((coin_symbol_dict['coin_symbol'], coin_symbol_dict['display_name']))
+
+# mappings (similar to above but for when order doens't matter)
+COIN_SYMBOL_MAPPINGS = {}
+for coin_symbol_dict in COIN_SYMBOL_ODICT_LIST:
+    coin_symbol = coin_symbol_dict.pop('coin_symbol')
+    COIN_SYMBOL_MAPPINGS[coin_symbol] = coin_symbol_dict
 
 
 def get_address_details(address, coin_symbol='btc', max_txns=None):
@@ -43,8 +89,8 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
     assert is_valid_address(address)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
-            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
-            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             address)
 
     print(url_to_hit)
@@ -83,8 +129,8 @@ def get_transactions_details(tx_hash, coin_symbol='btc'):
     assert is_valid_tx_hash(tx_hash)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/txs/%s' % (
-            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
-            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             tx_hash,
             )
 
@@ -124,12 +170,12 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
         assert is_valid_scrypt_block_representation(block_representation)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
-            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
-            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             block_representation,
             )
 
-    #print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -150,11 +196,11 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
 def get_latest_block_height(coin_symbol):
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/' % (
-            COIN_SYMBOL_MAPPINGS[coin_symbol][1],
-            COIN_SYMBOL_MAPPINGS[coin_symbol][2],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             )
 
-    #print(url_to_hit)
+    print(url_to_hit)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
@@ -165,3 +211,13 @@ def get_latest_block_height(coin_symbol):
     response_dict = json.loads(r.text)
 
     return response_dict['height']
+
+
+def get_websocket_address(coin_symbol):
+
+    assert coin_symbol
+
+    return 'wss://socket.blockcypher.com/v1/%s/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            )
