@@ -18,9 +18,7 @@
 	background: -webkit-radial-gradient(center, ellipse cover,  #6e35a5 0%,#3f116b 100%); /* Chrome10+,Safari5.1+ */
 	background: radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
 	color:#fff;
-	padding:80px 0;
 }
-
 .btn-primary {
 	background: #0b8ed8;
 	border-color:#0b8ed8;
@@ -32,14 +30,49 @@ body {
 }
 .main-container {
 	margin-top:50px;
-	padding: 30px 0;
 	background: #fff;
 }
 .main-container.home {
 	margin-top:50px;
 	padding: 0;
 }
-
+.section {
+	padding:30px 0;
+}
+.page-header {
+	padding:60px 0;
+}
+.page-header .tagline {
+	font-size: 1.2em;
+	margin:0;
+}
+.dash {
+	background: #f5f5f5;
+	border-radius: 5px;
+	padding:20px 0;
+	border:1px solid #ddd;
+}
+.dash ul {
+	list-style: none;
+	padding:0;
+}
+.dash li {
+	float:left;
+	display: block;
+	padding:30px 15px;
+	border-right: 1px solid #ddd;
+	width:25%;
+	font-size: 1.6em;
+	text-align:center;
+}
+.dash li:last-child {
+	border:0;
+}
+.dash .dash-label {
+	font-size: .6em;
+	text-transform: uppercase;
+	color:#888;
+}
 /* Header */
 /* Navbar */
 .navbar {

@@ -6,48 +6,71 @@
 
 {% block content %}
 
+<div class="bg-primary section page-header">
+  <div class="container">
+    <h1>{{ coin_symbol|coin_symbol_to_display_name }} Transaction</h1>
+    <h2 class="tagline">({{ tx_hash }})</h2>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    {% if tx_hash %}
+
+    <div class="dash">
+      <ul>
+      {% if is_coinbase_tx %}
+        <li>
+          <span class="dash-label">Amount Transacted</span><br>
+          {{ total_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+        <li>
+          <span class="dash-label">Fees Collected</span><br>
+          {{ fee_in_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+      {% else %}
+        <li>
+          <span class="dash-label">Amount Transacted</span><br>
+          {{ total_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+        <li>
+          <span class="dash-label">Fees</span><br>
+          {{ fee_in_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+      {% endif %}
+        <li>
+          <span class="dash-label">Received</span><br>
+          <span id="received-at" received="{{ time_to_use|date:"U" }}">
+            {{ time_to_use|naturaltime }}
+          </span>
+        </li>
+        <li>
+          <span class="dash-label">Confirmations</span><br>
+          <span id="num-confs">
+            {{ num_confirmations|intcomma }}
+          </span>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+
+    {% else %}
+    <h3 class="text-center">
+      Transaction not found. 
+      Are you sure that's a valid transaction hash?
+    </h3>
+    {% endif %}
+
+  </div>
+</div>
+
+<div class="section">
 <div class="container">
-
-<h1>{{ coin_symbol|coin_symbol_to_display_name }} Transaction</h1>
-
+ 
 {% if tx_hash %}
 
   <div class="table-responsive">
     <table class="table table-bordered">
-      <th colspan="2">
-        <a href="{% url 'transaction_overview' coin_symbol tx_hash %}">{{ tx_hash }}</a>
-      </th>
-      {% if is_coinbase_tx %}
-        <tr>
-          <td>Amount Transacted</td>
-          <td>{{ total_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-        </tr>
-        <tr>
-          <td>Fees Collected</td>
-          <td>{{ fee_in_satoshis_coinbase|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-        </tr>
-      {% else %}
-        <tr>
-          <td>Amount Transacted</td>
-          <td>{{ total_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-        </tr>
-        <tr>
-          <td>Fees</td>
-          <td>{{ fee_in_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-        </tr>
-      {% endif %}
-      <tr>
-        <td>Received</td>
-        <td id="received-at" received="{{ time_to_use|date:"U" }}">
-          {{ time_to_use|naturaltime }}
-        </td>
-      </tr>
-      <tr>
-        <td>Confirmations</td>
-        <td id="num-confs">
-          {{ num_confirmations|intcomma }}
-        </td>
-      </tr>
       <tr {% if block_hash %} style="display:none;"{% endif %}>
         <td>Double-Spend Detected</td>
         <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
@@ -134,7 +157,7 @@
 {% endif %}
 
 </div>
-
+</div>
 {% endblock content %}
 
 
