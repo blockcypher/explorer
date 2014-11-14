@@ -92,7 +92,21 @@
           {% if not is_home %}
           <form class="navbar-form navbar-right" role="search" method="post" action="{% url "home" %}">
             {% csrf_token %}
+            <input type="hidden" value="btc" id="coin_symbol" name="coin_symbol">
+
             <div class="input-group">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                  <span id="search-dropdown-label">BTC</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
+                  <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
+                  <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
+                  <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
+                  <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
+                </ul>
+              </div>
               <input name="search_string" id="id_search_string" type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
