@@ -1,5 +1,6 @@
-function setCoin(coin) {
+function setCoin(coin, label) {
   $('#coin_symbol').val(coin);
+  $('#search-dropdown-label').html(label);
 }
 function filterSearch(filter, that) {
   //Update search input

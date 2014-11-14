@@ -20,14 +20,14 @@
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                Currency <span class="caret"></span>
+                <span id="search-dropdown-label">BTC</span> <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="javascript:void(0);" onclick="setCoin('btc')">Bitcoin</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet')">Bitcoin Testnet</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('ltc')">Litecoin</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('uro')">URO</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('bcy')">Blockcypher Testnet</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
               </ul>
             </div>
             <input autofocus class="form-control" id="search_string" maxlength="128" name="search_string" type="search" placeholder="Enter an address, transaction hash, block hash, or block number">
