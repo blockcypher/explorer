@@ -6,6 +6,8 @@
 
 {% block content %}
 
+<div class="container">
+
 <form role="form" method="post" action="{% url "home" %}">
   {% load crispy_forms_tags %}
   {{ form|crispy }}
@@ -58,6 +60,7 @@
   </p>
 </div>
 
+</div>
 {% endblock content %}
 
 {% block extra_js %}

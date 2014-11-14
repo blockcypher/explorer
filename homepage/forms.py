@@ -18,7 +18,7 @@ class SearchForm(forms.Form):
 
     coin_symbol = forms.ChoiceField(
         label=_('Blockchain to Search'),
-        required=True,
+        required=False,
         choices=COIN_CHOICES,
     )
 

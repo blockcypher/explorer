@@ -6,6 +6,8 @@
 
 {% block content %}
 
+<div class="container">
+
 <h1>{{ coin_symbol|coin_symbol_to_display_name }} Transaction</h1>
 
 {% if tx_hash %}
@@ -130,6 +132,8 @@
     Are you sure that's a valid transaction hash?
   </p>
 {% endif %}
+
+</div>
 
 {% endblock content %}
 

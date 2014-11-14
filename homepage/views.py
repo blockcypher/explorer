@@ -83,7 +83,10 @@ def home(request):
             if redirect_url:
                 return HttpResponseRedirect(redirect_url)
 
-    return {'form': form}
+    return {
+        'is_home': True,
+        'form': form
+    }
 
 
 @render_to('coin_overview.html')

@@ -1,0 +1,107 @@
+/* Custom CSS here */
+.bg-white {
+	background: #fff;
+	color:#222;
+}
+.bg-primary {
+	background: #59218c;
+	color:#fff;
+}
+.bg-secondary {
+	background: #0b8ed8;
+	color:#fff;
+}
+.bg-primary-gradient {
+	background: #6e35a5; /* Old browsers */
+	background: -moz-radial-gradient(center, ellipse cover,  #6e35a5 0%, #3f116b 100%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#6e35a5), color-stop(100%,#3f116b)); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  #6e35a5 0%,#3f116b 100%); /* Chrome10+,Safari5.1+ */
+	background: radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
+	color:#fff;
+	padding:80px 0;
+}
+
+.btn-primary {
+	background: #0b8ed8;
+	border-color:#0b8ed8;
+}
+
+/* Layout */
+body {
+	background: #000;
+}
+.main-container {
+	margin-top:50px;
+	padding: 30px 0;
+	background: #fff;
+}
+.main-container.home {
+	margin-top:50px;
+	padding: 0;
+}
+
+/* Header */
+/* Navbar */
+.navbar {
+	border-bottom:1px solid #dad3dc;
+	background: #fff;
+	padding:6px 0;
+}
+
+/* Footer */
+.main-footer {
+	background: #000;
+	padding:30px;
+	color: #515151;
+}
+.main-footer a {
+	color: #515151;
+	text-decoration: underline;
+}
+.main-footer .fa {
+	font-size: 20px;
+	text-decoration: none;
+	padding-left: 5px;
+}
+/* Homepage */
+.search-filter .active,
+.search-filter .active:hover {
+	color:#fff;
+	text-decoration: none;
+	cursor: default;
+}
+.block-currency-logos {
+	list-style: none;
+}
+.block-currency-logos>li {
+	display: inline-block;
+	margin:1em 1%;
+}
+.block-currency-logos>li>a {
+	display: inline-block;
+	height:120px;
+	width:120px;
+	background-size:120px 120px;
+	padding-top:140px;
+}
+.block-currency-logos>li>a span {
+	display: block;
+	white-space: nowrap;
+}
+.btc {
+	background: url(../img/Bitcoin.svg) center no-repeat;
+}
+.btc-testnet {
+	background: url(../img/btc-testnet.svg) center no-repeat;
+}
+.ltc {
+	background: url(../img/Litecoin.svg) center no-repeat;
+}
+.uro {
+	background: url(../img/uro.svg) center no-repeat;
+}
+.bc-testnet {
+	background: url(../img/bc-testnet.svg) center no-repeat;
+}
+
+

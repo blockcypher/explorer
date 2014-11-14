@@ -3,23 +3,102 @@
 {% block content %}
 {% load i18n %}
 
-<form role="form" method="post" action="{% url "home" %}">
+<div class="bg-primary-gradient">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
+
+        <h1>One search to rule them all.</h1>
+        <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
+
+        <form role="search" method="post" action="{% url "home" %}">
+          {% csrf_token %}
+          <input type="hidden" value="btc" id="coin_symbol" name="coin_symbol">
+          <input type="hidden" value="" id="search_filter" name="search_filter">
+
+          <div class="input-group input-group-lg">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span id="search-dropdown-label">BTC</span> <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
+              </ul>
+            </div>
+            <input autofocus class="form-control" id="search_string" maxlength="128" name="search_string" type="search" placeholder="Enter an address, transaction hash, block hash, or block number">
+          </div>
+
+          <p class="help-block search-filter">
+            Enter an 
+            <a href="javascript:void(0);" onclick="filterSearch('address', this)">address</a>, 
+            <a href="javascript:void(0);" onclick="filterSearch('tx_hash', this)">transaction hash</a>, 
+            <a href="javascript:void(0);" onclick="filterSearch('block_hash', this)">block hash</a>, or 
+            <a href="javascript:void(0);" onclick="filterSearch('block_num', this)">block number</a>.
+          </p>
+
+          <p class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg" style="margin:30px 0;">
+              <i class="fa fa-search"></i> 
+              {% trans "Search" %}
+            </button>
+          </p>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <form role="form" method="post" action="{% url "home" %}">
   {% load crispy_forms_tags %}
   {{ form|crispy }}
   {% csrf_token %}
   <p class="text-center">
     <button type="submit" class="btn btn-primary btn-lg">{% trans "Search" %} </button>
   </p>
-</form>
+</form> -->
 
-<br />
-<p>
-Here are the pages for every coin we support:
-<a href="{% url 'coin_overview' 'btc' %}">Bitcoin</a>,
-<a href="{% url 'coin_overview' 'btc-testnet' %}">Bitcoin Testnet</a>,
-<a href="{% url 'coin_overview' 'ltc' %}">Litecoin</a>,
-<a href="{% url 'coin_overview' 'uro' %}">URO</a>, and
-<a href="{% url 'coin_overview' 'bcy' %}">Blockcypher Testnet</a>.
-</p>
+<div class="bg-white">
+  <div class="container">
 
+    <div class="row text-center">
+      <h2>Or, Browse the Blockchain</h2>
+      <div class="col-lg-10 col-md-offset-1">
+        <ul class="block-currency-logos">
+          <li>
+            <a href="{% url 'coin_overview' 'btc' %}" class="btc">
+              <span>Bitcoin</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'coin_overview' 'btc-testnet' %}" class="btc-testnet">
+              <span>Bitcoin Testnet</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'coin_overview' 'ltc' %}" class="ltc">
+              <span>Litecoin</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'coin_overview' 'uro' %}" class="uro">
+              <span>URO</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'coin_overview' 'bcy' %}" class="bc-testnet">
+              <span>Blockcypher Testnet</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}

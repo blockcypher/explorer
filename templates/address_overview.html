@@ -5,6 +5,8 @@
 {% load btc_formats %}
 
 {% block content %}
+  
+<div class="container">
 
 <h1>{{ coin_symbol|coin_symbol_to_display_name }} Address</h1>
 
@@ -119,6 +121,8 @@
 {% else %}
   <p>No transactions detected. <a href="#">Sign up for alerts of future transactions</a>.</p>
 {% endif %}
+
+</div>
 
 {% endblock content %}
 
