@@ -8,8 +8,12 @@ function satoshis_to_btc(satoshis) {
   return Math.round(btc*10000)/10000;
 }
 
-function convert_time_to_seconds_ago(epoch) {
-  return (Date.now() - Date.parse(epoch))/1000;
+function convert_time_to_seconds_ago(time) {
+  return (Date.now() - Date.parse(time))/1000;
+}
+
+function convert_epoch_to_seconds_ago(epoch) {
+  return Math.round((Date.now() - new Date(epoch*1000))/1000, 0);
 }
 
 function format_seconds_ago(seconds_ago) {
