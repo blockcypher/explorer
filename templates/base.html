@@ -91,8 +91,9 @@
 
           {% if not is_home %}
           <form class="navbar-form navbar-right" role="search" method="post" action="{% url "home" %}">
+            {% csrf_token %}
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
+              <input name="search_string" id="id_search_string" type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
               </span>
