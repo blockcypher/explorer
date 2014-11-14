@@ -64,6 +64,12 @@ body {
 	padding-left: 5px;
 }
 /* Homepage */
+.search-filter .active,
+.search-filter .active:hover {
+	color:#fff;
+	text-decoration: none;
+	cursor: default;
+}
 .block-currency-logos {
 	list-style: none;
 }

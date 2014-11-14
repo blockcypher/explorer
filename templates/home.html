@@ -15,6 +15,7 @@
         <form role="search" method="post" action="{% url "home" %}">
           {% csrf_token %}
           <input type="hidden" value="btc" id="coin_symbol" name="coin_symbol">
+          <input type="hidden" value="" id="search_filter" name="search_filter">
 
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
@@ -29,8 +30,16 @@
                 <li><a href="javascript:void(0);" onclick="setCoin('bcy')">Blockcypher Testnet</a></li>
               </ul>
             </div>
-            <input autofocus class="form-control" id="id_search_string" maxlength="128" name="search_string" type="search" value="16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5" placeholder="Enter an address, transaction hash, block hash, or block number">
+            <input autofocus class="form-control" id="search_string" maxlength="128" name="search_string" type="search" placeholder="Enter an address, transaction hash, block hash, or block number">
           </div>
+
+          <p class="help-block search-filter">
+            Enter an 
+            <a href="javascript:void(0);" onclick="filterSearch('address', this)">address</a>, 
+            <a href="javascript:void(0);" onclick="filterSearch('tx_hash', this)">transaction hash</a>, 
+            <a href="javascript:void(0);" onclick="filterSearch('block_hash', this)">block hash</a>, or 
+            <a href="javascript:void(0);" onclick="filterSearch('block_num', this)">block number</a>.
+          </p>
 
           <p class="text-center">
             <button type="submit" class="btn btn-primary btn-lg" style="margin:30px 0;">
