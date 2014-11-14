@@ -1,6 +1,15 @@
 /* Custom CSS here */
 .bg-white {
 	background: #fff;
+	color:#222;
+}
+.bg-primary {
+	background: #59218c;
+	color:#fff;
+}
+.bg-secondary {
+	background: #0b8ed8;
+	color:#fff;
 }
 .bg-primary-gradient {
 	background: #6e35a5; /* Old browsers */
@@ -18,9 +27,13 @@
 }
 
 /* Layout */
+body {
+	background: #000;
+}
 .main-container {
 	margin-top:50px;
 	padding: 30px 0;
+	background: #fff;
 }
 .main-container.home {
 	margin-top:50px;
