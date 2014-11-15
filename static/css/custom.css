@@ -59,7 +59,7 @@ body {
 .dash li {
 	float:left;
 	display: block;
-	padding:30px 15px;
+	padding:10px;
 	border-right: 1px solid #ddd;
 	width:25%;
 	font-size: 1.6em;
@@ -136,5 +136,43 @@ body {
 .bc-testnet {
 	background: url(../img/bc-testnet.svg) center no-repeat;
 }
+/* Transaction page */
+.circle-chart {
+	margin:10px auto;
+	width:160px;
+	height:160px;
+	border-radius:50%;
+	background:#fff;
+	position:relative;
+	overflow:hidden;
+	border:1px solid #ddd;
+	font-size:2em;
+}
+.circle-chart .val {
+	position: absolute;
+	width:100%;
+	height:100%;
+	line-height: 160px;
+	text-align: center;
+	text-transform: uppercase;
+	display:block;
+}
+.circle-chart .fill {
+	background:#0b8ed8;
+	height:0;
+	width:100%;
+	position:absolute;
+	bottom:0;
+}
+.circle-chart .fill.low {
+	height:10%;
+}
+.circle-chart .fill.medium {
+	height:50%;
+}
+.circle-chart .fill.low {
+	height:90%;
+}
+
 
 
