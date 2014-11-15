@@ -5,11 +5,18 @@
 {% load btc_formats %}
 
 {% block content %}
+
+<div class="bg-primary section page-header">
+  <div class="container">
+    <h1>
+      <i class="fa fa-qrcode"></i> 
+      {{ coin_symbol|coin_symbol_to_display_name }} Address
+    </h1>
+    <h2 class="tagline">({{ address }})</h2>
+  </div>
+</div>
   
 <div class="container">
-
-<h1>{{ coin_symbol|coin_symbol_to_display_name }} Address</h1>
-
 
 <div class="table-responsive">
   <table class="table table-bordered">
