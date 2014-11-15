@@ -56,6 +56,11 @@
         </li>
         <li>
           <span class="dash-label">Confirmations</span><br>
+          {% if num_confirmations >= 6 %}
+            <i class="fa fa-lock"></i> 
+          {% else %}
+            <i class="fa fa-unlock"></i>
+          {% endif %}
           <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
         </li>
       </ul>
@@ -63,45 +68,47 @@
     </div>
 
     <div class="section">
-      <div {% if block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
-        <strong>Confidence</strong>
-        <div class="circle-chart">
-          <div class="fill" style="height:{{ confidence_pct|floatformat }}%;"></div>
-          <span class="val">{{ confidence_pct|floatformat }}%</span>
+      <div class="row">
+        <div {% if block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
+          <strong>Confidence</strong>
+          <div class="circle-chart">
+            <div class="fill" style="height:{{ confidence_pct|floatformat }}%;"></div>
+            <span class="val">{{ confidence_pct|floatformat }}%</span>
+          </div>
         </div>
-      </div>
 
-      <div {% if block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
-        <strong>Miner Preference</strong>
-        <div class="circle-chart">
-          <div class="fill {{ preference }}"></div>
-          <span class="val">{{ preference }}</span>
+        <div {% if block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
+          <strong>Miner Preference</strong>
+          <div class="circle-chart">
+            <div class="fill {{ preference }}"></div>
+            <span class="val">{{ preference }}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="col-md-6">
-        <table class="table">
-          <tr {% if block_hash %} style="display:none;"{% endif %}>
-            <th>Double-Spend Detected:</th>
-            <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
-          </tr>
-          <tr{% if not block_hash %} style="display:none;"{% endif %}>
-            <th>In Block</th>
-            <td>
-              <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
-            </td>
-          </tr>
-          <tr{% if block_hash %} style="display:none;"{% endif %} id="pools-section">
-            <th>Memory Pools With Tx: </th>
-            <td>{{ receive_cnt }}</td>
-          </tr>
-        {% if relayed_by %}
-          <tr>
-            <th>Relayed By:</th>
-            <td>{{ relayed_by }}</td>
-          </tr>
-        {% endif %}
-        </table>
+        <div class="col-md-6">
+          <table class="table">
+            <tr {% if block_hash %} style="display:none;"{% endif %}>
+              <th>Double-Spend Detected:</th>
+              <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
+            </tr>
+            <tr{% if not block_hash %} style="display:none;"{% endif %}>
+              <th>In Block</th>
+              <td>
+                <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
+              </td>
+            </tr>
+            <tr{% if block_hash %} style="display:none;"{% endif %} id="pools-section">
+              <th>Memory Pools With Tx: </th>
+              <td>{{ receive_cnt }}</td>
+            </tr>
+          {% if relayed_by %}
+            <tr>
+              <th>Relayed By:</th>
+              <td>{{ relayed_by }}</td>
+            </tr>
+          {% endif %}
+          </table>
+        </div>
       </div>
     </div>
 
