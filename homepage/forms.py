@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from bitcoins.utils import is_valid_address, is_valid_tx_hash, is_valid_block_num
+from bitcoins.utils import is_valid_address, is_valid_hash, is_valid_block_num
 
 from blockcypher import COIN_CHOICES
 
@@ -25,7 +25,7 @@ class SearchForm(forms.Form):
     def clean_search_string(self):
         search_string = self.cleaned_data['search_string'].strip().replace(',', '')
 
-        if is_valid_tx_hash(search_string) or is_valid_address(search_string) or is_valid_block_num(search_string):
+        if is_valid_hash(search_string) or is_valid_address(search_string) or is_valid_block_num(search_string):
             return search_string
         else:
             err_msg = _('Not a valid address, transaction hash, or block number')

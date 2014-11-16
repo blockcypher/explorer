@@ -27,10 +27,6 @@ def is_valid_hash(string):
     return len(string.strip()) == 64 and uses_only_hash_chars(string)
 
 
-def is_valid_tx_hash(string):
-    return is_valid_hash(string)
-
-
 ### Blocks ###
 
 def is_valid_block_num(block_num):

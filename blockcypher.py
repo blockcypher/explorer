@@ -1,6 +1,6 @@
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from bitcoins.utils import is_valid_address, is_valid_tx_hash, is_valid_sha_block_representation, is_valid_scrypt_block_representation
+from bitcoins.utils import is_valid_address, is_valid_hash, is_valid_sha_block_representation, is_valid_scrypt_block_representation, is_valid_block_num
 
 from dateutil import parser
 
@@ -151,7 +151,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
 
 def get_transactions_details(tx_hash, coin_symbol='btc'):
 
-    assert is_valid_tx_hash(tx_hash)
+    assert is_valid_hash(tx_hash)
 
     url_to_hit = 'https://api.blockcypher.com/v1/%s/%s/txs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
@@ -190,7 +190,10 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
 
     # defensive checks
     if coin_symbol in SHA_COINS:
-        assert is_valid_sha_block_representation(block_representation)
+        if coin_symbol == 'bcy':
+            assert((is_valid_hash(block_representation) and block_representation[:4] == '0000') or is_valid_block_num(block_representation))
+        else:
+            assert is_valid_sha_block_representation(block_representation)
     elif coin_symbol in SCRYPT_COINS:
         assert is_valid_scrypt_block_representation(block_representation)
 
