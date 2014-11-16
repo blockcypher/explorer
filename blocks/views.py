@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
 
-from blockcypher import get_block_details, get_latest_block_height
+from blockcypher import get_block_details, get_latest_block_height, get_block_url
 
 
 @render_to('block_overview.html')
@@ -20,12 +20,15 @@ def block_overview(request, coin_symbol, block_representation):
     #import pprint; pprint.pprint(block_details, width=1)
 
     if 'error' in block_details:
-        msg = _('Sorry, that block hash was not found')
+        msg = _('Sorry, that block was not found')
         messages.warning(request, msg)
         return HttpResponseRedirect(reverse('home'))
 
+    api_url = get_block_url(block_representation=block_representation, coin_symbol=coin_symbol)
+
     return {
             'coin_symbol': coin_symbol,
+            'api_url': api_url,
             'block_details': block_details,
             }
 

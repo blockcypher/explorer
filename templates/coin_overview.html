@@ -34,8 +34,8 @@
       </td>
       <td>{{ block.received_time|naturaltime }}</td>
       <td>{{ block.n_tx }}</td>
-      <td>{{ block.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-      <td>{{ block.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+      <td>{{ block.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+      <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
     </tr>
   {% endfor %}
 </table>
@@ -48,7 +48,7 @@
   <table class="table table-striped">
     <tr id="latest-txs">
       <th>Transaction Hash</th>
-      <th>BTC</th>
+      <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
       <th>Time</th>
     </tr>
     <tr class="new-tx" style="display;none"></tr>
@@ -108,7 +108,7 @@
 
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
-            $('<td>').append(btc_rounded+' BTC'),
+            $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
             $('<td>').attr('class', "timing").attr('received', data.received).append(time_ago_formatted)
           )
           $('.new-tx').first().before(to_insert);

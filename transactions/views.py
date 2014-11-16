@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
 
-from blockcypher import get_transactions_details
+from blockcypher import get_transaction_details, get_transaction_url
 
 from binascii import unhexlify
 
@@ -13,7 +13,7 @@ from binascii import unhexlify
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
 
-    transaction_details = get_transactions_details(tx_hash=tx_hash, coin_symbol=coin_symbol)
+    transaction_details = get_transaction_details(tx_hash=tx_hash, coin_symbol=coin_symbol)
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
@@ -61,9 +61,12 @@ def transaction_overview(request, coin_symbol, tx_hash):
         fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
         coinbase_msg = str(unhexlify(inputs[0]['script']))
 
+    api_url = get_transaction_url(tx_hash=tx_hash, coin_symbol=coin_symbol)
+
     return {
             'coin_symbol': coin_symbol,
             'tx_hash': tx_hash,
+            'api_url': api_url,
             'is_coinbase_tx': is_coinbase_tx,
             'coinbase_msg': coinbase_msg,
             'double_spend_detected': transaction_details['double_spend'],
