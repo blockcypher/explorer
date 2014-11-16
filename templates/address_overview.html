@@ -39,9 +39,9 @@
       <td>Received</td>
       <td>
         {% if not has_more %}
-          {{ total_recieved_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          {% if unconfirmed_recieved_satoshis %}
-            ({{ unconfirmed_recieved_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+          {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% if unconfirmed_received_satoshis %}
+            ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
           {% endif %}
         {% endif %}
       </td>
@@ -96,7 +96,7 @@
             {% endif %}
           </td>
           <td>
-            {% if transaction.recieved %}
+            {% if transaction.received %}
               {{ transaction.received|naturaltime }}
             {% else %}
               {{ transaction.confirmed|naturaltime }}

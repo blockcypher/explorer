@@ -24,8 +24,8 @@ def address_overview(request, coin_symbol, address):
     all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
 
     # doesn't cover pagination
-    confirmed_sent_satoshis, confirmed_recieved_satoshis = 0, 0
-    unconfirmed_sent_satoshis, unconfirmed_recieved_satoshis = 0, 0
+    confirmed_sent_satoshis, confirmed_received_satoshis = 0, 0
+    unconfirmed_sent_satoshis, unconfirmed_received_satoshis = 0, 0
     for transaction in all_transactions:
         if transaction['tx_input_n'] >= 0:
             # It's sent
@@ -36,9 +36,9 @@ def address_overview(request, coin_symbol, address):
         else:
             # It's received
             if transaction['confirmations'] > 6:
-                confirmed_recieved_satoshis += transaction['value']
+                confirmed_received_satoshis += transaction['value']
             else:
-                unconfirmed_recieved_satoshis += transaction['value']
+                unconfirmed_received_satoshis += transaction['value']
 
     return {
             'coin_symbol': coin_symbol,
@@ -46,9 +46,9 @@ def address_overview(request, coin_symbol, address):
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
-            'confirmed_recieved_satoshis': confirmed_recieved_satoshis,
-            'unconfirmed_recieved_satoshis': unconfirmed_recieved_satoshis,
-            'total_recieved_satoshis': unconfirmed_recieved_satoshis + confirmed_recieved_satoshis,
+            'confirmed_received_satoshis': confirmed_received_satoshis,
+            'unconfirmed_received_satoshis': unconfirmed_received_satoshis,
+            'total_received_satoshis': unconfirmed_received_satoshis + confirmed_received_satoshis,
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
