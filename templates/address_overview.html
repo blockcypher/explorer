@@ -96,10 +96,10 @@
             {% endif %}
           </td>
           <td>
-            {% if transaction.block_height %}
-              {{ transaction.confirmed|naturaltime }}
+            {% if transaction.recieved %}
+              {{ transaction.received|naturaltime }}
             {% else %}
-              Pending
+              {{ transaction.confirmed|naturaltime }}
             {% endif %}
           </td>
           <td>
