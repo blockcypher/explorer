@@ -107,6 +107,12 @@
               <td>{{ relayed_by }}</td>
             </tr>
           {% endif %}
+
+            <tr>
+              <td colspan="2">
+                <a href="{{ api_url }}">API Call Source</a>
+              </td>
+            </tr>
           </table>
         </div>
       </div>
@@ -123,66 +129,63 @@
 </div>
 
 <div class="section">
-<div class="container">
+  <div class="container">
+  {% if tx_hash %}
+    <div class="col-md-12">
+      <h3>Details</h3>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Inputs Consumed ({{ num_inputs }})</h4>
+    {% for input in inputs %}
+      <div class="txn-input">
+      {{ input.output_value|satoshis_to_btc_rounded }}
+      {{ coin_symbol|coin_symbol_to_currency_name }}
+      {% if input.addresses|length == 0 %}
+        {# the coinbase! #}
+        from Block Reward
+      {% else %}
+        {# TODO: |first is a hack #}
+        from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
+      {% endif %}
+      </div>
+    {% endfor %}
+    {% if inputs|length < num_inputs %}...{% endif %}
+    </div>
+
+    <div class="col-md-6">
+      <h4>Outputs Created ({{ num_outputs }})</h4>
+    {% for output in outputs %}
+      <div class="txn-output">
+      {# TODO: |first is a hack #}
+      {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      to <a href="{% url 'address_overview' coin_symbol output.addresses|first %}">{{ output.addresses|first }}</a>
+      {% if output.spent_by %}
+        (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
+      {% else %}
+        (unspent)
+      {% endif %}
+      </div>
+    {% endfor %}
+    {% if outputs|length < num_outputs %}...{% endif %}
+    </div>
  
-{% if tx_hash %}
+    </div>
 
+    {% if is_coinbase_tx and coinbase_msg %}
+      <p>
+      Coinbase Message: {{ coinbase_msg }}
+      </p>
+    {% endif %}
 
-  <h4>Details</h4>
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <th>Inputs Consumed ({{ num_inputs }})</th>
-      <th>Outputs Created ({{ num_outputs }})</th>
-      <tr>
-        <td>
-          {% for input in inputs %}
-            {{ input.output_value|satoshis_to_btc_rounded }}
-            {{ coin_symbol|coin_symbol_to_currency_name }}
-            {% if input.addresses|length == 0 %}
-              {# the coinbase! #}
-              from Block Reward
-            {% else %}
-              {# TODO: |first is a hack #}
-              from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
-            {% endif %}
-            <br />
-          {% endfor %}
-          {% if inputs|length < num_inputs %}...{% endif %}
-        </td>
-        <td>
-          {% for output in outputs %}
-            {# TODO: |first is a hack #}
-            {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-            to <a href="{% url 'address_overview' coin_symbol output.addresses|first %}">{{ output.addresses|first }}</a>
-            {% if output.spent_by %}
-              (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-            {% else %}
-              (unspent)
-            {% endif %}
-            <br />
-          {% endfor %}
-          {% if outputs|length < num_outputs %}...{% endif %}
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  {% if is_coinbase_tx and coinbase_msg %}
+  {% else %}
     <p>
-    Coinbase Message: {{ coinbase_msg }}
+      Transaction not found.
+      Are you sure that's a valid transaction hash?
     </p>
   {% endif %}
 
-{% else %}
-  <p>
-    Transaction not found.
-    Are you sure that's a valid transaction hash?
-  </p>
-{% endif %}
-
-<p>API Call: <a href="{{ api_url }}">{{ api_url }}</a></p>
-
-</div>
+  </div>
 </div>
 {% endblock content %}
 

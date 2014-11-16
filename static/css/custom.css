@@ -176,3 +176,58 @@ body {
 .circle-chart .fill.high {
 	height:90%;
 }
+.txn-input, .txn-output {
+	border:1px solid #ddd;
+	padding:20px;
+	margin-bottom:10px;
+	position: relative;
+}
+.txn-input {
+	border-radius: 5px 0 0 5px;
+	margin-right:20px;
+	border-right: 0;
+}
+.txn-input:after {
+	display: block;
+	width:0;
+	height:0;
+	border-top:31px solid transparent;
+	border-right:31px solid transparent;
+	border-bottom:31px solid transparent;
+	border-left:31px solid #59218c;
+	position: absolute;
+	content: " ";
+	top:-1px;
+	right:-62px;
+}
+.txn-output {
+	border-radius: 0 5px 5px 0;
+	margin-left:20px;
+	border-left: 0;
+}
+.txn-output:before {
+	display: block;
+	width: 0;
+	height: 0;
+	border-top: 0 solid transparent;
+	border-right: 31px solid #0b8ed8;
+	border-bottom: 31px solid transparent;
+	border-left: 15px solid transparent;
+	position: absolute;
+	content: " ";
+	top: -1px;
+	left: -46px;
+}
+.txn-output:after {
+	display: block;
+	width: 0;
+	height: 0;
+	border-top: 31px solid transparent;
+	border-right: 31px solid #0b8ed8;
+	border-bottom: 0 solid transparent;
+	border-left: 15px solid transparent;
+	position: absolute;
+	content: " ";
+	bottom: -1px;
+	left: -46px;
+}
