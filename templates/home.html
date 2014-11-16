@@ -14,7 +14,7 @@
 
         <form role="search" method="post" action="{% url "home" %}">
           {% csrf_token %}
-          <input type="hidden" value="btc" id="coin_symbol" name="coin_symbol">
+          <input type="hidden" value="btc" id="id_coin_symbol" name="coin_symbol">
           <input type="hidden" value="" id="search_filter" name="search_filter">
 
           <div class="input-group input-group-lg">

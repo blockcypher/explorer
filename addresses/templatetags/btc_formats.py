@@ -17,6 +17,11 @@ def coin_symbol_to_display_name(coin_symbol):
     return COIN_SYMBOL_MAPPINGS[coin_symbol]['display_name']
 
 
+@register.filter(name='coin_symbol_to_display_shortname')
+def coin_symbol_to_display_shortname(coin_symbol):
+    return COIN_SYMBOL_MAPPINGS[coin_symbol]['display_shortname']
+
+
 @register.filter(name='coin_symbol_to_currency_name')
 def coin_symbol_to_currency_name(coin_symbol):
     return COIN_SYMBOL_MAPPINGS[coin_symbol]['currency_abbrev']

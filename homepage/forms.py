@@ -23,7 +23,7 @@ class SearchForm(forms.Form):
     )
 
     def clean_search_string(self):
-        search_string = self.cleaned_data['search_string'].strip()
+        search_string = self.cleaned_data['search_string'].strip().replace(',', '')
 
         if is_valid_tx_hash(search_string) or is_valid_address(search_string) or is_valid_block_num(search_string):
             return search_string

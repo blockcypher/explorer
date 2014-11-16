@@ -13,6 +13,7 @@ COIN_SYMBOL_ODICT_LIST = [
         {
             'coin_symbol': 'btc',
             'display_name': 'Bitcoin',
+            'display_shortname': 'BTC',
             'blockcypher_code': 'btc',
             'blockcypher_network': 'main',
             'currency_abbrev': 'BTC',
@@ -22,6 +23,7 @@ COIN_SYMBOL_ODICT_LIST = [
         {
             'coin_symbol': 'btc-testnet',
             'display_name': 'Bitcoin Testnet',
+            'display_shortname': 'BTC Testnet',
             'blockcypher_code': 'btc',
             'blockcypher_network': 'test3',
             'currency_abbrev': 'BTC',
@@ -31,6 +33,7 @@ COIN_SYMBOL_ODICT_LIST = [
         {
             'coin_symbol': 'ltc',
             'display_name': 'Litecoin',
+            'display_shortname': 'LTC',
             'blockcypher_code': 'ltc',
             'blockcypher_network': 'main',
             'currency_abbrev': 'LTC',
@@ -40,6 +43,7 @@ COIN_SYMBOL_ODICT_LIST = [
         {
             'coin_symbol': 'uro',
             'display_name': 'Uro',
+            'display_shortname': 'URO',
             'blockcypher_code': 'uro',
             'blockcypher_network': 'main',
             'currency_abbrev': 'URO',
@@ -49,6 +53,7 @@ COIN_SYMBOL_ODICT_LIST = [
         {
             'coin_symbol': 'bcy',
             'display_name': 'BlockCypher Testnet',
+            'display_shortname': 'BC Testnet',
             'blockcypher_code': 'bcy',
             'blockcypher_network': 'test',
             'currency_abbrev': 'BCY',
@@ -58,7 +63,16 @@ COIN_SYMBOL_ODICT_LIST = [
         ]
 
 # all fields required
-REQUIRED_FIELDS = ('coin_symbol', 'display_name', 'blockcypher_code', 'blockcypher_network', 'currency_abbrev', 'pow', 'example_address')
+REQUIRED_FIELDS = (
+    'coin_symbol',  # this is a made up unique symbole for internal use only
+    'display_name',  # what it commonly looks like
+    'display_shortname',  # an abbreviated version of display_name for when space is tight
+    'blockcypher_code',  # the blockcypher unique ID for their URLs
+    'blockcypher_network',  # the blockcypher network (main/test)
+    'currency_abbrev',  # what the unit of currency looks like when abbreviated
+    'pow',  # the proof of work algorithm
+    'example_address',  # an example address
+    )
 
 # Make sure no fields are missing
 for coin_symbol_dict in COIN_SYMBOL_ODICT_LIST:

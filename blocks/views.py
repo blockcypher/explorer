@@ -20,7 +20,7 @@ def block_overview(request, coin_symbol, block_representation):
     #import pprint; pprint.pprint(block_details, width=1)
 
     if 'error' in block_details:
-        msg = _('Sorry, that block hash was not found')
+        msg = _('Sorry, that block was not found')
         messages.warning(request, msg)
         return HttpResponseRedirect(reverse('home'))
 

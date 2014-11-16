@@ -1,5 +1,7 @@
 {% load staticfiles %}
 {% load i18n %}
+{% load btc_formats %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -55,7 +57,7 @@
         <div class="collapse navbar-collapse" id="nav-collapse">
 
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://www.blockcypher.com">Block Cypher</a></li>
+            <li><a href="http://www.blockcypher.com">BlockCypher</a></li>
             <li><a href="#">{% trans "Contact Us" %}</a></li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
@@ -92,22 +94,22 @@
           {% if not is_home %}
           <form class="navbar-form navbar-right" role="search" method="post" action="{% url "home" %}">
             {% csrf_token %}
-            <input type="hidden" value="btc" id="coin_symbol" name="coin_symbol">
+            <input type="hidden" value="{% firstof coin_symbol 'btc' %}" id="id_coin_symbol" name="coin_symbol">
 
             <div class="input-group">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  <span id="search-dropdown-label">BTC</span> <span class="caret"></span>
+                  <span id="search-dropdown-label">{% if coin_symbol %}{{ coin_symbol|coin_symbol_to_display_shortname }}{% else %}BTC{% endif %}</span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
                   <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                   <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                   <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
+                  <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                 </ul>
               </div>
-              <input name="search_string" id="id_search_string" type="text" class="form-control" placeholder="Enter an address, transaction hash, block hash, or block number">
+              <input name="search_string" id="id_search_string" type="text" class="form-control" placeholder="Address, transaction or block">
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
               </span>
@@ -149,7 +151,7 @@
           </div>
           <div class="col-md-12 col-sm-6 col-md-6">
             <p class="text-right">
-              Powered by the <a href="http://www.blockcypher.com/">Blockcypher Bitcoin API</a><br>
+              Powered by the <a href="http://www.blockcypher.com/">BlockCypher Bitcoin API</a><br>
               © 2014 - BlockCypher
             </p>
           </div>
