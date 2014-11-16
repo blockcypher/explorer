@@ -138,7 +138,7 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
 
     unconfirmed_txrefs = []
     for unconfirmed_txref in response_dict.get('unconfirmed_txrefs', []):
-        if 'confirmed' in unconfirmed_txref['confirmed']:
+        if 'confirmed' in unconfirmed_txref:
             unconfirmed_txref['confirmed'] = None
         unconfirmed_txref['received'] = parser.parse(unconfirmed_txref['received'])
         unconfirmed_txrefs.append(unconfirmed_txref)
