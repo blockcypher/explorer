@@ -136,6 +136,9 @@ body {
 .bc-testnet {
 	background: url(../img/bc-testnet.svg) center no-repeat;
 }
+.doge {
+	background: url(../img/Dogecoin.svg) center no-repeat;
+}
 /* Transaction page */
 .circle-chart {
 	margin:10px auto;
