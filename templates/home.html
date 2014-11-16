@@ -9,8 +9,8 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
 
-        <h1>One search to rule them all.</h1>
-        <p class="lead">Nunc Eu Ullamcorper Orci. Quisque Eget Odio Ac Lectus Vestibulum</p>
+        <h1>Search the blockchain</h1>
+        <p class="lead">Find info that other block explorers don't have</p>
 
         <form role="search" method="post" action="{% url "home" %}">
           {% csrf_token %}
@@ -26,11 +26,12 @@
                 <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
               </ul>
             </div>
-            <input autofocus class="form-control" id="search_string" maxlength="128" name="search_string" type="search" placeholder="Enter an address, transaction hash, block hash, or block number">
+            <input autofocus class="form-control" id="search_string" maxlength="128" name="search_string" type="search" placeholder="16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5">
           </div>
 
           <p class="help-block search-filter">
@@ -67,7 +68,7 @@
   <div class="container">
 
     <div class="row text-center">
-      <h2>Or, Browse the Blockchain</h2>
+      <h2>Browse the Blockchain</h2>
       <div class="col-lg-10 col-md-offset-1">
         <ul class="block-currency-logos">
           <li>
@@ -83,6 +84,11 @@
           <li>
             <a href="{% url 'coin_overview' 'ltc' %}" class="ltc">
               <span>Litecoin</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'coin_overview' 'doge' %}" class="dog">
+              <span>DogeCoin</span>
             </a>
           </li>
           <li>

@@ -41,6 +41,16 @@ COIN_SYMBOL_ODICT_LIST = [
             'example_address': 'LcFFkbRUrr8j7TMi8oXUnfR4GPsgcXDepo',
             },
         {
+            'coin_symbol': 'doge',
+            'display_name': 'Dogecoin',
+            'display_shortname': 'DOGE',
+            'blockcypher_code': 'doge',
+            'blockcypher_network': 'main',
+            'currency_abbrev': 'DOGE',
+            'pow': 'scrypt',
+            'example_address': 'D7Y55r6Yoc1G8EECxkQ6SuSjTgGJJ7M6yD',
+            },
+        {
             'coin_symbol': 'uro',
             'display_name': 'Uro',
             'display_shortname': 'URO',
