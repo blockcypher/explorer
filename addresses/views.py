@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
 
-from blockcypher import get_address_details
+from blockcypher import get_address_details, get_address_url
 
 
 @render_to('address_overview.html')
@@ -40,9 +40,12 @@ def address_overview(request, coin_symbol, address):
             else:
                 unconfirmed_received_satoshis += transaction['value']
 
+    api_url = get_address_url(coin_symbol=coin_symbol, address=address)
+
     return {
             'coin_symbol': coin_symbol,
             'address': address,
+            'api_url': api_url,
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,

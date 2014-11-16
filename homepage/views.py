@@ -7,7 +7,7 @@ from annoying.decorators import render_to
 
 from homepage.forms import SearchForm
 
-from blockcypher import get_transactions_details, get_block_details, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
+from blockcypher import get_transaction_details, get_block_details, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
 
 from bitcoins.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 
@@ -41,7 +41,7 @@ def home(request):
                         redirect_url = reverse('transaction_overview', kwargs=kwargs)
                 elif coin_symbol in SCRYPT_COINS:
                     # Try to see if it's a valid TX hash
-                    tx_details = get_transactions_details(tx_hash=search_string, coin_symbol=coin_symbol)
+                    tx_details = get_transaction_details(tx_hash=search_string, coin_symbol=coin_symbol)
                     if 'error' in tx_details:
                         # Not a valid TX hash, see if it's a block hash
                         # Make sure it's a scrypt coin
