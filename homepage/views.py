@@ -41,7 +41,11 @@ def home(request):
                         redirect_url = reverse('transaction_overview', kwargs=kwargs)
                 elif coin_symbol in SCRYPT_COINS:
                     # Try to see if it's a valid TX hash
-                    tx_details = get_transaction_details(tx_hash=search_string, coin_symbol=coin_symbol)
+                    tx_details = get_transaction_details(
+                            tx_hash=search_string,
+                            coin_symbol=coin_symbol,
+                            limit=1,
+                            )
                     if 'error' in tx_details:
                         # Not a valid TX hash, see if it's a block hash by checking blockchain
                         block_details = get_block_overview(
