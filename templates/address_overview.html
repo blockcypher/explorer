@@ -89,6 +89,10 @@
       <th>Time</th>
       <th>Block</th>
       <tr class="tx-row" style="display;none"></tr>
+      {% if current_page > 1 %}
+        {# There are transactions from a previous page that are not displayed on this page #}
+        <tr>...</tr>
+      {% endif %}
       {% for transaction in all_transactions %}
       <tr class="tx-row" id="{{ transaction.tx_hash }}">
           <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
@@ -118,9 +122,6 @@
           </td>
         </tr>
       {% endfor %}
-      {% if has_more %}
-        <tr><td colspan="3">...</td></tr>
-      {% endif %}
 
     </table>
   </div>
@@ -130,6 +131,28 @@
 {% endif %}
 
 <p>API Call: <a href="{{ api_url }}">{{ api_url }}</a></p>
+
+  {% if current_page < max_pages %}
+    {# There are more transactions than are displayed on this page #}
+    <p>...</p>
+    <br />
+  {% endif %}
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if current_page > 1 %}
+        <a href="?page={{ current_page|add:-1 }}">Previous</a>.
+      {% endif %}
+
+      <span class="current">
+        Page {{ current_page }} of {{ max_pages }}.
+      </span>
+
+      {% if current_page < max_pages %}
+        <a href="?page={{ current_page|add:1 }}">Next</a>.
+      {% endif %}
+    </span>
+  </div>
 
 </div>
 

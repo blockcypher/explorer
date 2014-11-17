@@ -11,8 +11,20 @@ from blockcypher import get_address_details, get_address_url
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address):
 
-    # TODO: this doesn't cover pagination >500 and will fail silently-ish on those cases!
-    address_details = get_address_details(address=address, coin_symbol=coin_symbol, txn_limit=500)
+    TXNS_PER_PAGE = 50
+
+    # 1 indexed page
+    current_page = request.GET.get('page')
+    if current_page:
+        current_page = int(current_page)
+    else:
+        current_page = 1
+
+    address_details = get_address_details(
+            address=address,
+            coin_symbol=coin_symbol,
+            txn_limit=TXNS_PER_PAGE,
+            )
 
     #import pprint; pprint.pprint(address_details, width=1)
 
@@ -46,6 +58,8 @@ def address_overview(request, coin_symbol, address):
             'coin_symbol': coin_symbol,
             'address': address,
             'api_url': api_url,
+            'current_page': current_page,
+            'max_pages': max(address_details['final_n_tx'] // TXNS_PER_PAGE, 1),
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
