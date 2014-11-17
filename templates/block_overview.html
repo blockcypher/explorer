@@ -44,7 +44,7 @@
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
-          {{ block_details.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ block_details.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
@@ -101,7 +101,7 @@
 
 <div class="container">
 
-<h2>{{ block_details.n_tx }} Transactions</h2>
+<h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
 
 {% if block_details.txids %}
 
@@ -113,44 +113,48 @@
 
   {% for transaction in block_details.txids %}
 
-    <p><a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">{{ transaction.hash }}</a></p>
+    <div class="well">
+      <h4 class="text-center truncate">
+        <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
+          {{ transaction.hash }}
+        </a>
+      </h4>
 
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <th>Inputs Consumed ({{ transaction.vin_sz }})</th>
-        <th>Outputs Created ({{ transaction.vout_sz }})</th>
-        <tr>
-          <td>
-            {% for input in transaction.inputs %}
-              {{ input.output_value|satoshis_to_btc_rounded }}
-              {{ coin_symbol|coin_symbol_to_currency_name }}
-              {% if input.addresses|length == 0 %}
-                {# the coinbase! #}
-                from Block Reward
-              {% else %}
-                from <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-              {% endif %}
-              <br />
-            {% endfor %}
-            {% if inputs|length < transaction.vin_sz %}...{% endif %}
-          </td>
-          <td>
-            {% for output in transaction.outputs %}
-              {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-              to <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-              {% if output.spent_by %}
-                (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-              {% else %}
-                (unspent)
-              {% endif %}
-              <br />
-            {% endfor %}
-            {% if outputs|length < transaction.vout_sz %}...{% endif %}
-          </td>
-        </tr>
-      </table>
+      <div class="col-md-6">
+        <p>Inputs Consumed ({{ transaction.vin_sz }})</p>
+      {% for input in transaction.inputs %}
+        <div class="txn-input">
+        {{ input.output_value|satoshis_to_btc_rounded }}
+        {{ coin_symbol|coin_symbol_to_currency_name }}
+        {% if input.addresses|length == 0 %}
+          {# the coinbase! #}
+          from Block Reward
+        {% else %}
+          from <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+        {% endif %}
+        </div>
+      {% endfor %}
+      {% if inputs|length < transaction.vin_sz %}...{% endif %}
+
+      </div>
+      <div class="col-md-6">
+        <p>Outputs Created ({{ transaction.vout_sz }})</p>
+      {% for output in transaction.outputs %}
+        <div class="txn-output">
+        {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        to <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+        {% if output.spent_by %}
+          (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
+        {% else %}
+          (unspent)
+        {% endif %}
+        </div>
+      {% endfor %}
+      {% if outputs|length < transaction.vout_sz %}...{% endif %}
+      </div>
+
+      <div class="clearfix"></div>
     </div>
-
   {% endfor %}
 
   {% if current_page < max_pages %}

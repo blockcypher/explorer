@@ -196,6 +196,7 @@ body {
 	padding:20px;
 	margin-bottom:10px;
 	position: relative;
+	background: #fff;
 }
 .txn-input {
 	border-radius: 31px 0 0 31px;
