@@ -57,11 +57,14 @@
         <li>
           <span class="dash-label">Confirmations</span><br>
           {% if num_confirmations >= 6 %}
-            <i class="fa fa-lock"></i> 
+            <span class="confirmed">
+              <i class="fa fa-lock"></i> 
+              <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
+            </span>
           {% else %}
-            <i class="fa fa-unlock"></i>
+            <i class="fa fa-unlock"></i> 
+            <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
           {% endif %}
-          <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
         </li>
       </ul>
       <div class="clearfix"></div>
@@ -70,7 +73,23 @@
     <div class="section">
       <div class="row">
         <div {% if block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
-          <strong>Confidence</strong>
+          <strong>Confidence</strong> 
+          <button 
+            type="button" 
+            class="btn-link" 
+            data-container="body" 
+            data-toggle="popover" 
+            data-placement="top" 
+            data-html="true" 
+            data-content="
+              <span{% if block_hash %} style='display:none;'{% endif %}>
+                <b>Double-Spend Detected:</b> {% if double_spend_detected %}YES{% else %}No{% endif %}
+              </span><br>
+              <span{% if block_hash %} style='display:none;'{% endif %} id='pools-section'>
+                <b>Memory Pools With Tx:</b> {{ receive_cnt }}
+              </span>">
+            <i class="fa fa-info-circle"></i>
+          </button>
           <div class="circle-chart">
             <div class="fill" style="height:{{ confidence_pct|floatformat }}%;"></div>
             <span class="val">{{ confidence_pct|floatformat }}%</span>
@@ -87,20 +106,14 @@
 
         <div class="col-md-6">
           <table class="table">
-            <tr {% if block_hash %} style="display:none;"{% endif %}>
-              <th>Double-Spend Detected:</th>
-              <td>{% if double_spend_detected %}YES{% else %}No{% endif %}</td>
-            </tr>
+            
             <tr{% if not block_hash %} style="display:none;"{% endif %}>
               <th>In Block</th>
               <td>
                 <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
               </td>
             </tr>
-            <tr{% if block_hash %} style="display:none;"{% endif %} id="pools-section">
-              <th>Memory Pools With Tx: </th>
-              <td>{{ receive_cnt }}</td>
-            </tr>
+           
           {% if relayed_by %}
             <tr>
               <th>Relayed By:</th>
@@ -278,6 +291,9 @@
       }
 
       update_timing();
+
+      //init popover
+      $('[data-toggle="popover"]').popover()
 
     })
 
