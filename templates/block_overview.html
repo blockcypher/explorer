@@ -12,83 +12,94 @@
       <i class="fa fa-cube"></i> 
       {{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}
     </h1>
-    <h2 class="tagline">({{ block_details.hash }})</h2>
+    <h2 class="tagline truncate">({{ block_details.hash }})</h2>
   </div>
 </div>
 
 <div class="container">
-
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <th colspan="2">Summary</th>
-    <tr>
-      <td>Height</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.height %}">{{ block_details.height|intcomma }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Block Hash</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.hash %}">{{ block_details.hash }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Recieved At</td>
-      <td>
-        {{ block_details.received_time|naturaltime }}
-      </td>
-    </tr>
-    <tr>
-      <td>Num Transactions</td>
-      <td>
-        {{ block_details.n_tx }}
-      </td>
-    </tr>
-    <tr>
-      <td>Total Transacted</td>
-      <td>
-        {{ block_details.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      </td>
-    </tr>
-    <tr>
-      <td>Fees</td>
-      <td>
-        {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      </td>
-    </tr>
-    <tr>
-      <td>Previous Block Hash</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}">{{ block_details.prev_block }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Nonce</td>
-      <td>
-        {{ block_details.nonce }}
-      </td>
-    </tr>
-    <tr>
-      <td>Merkle Root</td>
-      <td>
-        {{ block_details.mrkl_root }}
-      </td>
-    </tr>
-    <tr>
-      <td>Bits (difficulty target)</td>
-      <td>
-        {{ block_details.bits }}
-      </td>
-    </tr>
-    <tr>
-      <td>Version</td>
-      <td>
-        {{ block_details.ver }}
-      </td>
-    </tr>
-  </table>
+  <nav>
+    <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
+      <i class="fa fa-angle-double-left"></i> 
+      Previous Block
+    </a>
+    <a href="#{# FIXME: Should link somewhere #}" class="btn btn-default pull-right">
+      Next Block 
+      <i class="fa fa-angle-double-right"></i>
+    </a>
+    <div class="clearfix"></div>
+  </nav>
 </div>
+
+<div class="section">
+  <div class="container">
+    <div class="dash">
+      <ul>
+        <li>
+          <span class="dash-label">Recieved</span><br>
+          {{ block_details.received_time|naturaltime }}
+        </li>
+        <li>
+          <span class="dash-label">Num Transactions</span><br>
+          {{ block_details.n_tx }}
+        </li>
+        <li>
+          <span class="dash-label">Total Transacted</span><br>
+          {{ block_details.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+        <li>
+          <span class="dash-label">Total Fees</span><br>
+          {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <p class="text-center">
+      <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
+        Advanced details 
+        <b class="caret"></b>
+      </button>
+    </p>
+
+    <div class="col-md-12 collapse" id="advanced-details">
+      <div class="table-responsive">
+        <table class="table">
+          <tr>
+            <th>Nonce</th>
+            <td>
+              {{ block_details.nonce }}
+            </td>
+          </tr>
+          <tr>
+            <th>Merkle Root</th>
+            <td>
+              {{ block_details.mrkl_root }}
+            </td>
+          </tr>
+          <tr>
+            <th>Bits (difficulty target)</th>
+            <td>
+              {{ block_details.bits }}
+            </td>
+          </tr>
+          <tr>
+            <th>Version</th>
+            <td>
+              {{ block_details.ver }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
 
 <h2>{{ block_details.n_tx }} Transactions</h2>
 
