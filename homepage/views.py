@@ -7,7 +7,7 @@ from annoying.decorators import render_to
 
 from homepage.forms import SearchForm
 
-from blockcypher import get_transaction_details, get_block_details, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
+from blockcypher import get_transaction_details, get_block_overview, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
 
 from bitcoins.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 
@@ -43,11 +43,11 @@ def home(request):
                     # Try to see if it's a valid TX hash
                     tx_details = get_transaction_details(tx_hash=search_string, coin_symbol=coin_symbol)
                     if 'error' in tx_details:
-                        # Not a valid TX hash, see if it's a block hash
-                        # Make sure it's a scrypt coin
-                        block_details = get_block_details(
+                        # Not a valid TX hash, see if it's a block hash by checking blockchain
+                        block_details = get_block_overview(
                                 block_representation=search_string,
                                 coin_symbol=coin_symbol,
+                                txn_limit=1,
                                 )
                         if 'error' in block_details:
                             msg = _("Sorry, that's not a valid transaction or block hash for %(currency)s" % {'currency': coin_symbol})
@@ -101,7 +101,7 @@ def coin_overview(request, coin_symbol):
 
     latest_bh = get_latest_block_height(coin_symbol=coin_symbol)
 
-    recent_blocks = [get_block_details(x, coin_symbol=coin_symbol, max_txns=1) for x in reversed(range(latest_bh-4, latest_bh+1))]
+    recent_blocks = [get_block_overview(block_height, coin_symbol=coin_symbol, txn_limit=1) for block_height in reversed(range(latest_bh-4, latest_bh+1))]
     #import pprint; pprint.pprint(recent_blocks, width=1)
 
     return {

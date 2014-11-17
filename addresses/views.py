@@ -12,7 +12,7 @@ from blockcypher import get_address_details, get_address_url
 def address_overview(request, coin_symbol, address):
 
     # TODO: this doesn't cover pagination >500 and will fail silently-ish on those cases!
-    address_details = get_address_details(address=address, coin_symbol=coin_symbol, max_txns=500)
+    address_details = get_address_details(address=address, coin_symbol=coin_symbol, txn_limit=500)
 
     #import pprint; pprint.pprint(address_details, width=1)
 
