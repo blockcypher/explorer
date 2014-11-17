@@ -87,20 +87,74 @@
 
 {% if block_details.txids %}
 
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <th>Hash</th>
-      {% for tx_hash in block_details.txids %}
+  {% if current_page > 1 %}
+    {# There are transactions from a previous page that are not displayed on this page #}
+    <p>...</p>
+    <br />
+  {% endif %}
+
+  {% for transaction in block_details.txids %}
+
+    <p><a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">{{ transaction.hash }}</a></p>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <th>Inputs Consumed ({{ transaction.vin_sz }})</th>
+        <th>Outputs Created ({{ transaction.vout_sz }})</th>
         <tr>
           <td>
-            <a href="{% url 'transaction_overview' coin_symbol tx_hash %}">{{ tx_hash }}</a>
+            {% for input in transaction.inputs %}
+              {{ input.output_value|satoshis_to_btc_rounded }}
+              {{ coin_symbol|coin_symbol_to_currency_name }}
+              {% if input.addresses|length == 0 %}
+                {# the coinbase! #}
+                from Block Reward
+              {% else %}
+                from <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+              {% endif %}
+              <br />
+            {% endfor %}
+            {% if inputs|length < transaction.vin_sz %}...{% endif %}
+          </td>
+          <td>
+            {% for output in transaction.outputs %}
+              {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+              to <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+              {% if output.spent_by %}
+                (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
+              {% else %}
+                (unspent)
+              {% endif %}
+              <br />
+            {% endfor %}
+            {% if outputs|length < transaction.vout_sz %}...{% endif %}
           </td>
         </tr>
-      {% endfor %}
-      {% if block_details.n_tx != block_details.txids|length %}
-        <tr><td colspan="3">...</td></tr>
+      </table>
+    </div>
+
+  {% endfor %}
+
+  {% if current_page < max_pages %}
+    {# There are more transactions than are displayed on this page #}
+    <p>...</p>
+    <br />
+  {% endif %}
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if current_page > 1 %}
+        <a href="?page={{ current_page|add:-1 }}">Previous</a>.
       {% endif %}
-    </table>
+
+      <span class="current">
+        Page {{ current_page }} of {{ max_pages }}.
+      </span>
+
+      {% if current_page < max_pages %}
+        <a href="?page={{ current_page|add:1 }}">Next</a>.
+      {% endif %}
+    </span>
   </div>
 
 {% else %}

@@ -115,7 +115,7 @@ def get_address_url(coin_symbol, address):
         address)
 
 
-def get_address_details(address, coin_symbol='btc', max_txns=None):
+def get_address_details(address, coin_symbol='btc', txn_limit=None):
 
     # This check appears to work for other blockchains
     # TODO: verify and/or improve
@@ -126,8 +126,8 @@ def get_address_details(address, coin_symbol='btc', max_txns=None):
     print(url)
 
     params = {}
-    if max_txns:
-        params['limit'] = max_txns
+    if txn_limit:
+        params['limit'] = txn_limit
     if BLOCKCYPHER_API_KEY:
         params['token'] = BLOCKCYPHER_API_KEY
 
@@ -188,7 +188,7 @@ def get_transaction_details(tx_hash, coin_symbol='btc'):
     return response_dict
 
 
-def get_block_url(block_representation, coin_symbol):
+def get_block_overview_url(block_representation, coin_symbol):
     return 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
@@ -196,7 +196,8 @@ def get_block_url(block_representation, coin_symbol):
             )
 
 
-def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
+def get_block_overview(block_representation, coin_symbol='btc', txn_limit=None,
+        txn_offset=None):
     """
     block_representation may be the block number of block hash
     """
@@ -210,24 +211,52 @@ def get_block_details(block_representation, coin_symbol='btc', max_txns=None):
     elif coin_symbol in SCRYPT_COINS:
         assert is_valid_scrypt_block_representation(block_representation)
 
-    url = get_block_url(block_representation=block_representation, coin_symbol=coin_symbol)
+    url = get_block_overview_url(block_representation=block_representation, coin_symbol=coin_symbol)
 
     print(url)
 
     params = {}
     if BLOCKCYPHER_API_KEY:
         params['token'] = BLOCKCYPHER_API_KEY
-    if max_txns:
-        params['limit'] = max_txns
+    if txn_limit:
+        params['limit'] = txn_limit
+    if txn_offset:
+        params['txstart'] = txn_offset
 
     r = requests.get(url, params=params, verify=True)
 
     response_dict = json.loads(r.text)
 
-    if response_dict.get('received_time'):
-        response_dict['received_time'] = parser.parse(response_dict['received_time'])
+    response_dict['received_time'] = parser.parse(response_dict['received_time'])
+    response_dict['time'] = parser.parse(response_dict['time'])
 
     return response_dict
+
+
+def get_block_details(block_representation, coin_symbol='btc', txn_limit=None,
+        txn_offset=None):
+    """
+    This gets the block overview and then makes a separate API call to get transaction data on every transactions.
+
+    WARNING: using a high txn_limit make make this *extremely* slow.
+
+    block_representation may be the block number of block hash
+
+    """
+    block_overview = get_block_overview(
+            block_representation=block_representation,
+            coin_symbol=coin_symbol,
+            txn_limit=txn_limit,
+            txn_offset=txn_offset,
+            )
+
+    txs_full = []
+    for txid in block_overview['txids']:
+        tx_details = get_transaction_details(tx_hash=txid, coin_symbol=coin_symbol)
+        txs_full.append(tx_details)
+    block_overview['txids'] = txs_full
+
+    return block_overview
 
 
 def get_blockchain_overview_url(coin_symbol):
