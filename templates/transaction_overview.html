@@ -218,11 +218,11 @@
       <div class="txn-output">
       {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
       to
-      {% if output.addresses %}
-        <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-      {% else %}
+      {% if output.script_type == 'null-data' %}
         {# TODO: add explanation #}
-        Stealth Address
+        <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+      {% else %}
+        <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
       {% endif %}
       {% if output.spent_by %}
         (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
