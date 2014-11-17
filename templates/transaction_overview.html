@@ -216,9 +216,14 @@
       <h4>Outputs Created ({{ num_outputs }})</h4>
     {% for output in outputs %}
       <div class="txn-output">
-      {# TODO: |first is a hack #}
       {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      to <a href="{% url 'address_overview' coin_symbol output.addresses|first %}">{{ output.addresses|first }}</a>
+      to
+      {% if output.addresses %}
+        <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+      {% else %}
+        {# TODO: add explanation #}
+        Stealth Address
+      {% endif %}
       {% if output.spent_by %}
         (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
       {% else %}
