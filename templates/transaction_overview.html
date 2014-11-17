@@ -12,7 +12,7 @@
       <i class="fa fa-exchange"></i> 
       {{ coin_symbol|coin_symbol_to_display_name }} Transaction
     </h1>
-    <h2 class="tagline">({{ tx_hash }})</h2>
+    <h2 class="tagline truncate">({{ tx_hash }})</h2>
   </div>
 </div>
 
@@ -55,15 +55,34 @@
           </span>
         </li>
         <li>
-          <span class="dash-label">Confirmations</span><br>
+          <span class="dash-label">
+            Confirmations 
+              <button 
+                type="button" 
+                class="btn-link" 
+                data-container="body" 
+                data-toggle="popover" 
+                data-placement="top" 
+                data-html="true" 
+                data-content="{{ num_confirmations|intcomma }} confirmations">
+                <i class="fa fa-info-circle"></i>
+              </button>
+          </span><br>
           {% if num_confirmations >= 6 %}
             <span class="confirmed">
               <i class="fa fa-lock"></i> 
+              <span id="num-confs">6+</span>
+            </span>
+          {% elif num_confirmations > 0 and num_confirmations < 6 %}
+            <span class="pending">
+              <i class="fa fa-unlock"></i> 
               <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
             </span>
           {% else %}
-            <i class="fa fa-unlock"></i> 
-            <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
+            <span class="unconfirmed">
+              <i class="fa fa-unlock"></i> 
+              <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
+            </span>
           {% endif %}
         </li>
       </ul>
@@ -125,6 +144,21 @@
               <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
             </td>
           </tr>
+
+          <tr{% if not block_hash %} style="display:none;"{% endif %}>
+            <th>Block Height</th>
+            <td>
+              <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
+            </td>
+          </tr>
+
+        {% if is_coinbase_tx and coinbase_msg %}
+          <tr>
+            <th>Coinbase Message:</th>
+            <td>{{ coinbase_msg }}</td>
+          </tr>
+        {% endif %}
+
         {% if relayed_by %}
           <tr>
             <th>Relayed By:</th>
@@ -196,12 +230,6 @@
     </div>
  
     </div>
-
-    {% if is_coinbase_tx and coinbase_msg %}
-      <p>
-      Coinbase Message: {{ coinbase_msg }}
-      </p>
-    {% endif %}
 
   {% else %}
     <p>

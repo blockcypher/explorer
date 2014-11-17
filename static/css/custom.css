@@ -23,6 +23,12 @@
 	background: #0b8ed8;
 	border-color:#0b8ed8;
 }
+.truncate {
+  min-width: 5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Layout */
 body {
@@ -74,7 +80,13 @@ body {
 	color:#888;
 }
 .confirmed {
-	color:green;
+	color:#28D867;
+}
+.pending {
+	color:#BFA01A;
+}
+.unconfirmed {
+	color:#A8184F;
 }
 /* Header */
 /* Navbar */
