@@ -158,7 +158,12 @@ def get_transaction_url(tx_hash, coin_symbol):
             )
 
 
-def get_transaction_details(tx_hash, coin_symbol='btc'):
+def get_transaction_details(tx_hash, coin_symbol='btc', limit=None):
+    """
+    Limit applies to both num inputs and num outputs.
+
+    TODO: add offsetting once supported
+    """
 
     assert is_valid_hash(tx_hash)
 
@@ -169,6 +174,8 @@ def get_transaction_details(tx_hash, coin_symbol='btc'):
     params = {}
     if BLOCKCYPHER_API_KEY:
         params['token'] = BLOCKCYPHER_API_KEY
+    if limit:
+        params['limit'] = limit
 
     r = requests.get(url, params=params, verify=True)
 
@@ -252,7 +259,11 @@ def get_block_details(block_representation, coin_symbol='btc', txn_limit=None,
 
     txs_full = []
     for txid in block_overview['txids']:
-        tx_details = get_transaction_details(tx_hash=txid, coin_symbol=coin_symbol)
+        tx_details = get_transaction_details(
+                tx_hash=txid,
+                coin_symbol=coin_symbol,
+                limit=100,  # arbitrary, but a pretty large number
+                )
         txs_full.append(tx_details)
     block_overview['txids'] = txs_full
 

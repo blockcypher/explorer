@@ -13,7 +13,11 @@ from binascii import unhexlify
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
 
-    transaction_details = get_transaction_details(tx_hash=tx_hash, coin_symbol=coin_symbol)
+    transaction_details = get_transaction_details(
+            tx_hash=tx_hash,
+            coin_symbol=coin_symbol,
+            limit=500,
+            )
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
 
