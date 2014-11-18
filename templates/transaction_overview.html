@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
 
 {% block content %}
 
@@ -49,22 +50,34 @@
         </li>
       {% endif %}
         <li>
-          <span class="dash-label">Received</span><br>
-          <span id="received-at" received="{{ time_to_use|date:"U" }}">
-            {{ time_to_use|naturaltime }}
-          </span>
+          <span class="dash-label">Received
+            <button
+              type="button"
+              class="btn-link"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="top"
+              data-html="true"
+              data-content="{{ time_to_use|date:"r" }}">
+              <i class="fa fa-info-circle"></i>
+            </button>
+          </span><br>
+            <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
+              {# in case they don't have JS #}
+              {{ time_to_use|naturaltime }}
+            </time>
         </li>
         <li>
           <span class="dash-label">
             Confirmations 
               <button 
-                type="button" 
-                class="btn-link" 
-                data-container="body" 
-                data-toggle="popover" 
-                data-placement="top" 
-                data-html="true" 
-                data-content="{{ num_confirmations|intcomma }} confirmations">
+                type="button"
+                class="btn-link"
+                data-container="body"
+                data-toggle="popover"
+                data-placement="top"
+                data-html="true"
+                data-content="{{ num_confirmations|intcomma }} confirmations.<br /><br />Anything over 6 confirmations is considered completed and irreversible.">
                 <i class="fa fa-info-circle"></i>
               </button>
           </span><br>
@@ -216,9 +229,14 @@
       <h4>Outputs Created ({{ num_outputs }})</h4>
     {% for output in outputs %}
       <div class="txn-output">
-      {# TODO: |first is a hack #}
       {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      to <a href="{% url 'address_overview' coin_symbol output.addresses|first %}">{{ output.addresses|first }}</a>
+      to
+      {% if output.script_type == 'null-data' %}
+        {# TODO: add explanation #}
+        <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+      {% else %}
+        <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+      {% endif %}
       {% if output.spent_by %}
         (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
       {% else %}
@@ -242,11 +260,15 @@
 </div>
 {% endblock content %}
 
-
 {% block extra_js %}
-  <script>
+
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
+  <script type="text/javascript">
 
     $(document).ready(function(){
+
+      $("time.timeago").timeago();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
@@ -319,18 +341,6 @@
         }
 
       };
-
-      function update_timing() {
-        epoch = $('#received-at').attr('received');
-        // console.log('Updating timing to new epoch: ' + ' epoch');
-        var seconds_ago = convert_epoch_to_seconds_ago(parseInt(epoch));
-        $('#received-at').text(seconds_ago + ' seconds ago');
-
-        setTimeout(update_timing, 1000);
-
-      }
-
-      update_timing();
 
       //init popover
       $('[data-toggle="popover"]').popover()
