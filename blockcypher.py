@@ -245,9 +245,9 @@ def get_block_details(block_representation, coin_symbol='btc', txn_limit=None,
     """
     This gets the block overview and then makes a separate API call to get transaction data on every transactions.
 
-    WARNING: using a high txn_limit make make this *extremely* slow.
+    WARNING: using a high txn_limit will make this *extremely* slow.
 
-    block_representation may be the block number of block hash
+    block_representation may be the block number or block hash
 
     """
     block_overview = get_block_overview(
