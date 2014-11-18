@@ -28,6 +28,8 @@ def block_overview(request, coin_symbol, block_representation):
             txn_limit=TXNS_PER_PAGE,
             txn_offset=(current_page-1)*TXNS_PER_PAGE)
 
+    #import pprint; pprint.pprint(block_details, width=1)
+
     if 'error' in block_details:
         msg = _('Sorry, that block was not found')
         messages.warning(request, msg)

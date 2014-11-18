@@ -22,10 +22,14 @@
       <i class="fa fa-angle-double-left"></i> 
       Previous Block
     </a>
-    <a href="#{# FIXME: Should link somewhere #}" class="btn btn-default pull-right">
-      Next Block 
-      <i class="fa fa-angle-double-right"></i>
-    </a>
+    {% if block_details.depth > 0 %}
+      <a href="{% url 'block_overview' coin_symbol block_details.height|add:1 %}" class="btn btn-default pull-right">
+        Next Block
+        <i class="fa fa-angle-double-right"></i>
+      </a>
+    {% else %}
+      {# TODO: something to mark that this is the current block? #}
+    {% endif %}
     <div class="clearfix"></div>
   </nav>
 
