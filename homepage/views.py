@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
+from blockexplorer.decorators import assert_valid_coin_symbol
 
 from homepage.forms import SearchForm
 
@@ -95,8 +96,10 @@ def home(request):
     }
 
 
+@assert_valid_coin_symbol
 @render_to('coin_overview.html')
 def coin_overview(request, coin_symbol):
+
     initial = {
             'coin_symbol': coin_symbol,
             'search_string': COIN_SYMBOL_MAPPINGS[coin_symbol]['example_address']

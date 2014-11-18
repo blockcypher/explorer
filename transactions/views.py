@@ -4,12 +4,14 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
+from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockcypher import get_transaction_details, get_transaction_url
 
 from binascii import unhexlify
 
 
+@assert_valid_coin_symbol
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
 

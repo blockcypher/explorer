@@ -4,10 +4,12 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
+from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockcypher import get_address_details, get_address_url
 
 
+@assert_valid_coin_symbol
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address):
 

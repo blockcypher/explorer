@@ -4,10 +4,12 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
+from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockcypher import get_block_details, get_block_overview_url, get_latest_block_height
 
 
+@assert_valid_coin_symbol
 @render_to('block_overview.html')
 def block_overview(request, coin_symbol, block_representation):
 
@@ -45,6 +47,7 @@ def block_overview(request, coin_symbol, block_representation):
             }
 
 
+@assert_valid_coin_symbol
 def latest_block(request, coin_symbol):
     latest_block_height = get_latest_block_height(coin_symbol=coin_symbol)
     kwargs = {
