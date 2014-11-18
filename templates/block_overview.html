@@ -12,163 +12,213 @@
       <i class="fa fa-cube"></i> 
       {{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}
     </h1>
-    <h2 class="tagline">({{ block_details.hash }})</h2>
+    <h2 class="tagline truncate">({{ block_details.hash }})</h2>
   </div>
 </div>
 
 <div class="container">
+  <nav>
+    <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
+      <i class="fa fa-angle-double-left"></i> 
+      Previous Block
+    </a>
+    {% if block_details.depth > 0 %}
+      <a href="{% url 'block_overview' coin_symbol block_details.height|add:1 %}" class="btn btn-default pull-right">
+        Next Block
+        <i class="fa fa-angle-double-right"></i>
+      </a>
+    {% else %}
+      {# TODO: something to mark that this is the current block? #}
+    {% endif %}
+    <div class="clearfix"></div>
+  </nav>
 
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <th colspan="2">Summary</th>
-    <tr>
-      <td>Height</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.height %}">{{ block_details.height|intcomma }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Block Hash</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.hash %}">{{ block_details.hash }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Recieved At</td>
-      <td>
-        {{ block_details.received_time|naturaltime }}
-      </td>
-    </tr>
-    <tr>
-      <td>Num Transactions</td>
-      <td>
-        {{ block_details.n_tx }}
-      </td>
-    </tr>
-    <tr>
-      <td>Total Transacted</td>
-      <td>
-        {{ block_details.total|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      </td>
-    </tr>
-    <tr>
-      <td>Fees</td>
-      <td>
-        {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      </td>
-    </tr>
-    <tr>
-      <td>Previous Block Hash</td>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}">{{ block_details.prev_block }}</a>
-      </td>
-    </tr>
-    <tr>
-      <td>Nonce</td>
-      <td>
-        {{ block_details.nonce }}
-      </td>
-    </tr>
-    <tr>
-      <td>Merkle Root</td>
-      <td>
-        {{ block_details.mrkl_root }}
-      </td>
-    </tr>
-    <tr>
-      <td>Bits (difficulty target)</td>
-      <td>
-        {{ block_details.bits }}
-      </td>
-    </tr>
-    <tr>
-      <td>Version</td>
-      <td>
-        {{ block_details.ver }}
-      </td>
-    </tr>
-  </table>
-</div>
 
-<h2>{{ block_details.n_tx }} Transactions</h2>
+  <div class="section">
+    <div class="dash">
+      <ul>
+        <li>
+          <span class="dash-label">Recieved</span><br>
+          <i class="fa fa-clock-o"></i> 
+          {{ block_details.received_time|naturaltime }}
+        </li>
+        <li>
+          <span class="dash-label">Num Transactions</span><br>
+          {{ block_details.n_tx }}
+        </li>
+        <li>
+          <span class="dash-label">Total Transacted</span><br>
+          {{ block_details.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+        <li>
+          <span class="dash-label">Total Fees</span><br>
+          {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
+  </div>
 
-{% if block_details.txids %}
 
-  {% if current_page > 1 %}
-    {# There are transactions from a previous page that are not displayed on this page #}
-    <p>...</p>
-    <br />
-  {% endif %}
+  <p class="text-center">
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
+      Advanced details 
+      <b class="caret"></b>
+    </button>
+  </p>
 
-  {% for transaction in block_details.txids %}
-
-    <p><a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">{{ transaction.hash }}</a></p>
-
+  <div class="col-md-12 collapse" id="advanced-details">
     <div class="table-responsive">
-      <table class="table table-bordered">
-        <th>Inputs Consumed ({{ transaction.vin_sz }})</th>
-        <th>Outputs Created ({{ transaction.vout_sz }})</th>
+      <table class="table">
         <tr>
+          <th>Nonce</th>
           <td>
-            {% for input in transaction.inputs %}
-              {{ input.output_value|satoshis_to_btc_rounded }}
-              {{ coin_symbol|coin_symbol_to_currency_name }}
-              {% if input.addresses|length == 0 %}
-                {# the coinbase! #}
-                from Block Reward
-              {% else %}
-                from <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-              {% endif %}
-              <br />
-            {% endfor %}
-            {% if inputs|length < transaction.vin_sz %}...{% endif %}
+            {{ block_details.nonce }}
           </td>
+        </tr>
+        <tr>
+          <th>Merkle Root</th>
           <td>
-            {% for output in transaction.outputs %}
-              {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-              to <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-              {% if output.spent_by %}
-                (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-              {% else %}
-                (unspent)
-              {% endif %}
-              <br />
-            {% endfor %}
-            {% if outputs|length < transaction.vout_sz %}...{% endif %}
+            {{ block_details.mrkl_root }}
+          </td>
+        </tr>
+        <tr>
+          <th>Bits (difficulty target)</th>
+          <td>
+            {{ block_details.bits }}
+          </td>
+        </tr>
+        <tr>
+          <th>Version</th>
+          <td>
+            {{ block_details.ver }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-center">
+            <a href="{{ api_url }}" class="btn btn-default">API Call Source</a>
           </td>
         </tr>
       </table>
     </div>
+  </div>
 
+  <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
+
+  <div class="section">
+    <div class="row">
+      <div class="col-md-4 text-left">
+      {% if current_page > 1 %}
+        <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
+          <i class="fa fa-angle-double-left"></i> 
+          Previous Page
+        </a>
+      {% endif %}
+      </div>
+
+      <div class="col-md-4 text-center">
+        Page {{ current_page }} of {{ max_pages }}
+      </div>
+
+      <div class="col-md-4 text-right">
+      {% if current_page < max_pages %}
+        <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
+          Next Page
+          <i class="fa fa-angle-double-right"></i>
+        </a>
+      {% endif %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+{% if block_details.txids %}
+
+  {% for transaction in block_details.txids %}
+
+    <div class="well">
+      <h4 class="text-center truncate">
+        <i class="fa fa-exchange"></i> 
+        <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
+          {{ transaction.hash }}
+        </a>
+      </h4>
+
+      <div class="col-md-5">
+        <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
+      {% for input in transaction.inputs %}
+        <div class="txn-input">
+          <strong>
+            {{ input.output_value|satoshis_to_btc_rounded }}
+            {{ coin_symbol|coin_symbol_to_currency_name }}
+          </strong>
+        {% if input.addresses|length == 0 %}
+          {# the coinbase! #}
+          from Block Reward
+        {% else %}
+          from<br>
+          <i class="fa fa-qrcode"></i> 
+          <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+        {% endif %}
+        </div>
+      {% endfor %}
+      {% if inputs|length < transaction.vin_sz %}...{% endif %}
+      </div>
+      <div class="col-md-2 text-center txn-arrow"></div>
+      <div class="col-md-5">
+        <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
+      {% for output in transaction.outputs %}
+        <div class="txn-output">
+          <strong>
+            {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          </strong>
+          to<br>
+          <i class="fa fa-qrcode"></i> 
+          <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+        {% if output.spent_by %}
+          (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
+        {% else %}
+          (unspent)
+        {% endif %}
+        </div>
+      {% endfor %}
+      {% if outputs|length < transaction.vout_sz %}...{% endif %}
+      </div>
+
+      <div class="clearfix"></div>
+    </div>
   {% endfor %}
 
-  {% if current_page < max_pages %}
-    {# There are more transactions than are displayed on this page #}
-    <p>...</p>
-    <br />
-  {% endif %}
-
-  <div class="pagination">
-    <span class="step-links">
+  <div class="section">
+    <div class="row">
+      <div class="col-md-4 text-left">
       {% if current_page > 1 %}
-        <a href="?page={{ current_page|add:-1 }}">Previous</a>.
+        <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
+          <i class="fa fa-angle-double-left"></i> 
+          Previous Page
+        </a>
       {% endif %}
+      </div>
 
-      <span class="current">
-        Page {{ current_page }} of {{ max_pages }}.
-      </span>
+      <div class="col-md-4 text-center">
+        Page {{ current_page }} of {{ max_pages }}
+      </div>
 
+      <div class="col-md-4 text-right">
       {% if current_page < max_pages %}
-        <a href="?page={{ current_page|add:1 }}">Next</a>.
+        <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
+          Next Page
+          <i class="fa fa-angle-double-right"></i>
+        </a>
       {% endif %}
-    </span>
+      </div>
+      <div class="clearfix"></div>
+    </div>
   </div>
 
 {% else %}
   <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
 {% endif %}
-
-<p>API Call: <a href="{{ api_url }}">{{ api_url }}</a></p>
 
 </div>
 
