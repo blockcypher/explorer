@@ -35,6 +35,7 @@
       <ul>
         <li>
           <span class="dash-label">Recieved</span><br>
+          <i class="fa fa-clock-o"></i> 
           {{ block_details.received_time|naturaltime }}
         </li>
         <li>
@@ -54,48 +55,47 @@
     </div>
   </div>
 
-  <div class="section">
-    <p class="text-center">
-      <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
-        Advanced details 
-        <b class="caret"></b>
-      </button>
-    </p>
 
-    <div class="col-md-12 collapse" id="advanced-details">
-      <div class="table-responsive">
-        <table class="table">
-          <tr>
-            <th>Nonce</th>
-            <td>
-              {{ block_details.nonce }}
-            </td>
-          </tr>
-          <tr>
-            <th>Merkle Root</th>
-            <td>
-              {{ block_details.mrkl_root }}
-            </td>
-          </tr>
-          <tr>
-            <th>Bits (difficulty target)</th>
-            <td>
-              {{ block_details.bits }}
-            </td>
-          </tr>
-          <tr>
-            <th>Version</th>
-            <td>
-              {{ block_details.ver }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2" class="text-center">
-              <a href="{{ api_url }}" class="btn btn-default">API Call Source</a>
-            </td>
-          </tr>
-        </table>
-      </div>
+  <p class="text-center">
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
+      Advanced details 
+      <b class="caret"></b>
+    </button>
+  </p>
+
+  <div class="col-md-12 collapse" id="advanced-details">
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th>Nonce</th>
+          <td>
+            {{ block_details.nonce }}
+          </td>
+        </tr>
+        <tr>
+          <th>Merkle Root</th>
+          <td>
+            {{ block_details.mrkl_root }}
+          </td>
+        </tr>
+        <tr>
+          <th>Bits (difficulty target)</th>
+          <td>
+            {{ block_details.bits }}
+          </td>
+        </tr>
+        <tr>
+          <th>Version</th>
+          <td>
+            {{ block_details.ver }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-center">
+            <a href="{{ api_url }}" class="btn btn-default">API Call Source</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 
@@ -160,9 +160,7 @@
       {% endfor %}
       {% if inputs|length < transaction.vin_sz %}...{% endif %}
       </div>
-      <div class="col-md-2 text-center txn-arrow">
-    <!--     <i class="fa fa-angle-right fa-4x"></i> -->
-      </div>
+      <div class="col-md-2 text-center txn-arrow"></div>
       <div class="col-md-5">
         <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
       {% for output in transaction.outputs %}

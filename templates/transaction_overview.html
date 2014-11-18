@@ -62,10 +62,11 @@
               <i class="fa fa-info-circle"></i>
             </button>
           </span><br>
-            <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
-              {# in case they don't have JS #}
-              {{ time_to_use|naturaltime }}
-            </time>
+          <i class="fa fa-clock-o"></i> 
+          <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
+            {# in case they don't have JS #}
+            {{ time_to_use|naturaltime }}
+          </time>
         </li>
         <li>
           <span class="dash-label">
@@ -207,34 +208,41 @@
       <h3>Details</h3>
     </div>
 
-    <div class="col-md-6">
-      <h4>Inputs Consumed ({{ num_inputs }})</h4>
+    <div class="col-md-5">
+      <h4 class="text-center">Inputs Consumed ({{ num_inputs }})</h4>
     {% for input in inputs %}
       <div class="txn-input">
-      {{ input.output_value|satoshis_to_btc_rounded }}
-      {{ coin_symbol|coin_symbol_to_currency_name }}
+        <strong>
+          {{ input.output_value|satoshis_to_btc_rounded }}
+          {{ coin_symbol|coin_symbol_to_currency_name }}
+        </strong>
       {% if input.addresses|length == 0 %}
         {# the coinbase! #}
         from Block Reward
       {% else %}
         {# TODO: |first is a hack #}
-        from <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
+        from<br>
+        <i class="fa fa-qrcode"></i> 
+        <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
       {% endif %}
       </div>
     {% endfor %}
     {% if inputs|length < num_inputs %}...{% endif %}
     </div>
-
-    <div class="col-md-6">
-      <h4>Outputs Created ({{ num_outputs }})</h4>
+    <div class="col-md-2 text-center txn-arrow"></div>
+    <div class="col-md-5">
+      <h4 class="text-center">Outputs Created ({{ num_outputs }})</h4>
     {% for output in outputs %}
       <div class="txn-output">
-      {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-      to
+        <strong>
+          {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        </strong>
+        to<br>
       {% if output.script_type == 'null-data' %}
         {# TODO: add explanation #}
         <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
       {% else %}
+        <i class="fa fa-qrcode"></i> 
         <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
       {% endif %}
       {% if output.spent_by %}
