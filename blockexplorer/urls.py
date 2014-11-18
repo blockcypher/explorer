@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'(?P<coin_symbol>[-\w]+)/$', 'homepage.views.coin_overview', name='coin_overview'),
 
     # Logging Test
-    url(r'^fail500/$', 'homepage.views.fail500', name='services500'),
+    url(r'^fail500/$', 'homepage.views.fail500', name='fail500'),
 
     url(r'^admin/', include(admin.site.urls)),
 )
