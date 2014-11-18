@@ -28,10 +28,9 @@
     </a>
     <div class="clearfix"></div>
   </nav>
-</div>
 
-<div class="section">
-  <div class="container">
+
+  <div class="section">
     <div class="dash">
       <ul>
         <li>
@@ -54,11 +53,8 @@
       <div class="clearfix"></div>
     </div>
   </div>
-</div>
 
-<div class="section">
-  <div class="container">
-
+  <div class="section">
     <p class="text-center">
       <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
         Advanced details 
@@ -102,37 +98,35 @@
       </div>
     </div>
   </div>
-</div>
 
-<div class="container">
+  <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
 
-<div class="row">
-  <div class="col-md-6">
-    <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
-  </div>
-  <div class="col-md-2 text-right">
-    Page {{ current_page }} of {{ max_pages }}
-  </div>
-  <div class="col-md-4 text-right">
-    <div class="btn-group" role="group">
+  <div class="section">
+    <div class="row">
+      <div class="col-md-4 text-left">
       {% if current_page > 1 %}
         <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
           <i class="fa fa-angle-double-left"></i> 
           Previous Page
         </a>
       {% endif %}
+      </div>
 
+      <div class="col-md-4 text-center">
+        Page {{ current_page }} of {{ max_pages }}
+      </div>
+
+      <div class="col-md-4 text-right">
       {% if current_page < max_pages %}
         <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
           Next Page
           <i class="fa fa-angle-double-right"></i>
         </a>
       {% endif %}
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
-</div>
-
-
 
 {% if block_details.txids %}
 
@@ -182,10 +176,7 @@
     </div>
   {% endfor %}
 
-</div>
-
-<div class="section">
-  <div class="container">
+  <div class="section">
     <div class="row">
       <div class="col-md-4 text-left">
       {% if current_page > 1 %}
@@ -211,7 +202,6 @@
       <div class="clearfix"></div>
     </div>
   </div>
-</div>
 
 {% else %}
   <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
