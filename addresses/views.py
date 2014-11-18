@@ -54,7 +54,7 @@ def address_overview(request, coin_symbol, address):
             else:
                 unconfirmed_received_satoshis += transaction['value']
 
-    api_url = get_address_url(coin_symbol=coin_symbol, address=address)
+    api_url = get_address_url(address=address, coin_symbol=coin_symbol)
 
     return {
             'coin_symbol': coin_symbol,
