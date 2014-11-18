@@ -69,6 +69,7 @@ body {
 	border-right: 1px solid #ddd;
 	font-size: 1.6em;
 	text-align:center;
+	line-height:1.2em;
 }
 .dash li:last-child {
 	border:0;
@@ -85,7 +86,7 @@ body {
 	color:#888;
 }
 .confirmed {
-	color:#28D867;
+	color:green;
 }
 .pending {
 	color:#BFA01A;
