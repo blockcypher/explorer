@@ -67,12 +67,17 @@ body {
 	display: block;
 	padding:10px;
 	border-right: 1px solid #ddd;
-	width:25%;
 	font-size: 1.6em;
 	text-align:center;
 }
 .dash li:last-child {
 	border:0;
+}
+.dash.dash-3 li {
+	width:33%;
+}
+.dash.dash-4 li {
+	width:25%;
 }
 .dash .dash-label {
 	font-size: .6em;
