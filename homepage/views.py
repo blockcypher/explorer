@@ -113,3 +113,7 @@ def coin_overview(request, coin_symbol):
             'form': form,
             'recent_blocks': recent_blocks,
             }
+
+
+def fail500(request):
+    raise Exception('IntentionalFail: This Was On Purpose')
