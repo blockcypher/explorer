@@ -134,34 +134,45 @@
 
     <div class="well">
       <h4 class="text-center truncate">
+        <i class="fa fa-exchange"></i> 
         <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
           {{ transaction.hash }}
         </a>
       </h4>
 
-      <div class="col-md-6">
-        <p>Inputs Consumed ({{ transaction.vin_sz }})</p>
+      <div class="col-md-5">
+        <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
       {% for input in transaction.inputs %}
         <div class="txn-input">
-        {{ input.output_value|satoshis_to_btc_rounded }}
-        {{ coin_symbol|coin_symbol_to_currency_name }}
+          <strong>
+            {{ input.output_value|satoshis_to_btc_rounded }}
+            {{ coin_symbol|coin_symbol_to_currency_name }}
+          </strong>
         {% if input.addresses|length == 0 %}
           {# the coinbase! #}
           from Block Reward
         {% else %}
-          from <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+          from<br>
+          <i class="fa fa-qrcode"></i> 
+          <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
         {% endif %}
         </div>
       {% endfor %}
       {% if inputs|length < transaction.vin_sz %}...{% endif %}
-
       </div>
-      <div class="col-md-6">
-        <p>Outputs Created ({{ transaction.vout_sz }})</p>
+      <div class="col-md-2 text-center txn-arrow">
+    <!--     <i class="fa fa-angle-right fa-4x"></i> -->
+      </div>
+      <div class="col-md-5">
+        <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
       {% for output in transaction.outputs %}
         <div class="txn-output">
-        {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-        to <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+          <strong>
+            {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          </strong>
+          to<br>
+          <i class="fa fa-qrcode"></i> 
+          <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
         {% if output.spent_by %}
           (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
         {% else %}
