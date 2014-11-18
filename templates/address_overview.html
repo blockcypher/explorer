@@ -20,11 +20,8 @@
   <div class="section">
     <div class="col-md-4 text-center">
       <p>
-        <a href="{% url 'address_overview' coin_symbol address %}">{{ address }}</a>
-      </p>
-      <p>
         <a href="{% url 'address_overview' coin_symbol address %}">
-          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" />
+          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}">
         </a>
       </p>
     </div>
