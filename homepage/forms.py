@@ -1,23 +1,17 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from bitcoins.utils import is_valid_address, is_valid_hash, is_valid_block_num
-
-from blockcypher import COIN_CHOICES
+from blockcypher import COIN_CHOICES, is_valid_address, is_valid_hash, is_valid_block_num
 
 
 class SearchForm(forms.Form):
     search_string = forms.CharField(
-        label=_('What to Search For'),
-        help_text=_('Enter an address, transaction hash, block hash, or block number'),
         required=True,
         min_length=2,
         max_length=128,
-        widget=forms.TextInput(attrs={'autofocus': ''}),
     )
 
     coin_symbol = forms.ChoiceField(
-        label=_('Blockchain to Search'),
         required=False,
         choices=COIN_CHOICES,
     )
