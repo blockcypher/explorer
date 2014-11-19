@@ -29,9 +29,6 @@ def home(request):
             if is_valid_block_num(search_string):
                 kwargs['block_representation'] = search_string
                 redirect_url = reverse('block_overview', kwargs=kwargs)
-            elif is_valid_block_num(search_string):
-                kwargs['block_representation'] = search_string
-                redirect_url = reverse('block_overview', kwargs=kwargs)
             elif is_valid_hash(search_string):
                 if coin_symbol in SHA_COINS:
                     if is_valid_sha_block_hash(search_string):
