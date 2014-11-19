@@ -44,11 +44,11 @@
           <li>
             <span class="dash-label">Sent</span><br>
           {% if not has_more %}
-            {{ total_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_sent_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_sent_satoshis %}
               <br>
               <span class="dash-label">
-                ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} 
+                ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded|intcomma }} 
                 {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
               </span>
             {% endif %}
@@ -56,11 +56,11 @@
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {{ total_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_balance_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
           {% if unconfirmed_balance_satoshis %}
             <br>
             <span class="dash-label">
-              ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} 
+              ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded|intcomma }} 
               {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
             </span>
           {% endif %}
