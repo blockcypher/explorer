@@ -316,3 +316,8 @@ body {
 		width: 160px;
 	}
 }
+@media (max-width:767px){
+	.main-footer, .main-footer .text-right {
+		text-align: center !important;
+	}
+}
