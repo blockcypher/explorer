@@ -92,7 +92,7 @@
           </ul>
 
           {% if not is_home %}
-          <form class="navbar-form navbar-right" role="search" method="post" action="{% url "home" %}">
+          <form class="navbar-form navbar-right navbar-search" role="search" method="post" action="{% url "home" %}">
             {% csrf_token %}
             <input type="hidden" value="{% firstof coin_symbol 'btc' %}" id="id_coin_symbol" name="coin_symbol">
 
@@ -110,7 +110,7 @@
                   <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                 </ul>
               </div>
-              <input name="search_string" id="id_search_string" type="text" class="form-control" placeholder="Address, transaction or block">
+              <input name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
               </span>
