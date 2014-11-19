@@ -57,7 +57,16 @@
   background: -moz-linear-gradient(top, #2D9D31 0%, #1e6921 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2D9D31), color-stop(100%, #1e6921));
   background: -webkit-linear-gradient(top, #2D9D31 0%, #1e6921 100%);
-  background: linear-gradient(to bottom, #2D9D31 0%, #1e6921 100%); }
+  background: linear-gradient(to bottom, #2D9D31 0%, #1e6921 100%);
+}
+.bg-bcy {
+  color: #fff;
+  background: #59218c;
+  background: -moz-linear-gradient(top, #59218c 0%, #371456 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #59218c), color-stop(100%, #371456));
+  background: -webkit-linear-gradient(top, #59218c 0%, #371456 100%);
+  background: linear-gradient(to bottom, #59218c 0%, #371456 100%); 
+}
 /* Coin symbols */
 .btc {
 	background: url(../img/Bitcoin.svg) center no-repeat;
@@ -77,13 +86,15 @@
 .doge {
 	background: url(../img/Dogecoin.svg) center no-repeat;
 }
+.semi {
+	opacity:.7;
+}
 .btn-primary {
 	background: #0b8ed8;
 	border-color:#0b8ed8;
 }
 .btn-xl {
 	padding: 12px 70px;
-	font-size: 1.4em;
 	margin: 20px 0 0;
 }
 .truncate {
@@ -92,14 +103,37 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Webfonts */
+@font-face {
+	font-family: 'myriad_pro_lightregular';
+	src: url('../fonts/myriadpro-light-webfont.eot');
+	src: url('../fonts/myriadpro-light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-light-webfont.woff') format('woff'), url('../fonts/myriadpro-light-webfont.ttf') format('truetype'), url('../fonts/myriadpro-light-webfont.svg#myriad_pro_lightregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'MyriadProSemibold';
+	src: url('../fonts/myriadpro-semibold-webfont.eot');
+	src: url('../fonts/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-semibold-webfont.woff') format('woff'), url('../fonts/myriadpro-semibold-webfont.ttf') format('truetype'), url('../fonts/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+.mplr {
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
+}
+.mpsb {
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
 
 /* Layout */
 body {
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
 	background: #000;
 }
 .main-container {
 	margin-top:50px;
 	background: #fff;
+	font-size:1.2em;
 }
 .main-container.home {
 	margin-top:50px;
@@ -110,7 +144,7 @@ body {
 }
 .page-header {
 	padding:60px 0;
-	position: relative;
+	font-size:1.2em;
 }
 .page-header .tagline {
 	font-size: 1.2em;
@@ -121,6 +155,7 @@ body {
 	border-radius: 5px;
 	padding:20px 0;
 	border:1px solid #ddd;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
 .dash ul {
 	list-style: none;
@@ -145,9 +180,10 @@ body {
 	width:25%;
 }
 .dash .dash-label {
-	font-size: .6em;
+	font-size: .7em;
 	text-transform: uppercase;
 	color:#888;
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
 }
 .confirmed {
 	color:green;
@@ -165,16 +201,24 @@ body {
 	background: #fff;
 	padding:6px 0;
 }
-
+.navbar-default .navbar-nav > li > a {
+	color: #929191;
+	text-transform: uppercase;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
 /* Footer */
 .main-footer {
 	background: #000;
 	padding:30px;
 	color: #515151;
+	font-size:1.2em;
 }
 .main-footer a {
 	color: #515151;
 	text-decoration: underline;
+}
+.main-footer a.social {
+	text-decoration: none;
 }
 .main-footer .fa {
 	font-size: 20px;
@@ -226,6 +270,7 @@ body {
 	text-align: center;
 	text-transform: uppercase;
 	display:block;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
 .circle-chart .fill {
 	background:#0b8ed8;
