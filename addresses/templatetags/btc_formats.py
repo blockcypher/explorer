@@ -1,7 +1,6 @@
 from django import template
-from bitcoins.utils import satoshis_to_btc
 
-from blockcypher import COIN_SYMBOL_MAPPINGS, get_websocket_url
+from blockcypher import COIN_SYMBOL_MAPPINGS, get_websocket_url, satoshis_to_btc
 
 
 register = template.Library()

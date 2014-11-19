@@ -81,6 +81,11 @@
 	background: #0b8ed8;
 	border-color:#0b8ed8;
 }
+.btn-xl {
+	padding: 12px 70px;
+	font-size: 1.4em;
+	margin: 20px 0 0;
+}
 .truncate {
   min-width: 5em;
   white-space: nowrap;
