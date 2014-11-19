@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
 
 {% block content %}
 
@@ -148,25 +149,29 @@
           {% if transaction.confirmations >= 6 %}
             <span class="confirmed">
               <i class="fa fa-lock"></i> 
-              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>
+              <span id="num-confs" title="{{ transaction.confirmations|intcomma }} Confirmations">6+</span>
             </span>
           {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
             <span class="pending">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>/6
+              <span id="num-confs">{{ transaction.confirmations }}</span>/6
             </span>
           {% else %}
             <span class="unconfirmed">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>/6
+              <span id="num-confs">{{ transaction.confirmations }}</span>/6
             </span>
           {% endif %}
           </td>
           <td>
             {% if transaction.received %}
-              {{ transaction.received|naturaltime }}
+              <time class="timeago" datetime="{{ transaction.received|date:'Y-m-d\TH:i:s' }}Z">
+                {{ transaction.received|naturaltime }}
+              </time>
             {% else %}
-              {{ transaction.confirmed|naturaltime }}
+              <time class="timeago" datetime="{{ transaction.confirmed|date:'Y-m-d\TH:i:s' }}Z">
+                {{ transaction.confirmed|naturaltime }}
+              </time>
             {% endif %}
           </td>
           <td>
@@ -223,9 +228,13 @@
 
 
 {% block extra_js %}
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
   <script>
 
     $(document).ready(function(){
+
+      $("time.timeago").timeago();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;

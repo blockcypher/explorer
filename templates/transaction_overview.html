@@ -50,17 +50,8 @@
         </li>
       {% endif %}
         <li>
-          <span class="dash-label">Received
-            <button
-              type="button"
-              class="btn-link"
-              data-container="body"
-              data-toggle="popover"
-              data-placement="top"
-              data-html="true"
-              data-content="{{ time_to_use|date:"r" }}">
-              <i class="fa fa-info-circle"></i>
-            </button>
+          <span class="dash-label" title="{{ time_to_use|date:"r" }}">
+            Received
           </span><br>
           <i class="fa fa-clock-o"></i> 
           <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
