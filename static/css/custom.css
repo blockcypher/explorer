@@ -300,3 +300,19 @@ body {
 	background: url(../img/txn_arrow.svg) center no-repeat;
 	min-height:150px;
 }
+/* Media queries */
+@media(min-width:1200px){
+	.navbar-form .input-group>.form-control.search-input {
+		width:400px;
+	}
+}
+@media(min-width:992px) and (max-width:1199px){
+	.navbar-form .input-group>.form-control.search-input {
+		width:300px;
+	}
+}
+@media (min-width:768px) and (max-width:991px){
+	.navbar-form .input-group>.form-control.search-input {
+		width: 160px;
+	}
+}
