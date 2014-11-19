@@ -8,9 +8,10 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from homepage.forms import SearchForm
 
-from blockcypher import get_transaction_details, get_block_overview, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS, get_latest_block_height
-
-from bitcoins.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
+from blockcypher import (get_transaction_details, get_block_overview,
+        get_latest_block_height, is_valid_hash, is_valid_block_num,
+        is_valid_sha_block_hash, is_valid_address, SHA_COINS, SCRYPT_COINS,
+        COIN_SYMBOL_MAPPINGS)
 
 
 @render_to('home.html')
@@ -27,9 +28,6 @@ def home(request):
             coin_symbol = form.cleaned_data['coin_symbol']
             kwargs = {'coin_symbol': coin_symbol}
             if is_valid_block_num(search_string):
-                kwargs['block_representation'] = search_string
-                redirect_url = reverse('block_overview', kwargs=kwargs)
-            elif is_valid_block_num(search_string):
                 kwargs['block_representation'] = search_string
                 redirect_url = reverse('block_overview', kwargs=kwargs)
             elif is_valid_hash(search_string):

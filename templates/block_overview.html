@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="bg-primary section page-header">
+<div class="page-header bg-{{ coin_symbol }}">
   <div class="container">
     <h1>
       <i class="fa fa-cube"></i> 
@@ -33,9 +33,8 @@
     <div class="clearfix"></div>
   </nav>
 
-
   <div class="section">
-    <div class="dash">
+    <div class="dash dash-4">
       <ul>
         <li>
           <span class="dash-label">Recieved</span><br>
@@ -48,7 +47,7 @@
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
-          {{ block_details.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ block_details.total|satoshis_to_bitcoin|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
@@ -58,7 +57,6 @@
       <div class="clearfix"></div>
     </div>
   </div>
-
 
   <p class="text-center">
     <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
@@ -96,7 +94,10 @@
         </tr>
         <tr>
           <td colspan="2" class="text-center">
-            <a href="{{ api_url }}" class="btn btn-default">API Call Source</a>
+            <a href="{{ api_url }}" class="btn btn-default">
+              <i class="fa fa-code"></i> 
+              API Call Source
+            </a>
           </td>
         </tr>
       </table>
