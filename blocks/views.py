@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockcypher import get_block_details, get_block_overview_url, get_latest_block_height
+from blockcypher.api import get_block_details, get_block_overview_url, get_latest_block_height
 
 
 @assert_valid_coin_symbol
