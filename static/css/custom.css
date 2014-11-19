@@ -19,6 +19,64 @@
 	background: radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
 	color:#fff;
 }
+.bg-btc {
+  color: #fff;
+  background: #F8921A;
+  background: -moz-linear-gradient(top, #F8921A 0%, #ca7006 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F8921A), color-stop(100%, #ca7006));
+  background: -webkit-linear-gradient(top, #F8921A 0%, #ca7006 100%);
+  background: linear-gradient(to bottom, #F8921A 0%, #ca7006 100%);
+}
+.bg-btc-testnet {
+  color: #fff;
+  background: #1AB3F8;
+  background: -moz-linear-gradient(top, #1AB3F8 0%, #068dca 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1AB3F8), color-stop(100%, #068dca));
+  background: -webkit-linear-gradient(top, #1AB3F8 0%, #068dca 100%);
+  background: linear-gradient(to bottom, #1AB3F8 0%, #068dca 100%);
+}
+.bg-ltc {
+  color: #fff;
+  background: #BEBEBE;
+  background: -moz-linear-gradient(top, #BEBEBE 0%, #9d9d9d 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BEBEBE), color-stop(100%, #9d9d9d));
+  background: -webkit-linear-gradient(top, #BEBEBE 0%, #9d9d9d 100%);
+  background: linear-gradient(to bottom, #BEBEBE 0%, #9d9d9d 100%);
+}
+.bg-doge {
+  color: #fff;
+  background: #F9BF1A;
+  background: -moz-linear-gradient(top, #F9BF1A 0%, #cb9805 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F9BF1A), color-stop(100%, #cb9805));
+  background: -webkit-linear-gradient(top, #F9BF1A 0%, #cb9805 100%);
+  background: linear-gradient(to bottom, #F9BF1A 0%, #cb9805 100%);
+}
+.bg-uro {
+  color: #fff;
+  background: #2D9D31;
+  background: -moz-linear-gradient(top, #2D9D31 0%, #1e6921 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2D9D31), color-stop(100%, #1e6921));
+  background: -webkit-linear-gradient(top, #2D9D31 0%, #1e6921 100%);
+  background: linear-gradient(to bottom, #2D9D31 0%, #1e6921 100%); }
+/* Coin symbols */
+.btc {
+	background: url(../img/Bitcoin.svg) center no-repeat;
+}
+.btc-testnet {
+	background: url(../img/btc-testnet.svg) center no-repeat;
+}
+.ltc {
+	background: url(../img/Litecoin.svg) center no-repeat;
+}
+.uro {
+	background: url(../img/uro.svg) center no-repeat;
+}
+.bc-testnet {
+	background: url(../img/bc-testnet.svg) center no-repeat;
+}
+.doge {
+	background: url(../img/Dogecoin.svg) center no-repeat;
+}
 .btn-primary {
 	background: #0b8ed8;
 	border-color:#0b8ed8;
@@ -52,6 +110,7 @@ body {
 }
 .page-header {
 	padding:60px 0;
+	position: relative;
 }
 .page-header .tagline {
 	font-size: 1.2em;
@@ -72,12 +131,18 @@ body {
 	display: block;
 	padding:10px;
 	border-right: 1px solid #ddd;
-	width:25%;
 	font-size: 1.6em;
 	text-align:center;
+	line-height:1.2em;
 }
 .dash li:last-child {
 	border:0;
+}
+.dash.dash-3 li {
+	width:33%;
+}
+.dash.dash-4 li {
+	width:25%;
 }
 .dash .dash-label {
 	font-size: .6em;
@@ -85,7 +150,7 @@ body {
 	color:#888;
 }
 .confirmed {
-	color:#28D867;
+	color:green;
 }
 .pending {
 	color:#BFA01A;
@@ -130,7 +195,7 @@ body {
 	display: inline-block;
 	margin:1em 1%;
 }
-.block-currency-logos>li>a {
+.block-currency-logos>li>a, .coin {
 	display: inline-block;
 	height:120px;
 	width:120px;
@@ -140,24 +205,6 @@ body {
 .block-currency-logos>li>a span {
 	display: block;
 	white-space: nowrap;
-}
-.btc {
-	background: url(../img/Bitcoin.svg) center no-repeat;
-}
-.btc-testnet {
-	background: url(../img/btc-testnet.svg) center no-repeat;
-}
-.ltc {
-	background: url(../img/Litecoin.svg) center no-repeat;
-}
-.uro {
-	background: url(../img/uro.svg) center no-repeat;
-}
-.bc-testnet {
-	background: url(../img/bc-testnet.svg) center no-repeat;
-}
-.doge {
-	background: url(../img/Dogecoin.svg) center no-repeat;
 }
 /* Transaction page */
 .circle-chart {

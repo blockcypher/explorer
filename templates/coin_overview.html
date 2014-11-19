@@ -6,60 +6,54 @@
 
 {% block content %}
 
-<div class="container">
-
-<form role="form" method="post" action="{% url "home" %}">
-  {% load crispy_forms_tags %}
-  {{ form|crispy }}
-  {% csrf_token %}
-  <p class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg">{% trans "Search" %} </button>
-  </p>
-</form>
-
-<br />
-
-<h4>Recent Blocks</h4>
-
-<table class="table">
-  <th>Height</th>
-  <th>Age</th>
-  <th>Transactions</th>
-  <th>Total Sent</th>
-  <th>Total Fees</th>
-  {% for block in recent_blocks %}
-    <tr>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block.height %}">{{ block.height }}</a>
-      </td>
-      <td>{{ block.received_time|naturaltime }}</td>
-      <td>{{ block.n_tx }}</td>
-      <td>{{ block.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-      <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-    </tr>
-  {% endfor %}
-</table>
-<br />
-<br />
-
-<div id="newtx-section" style="display:none">
-  <h4>Latest Transactions</h4>
-
-  <table class="table table-striped">
-    <tr id="latest-txs">
-      <th>Transaction Hash</th>
-      <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
-      <th>Time</th>
-    </tr>
-    <tr class="new-tx" style="display;none"></tr>
-  </table>
-
-  <br />
-  <p>
-  Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
-  </p>
+<div class="section page-header bg-{{ coin_symbol }}">
+  <div class="container">
+    <h1>{{ coin_symbol|coin_symbol_to_display_name }} Explorer</h1>
+  </div>
 </div>
 
+<div class="container">
+  <div class="section">
+    <h2>Recent Blocks</h2>
+
+    <table class="table">
+      <th>Height</th>
+      <th>Age</th>
+      <th>Transactions</th>
+      <th>Total Sent</th>
+      <th>Total Fees</th>
+      {% for block in recent_blocks %}
+        <tr>
+          <td>
+            <a href="{% url 'block_overview' coin_symbol block.height %}">{{ block.height }}</a>
+          </td>
+          <td>{{ block.received_time|naturaltime }}</td>
+          <td>{{ block.n_tx }}</td>
+          <td>{{ block.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+          <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="section">
+    <div id="newtx-section" style="display:none">
+      <h2>Latest Transactions</h2>
+
+      <table class="table">
+        <tr id="latest-txs">
+          <th>Transaction Hash</th>
+          <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
+          <th>Time</th>
+        </tr>
+        <tr class="new-tx" style="display;none"></tr>
+      </table>
+
+      <p class="text-center">
+        Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+      </p>
+    </div>
+  </div>
 </div>
 {% endblock content %}
 

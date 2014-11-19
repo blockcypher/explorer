@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="bg-primary page-header">
+<div class="page-header bg-{{ coin_symbol }}">
   <div class="container">
     <h1>
       <i class="fa fa-exchange"></i> 
@@ -28,7 +28,7 @@
       </div>
     {% endif %}
 
-    <div class="dash">
+    <div class="dash dash-4">
       <ul>
       {% if is_coinbase_tx %}
         <li>
@@ -181,7 +181,10 @@
         {% endif %}
           <tr>
             <td colspan="2" class="text-center">
-              <a href="{{ api_url }}" class="btn btn-default">API Call Source</a>
+              <a href="{{ api_url }}" class="btn btn-default">
+                <i class="fa fa-code"></i> 
+                API Call Source
+              </a>
             </td>
           </tr>
         </table>

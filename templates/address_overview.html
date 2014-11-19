@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="bg-primary section page-header">
+<div class="page-header bg-{{ coin_symbol }}">
   <div class="container">
     <h1>
       <i class="fa fa-qrcode"></i> 
@@ -17,94 +17,150 @@
 </div>
   
 <div class="container">
+  <div class="section">
+    <div class="col-md-4 text-center">
+      <p>
+        <a href="{% url 'address_overview' coin_symbol address %}">
+          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}">
+        </a>
+      </p>
+    </div>
 
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <th colspan="2">Summary</th>
-    <tr>
-      <td>Address</td>
-      <td>
-        <a href="{% url 'address_overview' coin_symbol address %}">{{ address }}</a>
-        {% if coin_symbol = 'btc' %}
-          {# TODO: support this for other blockchains #}
-          (<a href="bitcoin:{{ address }}">pay</a>)<br />
-        {% endif %}
-        <br />
-        <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ address }}&choe=UTF-8&chs=300x300" />
-      </td>
-    </tr>
-    <tr>
-      <td># Transactions</td>
-      <td>
-        {{ num_all_txns|intcomma }}
-        {% if num_unconfirmed_txns %}
-          ({{ num_unconfirmed_txns|intcomma }} transactions unconfirmed)
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Received</td>
-      <td>
-        {% if not has_more %}
-          {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          {% if unconfirmed_received_satoshis %}
-            ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+    <div class="col-md-8">
+      <div class="dash dash-3">
+        <ul>
+          <li>
+            <span class="dash-label">Received</span><br>
+          {% if not has_more %}
+            {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% if unconfirmed_received_satoshis %}
+              <br>
+              <span class="dash-label">
+                ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+              </span>
+            {% endif %}
           {% endif %}
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Sent</td>
-      <td>
-        {% if not has_more %}
-          {{ total_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          {% if unconfirmed_sent_satoshis %}
-            ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+          </li>
+          <li>
+            <span class="dash-label">Sent</span><br>
+          {% if not has_more %}
+            {{ total_sent_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% if unconfirmed_sent_satoshis %}
+              <br>
+              <span class="dash-label">
+                ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded|intcomma }} 
+                {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+              </span>
+            {% endif %}
           {% endif %}
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Balance</td>
-      <td>
-        {{ total_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-        {% if unconfirmed_balance_satoshis %}
-          ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
-        {% endif %}
-      </td>
-    </tr>
-  </table>
-</div>
+          </li>
+          <li>
+            <span class="dash-label">Balance</span><br>
+            {{ total_balance_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% if unconfirmed_balance_satoshis %}
+            <br>
+            <span class="dash-label">
+              ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded|intcomma }} 
+              {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+            </span>
+          {% endif %}
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
 
+      <p class="text-center section">
+      {% if coin_symbol = 'btc' %}
+        {# TODO: support this for other blockchains #}
+        <a href="bitcoin:{{ address }}" class="btn btn-default">
+          <i class="fa fa-exchange"></i> 
+          Pay this address
+        </a>
+      {% endif %}
+        <a href="{{ api_url }}" class="btn btn-default">
+          <i class="fa fa-code"></i> 
+          API Call Source
+        </a>
+      </p>
+    </div>
+  </div>
 
 {% if all_transactions %}
 
-  <h2>{{ num_all_txns|intcomma }} Transactions</h2>
+<div class="col-md-12">
+
+  <h2>
+    {{ num_all_txns|intcomma }} Transactions 
+  {% if num_unconfirmed_txns %}
+    ({{ num_unconfirmed_txns|intcomma }} unconfirmed)
+  {% endif %}
+  </h2>
+
+{% if max_pages > 1 %}
+  <div class="section">
+    <div class="row">
+      <div class="col-md-4 text-left">
+      {% if current_page > 1 %}
+        <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
+          <i class="fa fa-angle-double-left"></i> 
+          Previous Page
+        </a>
+      {% endif %}
+      </div>
+
+      <div class="col-md-4 text-center">
+        Page {{ current_page }} of {{ max_pages }}
+      </div>
+
+      <div class="col-md-4 text-right">
+      {% if current_page < max_pages %}
+        <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
+          Next Page
+          <i class="fa fa-angle-double-right"></i>
+        </a>
+      {% endif %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endif %}
 
   <div class="table-responsive">
-    <table class="table table-bordered">
-      <th>Hash</th>
-      <th>Amount</th>
-      <th>Confirmations</th>
-      <th>Time</th>
-      <th>Block</th>
-      <tr class="tx-row" style="display;none"></tr>
-      {% if current_page > 1 %}
-        {# There are transactions from a previous page that are not displayed on this page #}
-        <tr>...</tr>
-      {% endif %}
+    <table class="table">
+      <tr>
+        <th>Hash</th>
+        <th>Amount</th>
+        <th>Confirmations</th>
+        <th>Time</th>
+        <th>Block</th>
+      </tr>
       {% for transaction in all_transactions %}
       <tr class="tx-row" id="{{ transaction.tx_hash }}">
-          <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
+          <td class="truncate">
+            <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">
+              {{ transaction.tx_hash }}
+            </a>
+          </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
             {{ transaction.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           <td>
-            {% if transaction.confirmations %}
-              {{ transaction.confirmations|intcomma }}
-            {% else %}
-              None
-            {% endif %}
+          {% if transaction.confirmations >= 6 %}
+            <span class="confirmed">
+              <i class="fa fa-lock"></i> 
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>
+            </span>
+          {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
+            <span class="pending">
+              <i class="fa fa-unlock"></i> 
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>/6
+            </span>
+          {% else %}
+            <span class="unconfirmed">
+              <i class="fa fa-unlock"></i> 
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}</span>/6
+            </span>
+          {% endif %}
           </td>
           <td>
             {% if transaction.received %}
@@ -117,7 +173,7 @@
             {% if transaction.block_height %}
               <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma}}</a>
             {% else %}
-              Pending
+              <span class="label label-danger">Pending</span>
             {% endif %}
           </td>
         </tr>
@@ -126,33 +182,40 @@
     </table>
   </div>
 
+{% if max_pages > 1 %}
+  <div class="section">
+    <div class="row">
+      <div class="col-md-4 text-left">
+      {% if current_page > 1 %}
+        <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
+          <i class="fa fa-angle-double-left"></i> 
+          Previous Page
+        </a>
+      {% endif %}
+      </div>
+
+      <div class="col-md-4 text-center">
+        Page {{ current_page }} of {{ max_pages }}
+      </div>
+
+      <div class="col-md-4 text-right">
+      {% if current_page < max_pages %}
+        <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
+          Next Page
+          <i class="fa fa-angle-double-right"></i>
+        </a>
+      {% endif %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endif %}
+
+</div>
+
 {% else %}
   <p>No transactions detected. <a href="#">Sign up for alerts of future transactions</a>.</p>
 {% endif %}
-
-<p>API Call: <a href="{{ api_url }}">{{ api_url }}</a></p>
-
-  {% if current_page < max_pages %}
-    {# There are more transactions than are displayed on this page #}
-    <p>...</p>
-    <br />
-  {% endif %}
-
-  <div class="pagination">
-    <span class="step-links">
-      {% if current_page > 1 %}
-        <a href="?page={{ current_page|add:-1 }}">Previous</a>.
-      {% endif %}
-
-      <span class="current">
-        Page {{ current_page }} of {{ max_pages }}.
-      </span>
-
-      {% if current_page < max_pages %}
-        <a href="?page={{ current_page|add:1 }}">Next</a>.
-      {% endif %}
-    </span>
-  </div>
 
 </div>
 
