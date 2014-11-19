@@ -47,7 +47,7 @@
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
-          {{ block_details.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ block_details.total|satoshis_to_bitcoin|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
