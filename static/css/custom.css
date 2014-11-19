@@ -29,14 +29,37 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Webfonts */
+@font-face {
+	font-family: 'myriad_pro_lightregular';
+	src: url('../fonts/myriadpro-light-webfont.eot');
+	src: url('../fonts/myriadpro-light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-light-webfont.woff') format('woff'), url('../fonts/myriadpro-light-webfont.ttf') format('truetype'), url('../fonts/myriadpro-light-webfont.svg#myriad_pro_lightregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'MyriadProSemibold';
+	src: url('../fonts/myriadpro-semibold-webfont.eot');
+	src: url('../fonts/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-semibold-webfont.woff') format('woff'), url('../fonts/myriadpro-semibold-webfont.ttf') format('truetype'), url('../fonts/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+.mplr {
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
+}
+.mpsb {
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
 
 /* Layout */
 body {
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
 	background: #000;
 }
 .main-container {
 	margin-top:50px;
 	background: #fff;
+	font-size:1.2em;
 }
 .main-container.home {
 	margin-top:50px;
@@ -47,6 +70,7 @@ body {
 }
 .page-header {
 	padding:60px 0;
+	font-size:1.2em;
 }
 .page-header .tagline {
 	font-size: 1.2em;
@@ -57,6 +81,7 @@ body {
 	border-radius: 5px;
 	padding:20px 0;
 	border:1px solid #ddd;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
 .dash ul {
 	list-style: none;
@@ -68,16 +93,17 @@ body {
 	padding:10px;
 	border-right: 1px solid #ddd;
 	width:25%;
-	font-size: 1.6em;
+	font-size: 1.4em;
 	text-align:center;
 }
 .dash li:last-child {
 	border:0;
 }
 .dash .dash-label {
-	font-size: .6em;
+	font-size: .7em;
 	text-transform: uppercase;
 	color:#888;
+	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
 }
 .confirmed {
 	color:#28D867;
@@ -95,12 +121,17 @@ body {
 	background: #fff;
 	padding:6px 0;
 }
-
+.navbar-default .navbar-nav > li > a {
+	color: #929191;
+	text-transform: uppercase;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
 /* Footer */
 .main-footer {
 	background: #000;
 	padding:30px;
 	color: #515151;
+	font-size:1.2em;
 }
 .main-footer a {
 	color: #515151;
@@ -174,6 +205,7 @@ body {
 	text-align: center;
 	text-transform: uppercase;
 	display:block;
+	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
 .circle-chart .fill {
 	background:#0b8ed8;
