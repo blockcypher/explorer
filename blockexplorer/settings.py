@@ -34,9 +34,10 @@ else:
     TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = [
-        '.blockcypher.com',
+        'live.blockcypher.com',
         'blockcypher.herokuapp.com',
         '127.0.0.1',
+        'miyagi-9570.herokussl.com',
         ]
 
 ADMINS = (
