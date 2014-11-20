@@ -106,6 +106,9 @@
 .wrapit {
 	word-wrap: break-word;
 }
+.img-center {
+	margin:0 auto;
+}
 /* Webfonts */
 @font-face {
 	font-family: 'myriad_pro_lightregular';
@@ -339,4 +342,8 @@ a.coin:hover {
 	.main-footer, .main-footer .text-right {
 		text-align: center !important;
 	}
+	.pager .text-right, .pager .text-left {
+		text-align: center !important;
+	}
 }
+
