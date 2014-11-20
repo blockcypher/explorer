@@ -146,7 +146,8 @@
           <tr{% if not block_hash %} style="display:none;"{% endif %}>
             <th>In Block</th>
             <td>
-              <a href="{% url 'block_overview' coin_symbol block_hash %}">{{ block_hash }}</a>
+              <a href="{% url 'block_overview' coin_symbol block_hash %}" class="hidden-xs">{{ block_hash }}</a>
+              <a href="{% url 'block_overview' coin_symbol block_hash %}" class="visible-xs">See Block</a>
             </td>
           </tr>
 

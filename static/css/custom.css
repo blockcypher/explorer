@@ -310,6 +310,17 @@ a.coin:hover {
 	}
 }
 @media (max-width:991px){
+	.dash {
+		padding:0 20px;
+	}
+	.dash li {
+		float:none;
+		border-right:0;
+		border-bottom: 1px solid #ddd;
+	}
+	.dash.dash-3 li, .dash.dash-4 li {
+		width:100%;
+	}
 	.txn-arrow {
 		-moz-transform: rotate(90deg);
 		-webkit-transform: rotate(90deg);
