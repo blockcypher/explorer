@@ -69,13 +69,13 @@
 }
 /* Coin symbols */
 .btc {
-	background: url(../img/Bitcoin.svg) center no-repeat;
+	background: url(../img/btc.svg) center no-repeat;
 }
 .btc-testnet {
 	background: url(../img/btc-testnet.svg) center no-repeat;
 }
 .ltc {
-	background: url(../img/Litecoin.svg) center no-repeat;
+	background: url(../img/ltc.svg) center no-repeat;
 }
 .uro {
 	background: url(../img/uro.svg) center no-repeat;
@@ -84,7 +84,7 @@
 	background: url(../img/bc-testnet.svg) center no-repeat;
 }
 .doge {
-	background: url(../img/Dogecoin.svg) center no-repeat;
+	background: url(../img/doge.svg) center no-repeat;
 }
 .semi {
 	opacity:.7;
@@ -232,23 +232,21 @@ body {
 	text-decoration: none;
 	cursor: default;
 }
-.block-currency-logos {
-	list-style: none;
-}
-.block-currency-logos>li {
-	display: inline-block;
-	margin:1em 1%;
-}
-.block-currency-logos>li>a, .coin {
-	display: inline-block;
-	height:120px;
-	width:120px;
-	background-size:120px 120px;
-	padding-top:140px;
-}
-.block-currency-logos>li>a span {
+.coin {
 	display: block;
-	white-space: nowrap;
+	padding-top: 120%;
+	margin: 30px auto 50px;
+}
+a.coin:hover {
+	opacity: .9;
+}
+.coin>span {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 50px;
+	color:#888;
 }
 /* Transaction page */
 .circle-chart {
