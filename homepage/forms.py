@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from blockcypher import COIN_CHOICES, is_valid_address, is_valid_hash, is_valid_block_num
+from blockcypher.constants import COIN_CHOICES
+from blockcypher.utils import is_valid_address, is_valid_hash, is_valid_block_num
 
 
 class SearchForm(forms.Form):

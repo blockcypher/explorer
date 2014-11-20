@@ -1,6 +1,6 @@
 from django.http import Http404
 
-from blockcypher import COIN_SYMBOL_MAPPINGS
+from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 
 class assert_valid_coin_symbol(object):
