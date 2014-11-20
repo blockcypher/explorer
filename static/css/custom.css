@@ -309,6 +309,13 @@ a.coin:hover {
 		width:300px;
 	}
 }
+@media (max-width:991px){
+	.txn-arrow {
+		-moz-transform: rotate(90deg);
+		-webkit-transform: rotate(90deg);
+		transform: rotate(90deg);
+	}
+}
 @media (min-width:768px) and (max-width:991px){
 	.navbar-form .input-group>.form-control.search-input {
 		width: 160px;

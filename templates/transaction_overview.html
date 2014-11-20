@@ -205,7 +205,7 @@
     <div class="col-md-5">
       <h4 class="text-center">Inputs Consumed ({{ num_inputs }})</h4>
     {% for input in inputs %}
-      <div class="txn-input">
+      <div class="txn-input truncate">
         <strong>
           {{ input.output_value|satoshis_to_btc_rounded }}
           {{ coin_symbol|coin_symbol_to_currency_name }}
@@ -223,11 +223,13 @@
     {% endfor %}
     {% if inputs|length < num_inputs %}...{% endif %}
     </div>
-    <div class="col-md-2 text-center txn-arrow"></div>
+    <div class="col-md-2">
+      <div class="txn-arrow"></div>
+    </div>
     <div class="col-md-5">
       <h4 class="text-center">Outputs Created ({{ num_outputs }})</h4>
     {% for output in outputs %}
-      <div class="txn-output">
+      <div class="txn-output truncate">
         <strong>
           {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </strong>
