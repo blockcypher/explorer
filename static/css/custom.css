@@ -103,6 +103,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.wrapit {
+	word-wrap: break-word;
+}
 /* Webfonts */
 @font-face {
 	font-family: 'myriad_pro_lightregular';

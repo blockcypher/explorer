@@ -13,7 +13,7 @@
       <i class="fa fa-exchange"></i> 
       {{ coin_symbol|coin_symbol_to_display_name }} Transaction
     </h1>
-    <h2 class="tagline truncate semi">({{ tx_hash }})</h2>
+    <h2 class="tagline wrapit semi">({{ tx_hash }})</h2>
   </div>
 </div>
 
@@ -142,44 +142,46 @@
     {% else %}
       <div class="col-md-6">
     {% endif %}
-        <table class="table">
-          <tr{% if not block_hash %} style="display:none;"{% endif %}>
-            <th>In Block</th>
-            <td>
-              <a href="{% url 'block_overview' coin_symbol block_hash %}" class="hidden-xs">{{ block_hash }}</a>
-              <a href="{% url 'block_overview' coin_symbol block_hash %}" class="visible-xs">See Block</a>
-            </td>
-          </tr>
+        <div class="table-responsive">
+          <table class="table">
+            <tr{% if not block_hash %} style="display:none;"{% endif %}>
+              <th>In Block</th>
+              <td>
+                <a href="{% url 'block_overview' coin_symbol block_hash %}" class="hidden-xs">{{ block_hash }}</a>
+                <a href="{% url 'block_overview' coin_symbol block_hash %}" class="visible-xs">See Block</a>
+              </td>
+            </tr>
 
-          <tr{% if not block_hash %} style="display:none;"{% endif %}>
-            <th>Block Height</th>
-            <td>
-              <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
-            </td>
-          </tr>
+            <tr{% if not block_hash %} style="display:none;"{% endif %}>
+              <th>Block Height</th>
+              <td>
+                <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
+              </td>
+            </tr>
 
-        {% if is_coinbase_tx and coinbase_msg %}
-          <tr>
-            <th>Coinbase Message:</th>
-            <td>{{ coinbase_msg }}</td>
-          </tr>
-        {% endif %}
+          {% if is_coinbase_tx and coinbase_msg %}
+            <tr>
+              <th>Coinbase Message:</th>
+              <td class="wrapit">{{ coinbase_msg }}</td>
+            </tr>
+          {% endif %}
 
-        {% if relayed_by %}
-          <tr>
-            <th>Relayed By:</th>
-            <td>{{ relayed_by }}</td>
-          </tr>
-        {% endif %}
-          <tr>
-            <td colspan="2" class="text-center">
-              <a href="{{ api_url }}" class="btn btn-default">
-                <i class="fa fa-code"></i> 
-                API Call Source
-              </a>
-            </td>
-          </tr>
-        </table>
+          {% if relayed_by %}
+            <tr>
+              <th>Relayed By:</th>
+              <td>{{ relayed_by }}</td>
+            </tr>
+          {% endif %}
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{{ api_url }}" class="btn btn-default">
+                  <i class="fa fa-code"></i> 
+                  API Call Source
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
