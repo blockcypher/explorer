@@ -12,7 +12,7 @@
       <i class="fa fa-cube"></i> 
       {{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}
     </h1>
-    <h2 class="tagline truncate semi">({{ block_details.hash }})</h2>
+    <h2 class="tagline wrapit semi">({{ block_details.hash }})</h2>
   </div>
 </div>
 
@@ -148,7 +148,7 @@
       <div class="col-md-5">
         <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
       {% for input in transaction.inputs %}
-        <div class="txn-input">
+        <div class="txn-input truncate">
           <strong>
             {{ input.output_value|satoshis_to_btc_rounded }}
             {{ coin_symbol|coin_symbol_to_currency_name }}
@@ -165,11 +165,13 @@
       {% endfor %}
       {% if inputs|length < transaction.vin_sz %}...{% endif %}
       </div>
-      <div class="col-md-2 text-center txn-arrow"></div>
+      <div class="col-md-2">
+        <div class="txn-arrow"></div>
+      </div>
       <div class="col-md-5">
         <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
       {% for output in transaction.outputs %}
-        <div class="txn-output">
+        <div class="txn-output truncate">
           <strong>
             {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
