@@ -310,18 +310,17 @@
           ws.close();
         }
 
-        if ( data.hash ) {
+        if ( data.hasOwnProperty('hash') ) {
 
           // Update # confirmations
           console.log('Transaction now has ' + data.confirmations + ' confirmations');
           $('#num-confs').text(data.confirmations);
           $('#num-confs').hide().fadeIn();
 
-          // Hide miner pref, memory pools, confidence
-          $('#preference-section').fadeOut();
-          $('#pools-section').fadeOut();
-          $('#confidence-section').fadeOut();
-
+          if (data.confirmations == 1) {
+            // Refresh on first confirmation
+            location.reload();
+          }
 
         }
 

@@ -100,7 +100,7 @@
 
         var data = JSON.parse(evt.data);
 
-        if ( data.hash && $('#' + data.hash).length == 0 ) {
+        if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
           $('#newtx-section').fadeIn(); // only matters the first time
           var btc_rounded = satoshis_to_btc(data.total);
           var seconds_ago = convert_time_to_seconds_ago(data.received)

@@ -299,7 +299,7 @@
           ws.close();
         }
 
-        if ( data.hash && $('#' + data.hash).length == 0 ) {
+        if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
 
           var btc_rounded = satoshis_to_btc(data.total);
 
