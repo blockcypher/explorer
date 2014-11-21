@@ -31,7 +31,7 @@
               <a href="{% url 'block_overview' coin_symbol block.height %}">{{ block.height }}</a>
             </td>
             <td>{{ block.received_time|naturaltime }}</td>
-            <td>{{ block.n_tx }}</td>
+            <td>{{ block.n_tx|intcomma }}</td>
             <td>{{ block.total|satoshis_to_bitcoin|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
             <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           </tr>
