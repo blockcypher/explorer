@@ -102,9 +102,9 @@
 
   <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
 
-  <div class="section">
+  <div class="section pager">
     <div class="row">
-      <div class="col-md-4 text-left">
+      <div class="col-sm-4 text-left">
       {% if current_page > 1 %}
         <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
           <i class="fa fa-angle-double-left"></i> 
@@ -113,11 +113,11 @@
       {% endif %}
       </div>
 
-      <div class="col-md-4 text-center">
+      <div class="col-sm-4 text-center">
         Page {{ current_page }} of {{ max_pages }}
       </div>
 
-      <div class="col-md-4 text-right">
+      <div class="col-sm-4 text-right">
       {% if current_page < max_pages %}
         <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
           Next Page
@@ -188,9 +188,9 @@
     </div>
   {% endfor %}
 
-  <div class="section">
+  <div class="section pager">
     <div class="row">
-      <div class="col-md-4 text-left">
+      <div class="col-sm-4 text-left">
       {% if current_page > 1 %}
         <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
           <i class="fa fa-angle-double-left"></i> 
@@ -199,11 +199,11 @@
       {% endif %}
       </div>
 
-      <div class="col-md-4 text-center">
+      <div class="col-sm-4 text-center">
         Page {{ current_page }} of {{ max_pages }}
       </div>
 
-      <div class="col-md-4 text-right">
+      <div class="col-sm-4 text-right">
       {% if current_page < max_pages %}
         <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
           Next Page

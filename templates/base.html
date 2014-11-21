@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="{% block meta_content %}{# FIXME: add content #}{% endblock meta_content %}">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
 
     <link rel="icon" type="image/png" href="{% static "img/favicon_16x16.png" %}" sizes="16x16">
     <link rel="icon" type="image/png" href="{% static "img/favicon_32x32.png" %}" sizes="32x32">
@@ -57,7 +56,58 @@
         <div class="collapse navbar-collapse" id="nav-collapse">
 
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://www.blockcypher.com">BlockCypher</a></li>
+            {% if not is_home %}
+            <li>
+              <form class="navbar-form navbar-search" role="search" method="post" action="{% url "home" %}">
+                {% csrf_token %}
+                <input type="hidden" value="{% firstof coin_symbol 'btc' %}" id="id_coin_symbol" name="coin_symbol">
+
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                      <span id="search-dropdown-label">{% if coin_symbol %}{{ coin_symbol|coin_symbol_to_display_shortname }}{% else %}BTC{% endif %}</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
+                    </ul>
+                  </div>
+                  <input name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
+                  </span>
+                </div>
+              </form>
+            </li>
+            {% endif %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Blockchains <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="{% url 'coin_overview' 'btc' %}">Bitcoin</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'btc-testnet' %}">Bitcoin Testnet</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'ltc' %}">Litecoin</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'doge' %}">Dogecoin</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'uro' %}">URO</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'bcy' %}">BlockCypher Testnet</a>
+                </li>
+              </ul>
+            </li>
+            <li><a href="http://www.blockcypher.com">Home</a></li>
             <li><a href="#">{% trans "Contact Us" %}</a></li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
@@ -90,33 +140,6 @@
               {% endif %}
             </li>
           </ul>
-
-          {% if not is_home %}
-          <form class="navbar-form navbar-right navbar-search" role="search" method="post" action="{% url "home" %}">
-            {% csrf_token %}
-            <input type="hidden" value="{% firstof coin_symbol 'btc' %}" id="id_coin_symbol" name="coin_symbol">
-
-            <div class="input-group">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  <span id="search-dropdown-label">{% if coin_symbol %}{{ coin_symbol|coin_symbol_to_display_shortname }}{% else %}BTC{% endif %}</span> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
-                  <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
-                </ul>
-              </div>
-              <input name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
-              <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
-          {% endif %}
 
         </div>
       </div>
