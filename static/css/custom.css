@@ -316,7 +316,7 @@ a.coin:hover {
 }
 @media(min-width:992px) and (max-width:1199px){
 	.navbar-form .input-group>.form-control.search-input {
-		width:300px;
+		width:210px;
 	}
 }
 @media (max-width:991px){
@@ -339,7 +339,7 @@ a.coin:hover {
 }
 @media (min-width:768px) and (max-width:991px){
 	.navbar-form .input-group>.form-control.search-input {
-		width: 160px;
+		width: 80px;
 	}
 }
 @media (max-width:767px){
