@@ -32,7 +32,10 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-          {% if not has_more %}
+          {% if has_more %}
+            {# TODO: something better #}
+            Too many transactions
+          {% else %}
             {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_received_satoshis %}
               <br>
@@ -44,7 +47,10 @@
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-          {% if not has_more %}
+          {% if has_more %}
+            {# TODO: something better #}
+            Too many transactions
+          {% else %}
             {{ total_sent_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_sent_satoshis %}
               <br>
