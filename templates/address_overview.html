@@ -33,8 +33,17 @@
           <li>
             <span class="dash-label">Received</span><br>
           {% if has_more %}
-            {# TODO: something better #}
-            Too many transactions
+            A lot 
+            <button 
+              type="button"
+              class="btn-link"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="top"
+              data-html="true"
+              data-content="We don't display summary data for addresses with > 5,000 transactions. Sorry, we're working on it!">
+              <i class="fa fa-info-circle"></i>
+            </button>
           {% else %}
             {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_received_satoshis %}
@@ -48,8 +57,17 @@
           <li>
             <span class="dash-label">Sent</span><br>
           {% if has_more %}
-            {# TODO: something better #}
-            Too many transactions
+            A lot 
+            <button 
+              type="button"
+              class="btn-link"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="top"
+              data-html="true"
+              data-content="We don't display summary data for addresses with > 5,000 transactions. Sorry, we're working on it!">
+              <i class="fa fa-info-circle"></i>
+            </button>
           {% else %}
             {{ total_sent_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_sent_satoshis %}
@@ -244,6 +262,9 @@
     $(document).ready(function(){
 
       $("time.timeago").timeago();
+
+      //init popover
+      $('[data-toggle="popover"]').popover()
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
