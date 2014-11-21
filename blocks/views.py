@@ -45,7 +45,7 @@ def block_overview(request, coin_symbol, block_representation):
             'api_url': api_url,
             'block_details': block_details,
             'current_page': current_page,
-            'max_pages': max(block_details['n_tx'] // TXNS_PER_PAGE, 1),
+            'max_pages': block_details['n_tx'] // TXNS_PER_PAGE - 1,
             }
 
 
