@@ -22,7 +22,7 @@
     <div class="col-md-4 text-center">
       <p>
         <a href="{% url 'address_overview' coin_symbol address %}">
-          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}">
+          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
         </a>
       </p>
     </div>
@@ -122,9 +122,9 @@
   </h2>
 
 {% if max_pages > 1 %}
-  <div class="section">
+  <div class="section pager">
     <div class="row">
-      <div class="col-md-4 text-left">
+      <div class="col-sm-4 text-left">
       {% if current_page > 1 %}
         <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
           <i class="fa fa-angle-double-left"></i> 
@@ -133,11 +133,11 @@
       {% endif %}
       </div>
 
-      <div class="col-md-4 text-center">
+      <div class="col-sm-4 text-center">
         Page {{ current_page }} of {{ max_pages }}
       </div>
 
-      <div class="col-md-4 text-right">
+      <div class="col-sm-4 text-right">
       {% if current_page < max_pages %}
         <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
           Next Page
@@ -215,9 +215,9 @@
   </div>
 
 {% if max_pages > 1 %}
-  <div class="section">
+  <div class="section pager">
     <div class="row">
-      <div class="col-md-4 text-left">
+      <div class="col-sm-4 text-left">
       {% if current_page > 1 %}
         <a href="?page={{ current_page|add:-1 }}" class="btn btn-default">
           <i class="fa fa-angle-double-left"></i> 
@@ -226,11 +226,11 @@
       {% endif %}
       </div>
 
-      <div class="col-md-4 text-center">
+      <div class="col-sm-4 text-center">
         Page {{ current_page }} of {{ max_pages }}
       </div>
 
-      <div class="col-md-4 text-right">
+      <div class="col-sm-4 text-right">
       {% if current_page < max_pages %}
         <a href="?page={{ current_page|add:1 }}" class="btn btn-default">
           Next Page
