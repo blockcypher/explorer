@@ -13,7 +13,7 @@ from blockcypher.api import get_address_details, get_address_url
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address):
 
-    TXNS_PER_PAGE = 50
+    TXNS_PER_PAGE = 100
 
     # 1 indexed page
     current_page = request.GET.get('page')
@@ -25,7 +25,7 @@ def address_overview(request, coin_symbol, address):
     address_details = get_address_details(
             address=address,
             coin_symbol=coin_symbol,
-            txn_limit=TXNS_PER_PAGE,
+            txn_limit=5000,
             )
 
     #import pprint; pprint.pprint(address_details, width=1)
@@ -54,6 +54,13 @@ def address_overview(request, coin_symbol, address):
             else:
                 unconfirmed_received_satoshis += transaction['value']
 
+    # transaction pagination: 0-indexed and inclusive
+    tx_start_num = (current_page - 1) * TXNS_PER_PAGE
+    tx_end_num = current_page * TXNS_PER_PAGE - 1
+
+    # filter address details for pagination. HACK!
+    all_transactions = all_transactions[tx_start_num:tx_end_num]
+
     api_url = get_address_url(address=address, coin_symbol=coin_symbol)
 
     return {
@@ -61,7 +68,7 @@ def address_overview(request, coin_symbol, address):
             'address': address,
             'api_url': api_url,
             'current_page': current_page,
-            'max_pages': max(address_details['final_n_tx'] // TXNS_PER_PAGE, 1),
+            'max_pages': address_details['final_n_tx'] // TXNS_PER_PAGE + 1,
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
