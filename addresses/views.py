@@ -82,5 +82,5 @@ def address_overview(request, coin_symbol, address):
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
-            'has_more': address_details.get('hasMore'),
+            'has_more': bool(len(all_transactions) != address_details['final_n_tx']),
             }
