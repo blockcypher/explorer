@@ -39,7 +39,6 @@
           <li>
             <span class="dash-label">Received</span><br>
           {% if has_more %}
-            A lot 
             <button 
               type="button"
               class="btn-link"
@@ -51,7 +50,7 @@
               <i class="fa fa-info-circle"></i>
             </button>
           {% else %}
-            {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_received_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_received_satoshis %}
               <br>
               <span class="dash-label">
@@ -63,7 +62,6 @@
           <li>
             <span class="dash-label">Sent</span><br>
           {% if has_more %}
-            A lot 
             <button 
               type="button"
               class="btn-link"
