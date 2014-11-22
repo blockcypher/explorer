@@ -1,5 +1,6 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
@@ -9,6 +10,8 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 from blockcypher.api import get_transaction_details, get_transaction_url
 
 from binascii import unhexlify
+
+import json
 
 
 @assert_valid_coin_symbol
@@ -95,3 +98,29 @@ def transaction_overview(request, coin_symbol, tx_hash):
             'preference': transaction_details.get('preference'),
             'receive_cnt': transaction_details.get('receive_count'),
             }
+
+
+@assert_valid_coin_symbol
+def poll_confidence(request, coin_symbol, tx_hash):
+    transaction_details = get_transaction_details(
+            tx_hash=tx_hash,
+            coin_symbol=coin_symbol,
+            limit=1,
+            )
+
+    confidence = transaction_details.get('confidence')
+    if confidence:
+        confidence_pct = min(round(confidence * 100, 2), 99.99)
+    else:
+        confidence_pct = None
+
+    json_dict = {
+            'confidence': confidence,
+            'confidence_pct': confidence_pct,
+            'double_spend_detected': transaction_details['double_spend'],
+            'receive_cnt': transaction_details.get('receive_count'),
+            }
+
+    json_response = json.dumps(json_dict, cls=DjangoJSONEncoder)
+
+    return HttpResponse(json_response, content_type='application/json')
