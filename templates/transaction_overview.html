@@ -284,10 +284,9 @@
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
-      var poll_url = '/{{ coin_symbol }}/tx-confidence/{{ tx_hash }}';
       $.ajax({
         type: 'get',
-        url: poll_url,
+        url: '/{{ coin_symbol }}/tx-confidence/{{ tx_hash }}/',
         success: function (data) {
           console.log('Confidence API Call Success');
           console.log(data)
