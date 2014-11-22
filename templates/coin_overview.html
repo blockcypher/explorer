@@ -50,6 +50,7 @@
             <th>Transaction Hash</th>
             <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
             <th>Time</th>
+            <th>Miner Preference</th>
           </tr>
           <tr class="new-tx" style="display;none"></tr>
         </table>
@@ -99,6 +100,7 @@
         }
 
         var data = JSON.parse(evt.data);
+        // console.log(data);
 
         if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
           $('#newtx-section').fadeIn(); // only matters the first time
@@ -109,7 +111,8 @@
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
             $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
-            $('<td>').attr('class', "timing").attr('received', data.received).append(time_ago_formatted)
+            $('<td>').attr('class', "timing").attr('received', data.received).append(time_ago_formatted),
+            $('<td>').text(data.preference)
           )
           $('.new-tx').first().before(to_insert);
           // New row effect:
