@@ -4,6 +4,12 @@
 {% load humanize %}
 {% load btc_formats %}
 
+{% block title %}
+  {% blocktrans with coin_display_name=coin_symbol|coin_symbol_to_display_name %}
+    {{ coin_display_name }} Block Exporer
+  {% endblocktrans %}
+{% endblock title %}
+
 {% block content %}
 
 <div class="section page-header bg-{{ coin_symbol }}">

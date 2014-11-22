@@ -4,6 +4,12 @@
 {% load humanize %}
 {% load btc_formats %}
 
+{% block title %}
+  {% blocktrans with currency_name=coin_symbol|coin_symbol_to_currency_name block_hash=block_details.hash %}
+    {{ currency_name }} Block {{ block_hash }}
+  {% endblocktrans %}
+{% endblock title %}
+
 {% block content %}
 
 <div class="page-header bg-{{ coin_symbol }}">

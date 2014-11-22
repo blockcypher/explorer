@@ -5,6 +5,12 @@
 {% load btc_formats %}
 {% load static %}
 
+{% block title %}
+  {% blocktrans with currency_name=coin_symbol|coin_symbol_to_currency_name address=address %}
+    {{ currency_name }} Address {{ address }}
+  {% endblocktrans %}
+{% endblock title %}
+
 {% block content %}
 
 <div class="page-header bg-{{ coin_symbol }}">
