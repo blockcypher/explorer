@@ -65,6 +65,8 @@ def address_overview(request, coin_symbol, address):
 
     api_url = get_address_url(address=address, coin_symbol=coin_symbol)
 
+    all_txids = set([tx['tx_hash'] for tx in all_transactions])
+
     return {
             'coin_symbol': coin_symbol,
             'address': address,
@@ -84,6 +86,6 @@ def address_overview(request, coin_symbol, address):
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
-            'has_more': bool(len(all_transactions) != address_details['final_n_tx']),
+            'has_more': bool(len(all_txids) != address_details['final_n_tx']),
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
