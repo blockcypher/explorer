@@ -87,6 +87,10 @@ def home(request):
             if redirect_url:
                 return HttpResponseRedirect(redirect_url)
 
+        else:
+            msg = _("Sorry, that's not a valid address, transaction or block")
+            messages.error(request, msg)
+
     return {
         'is_home': True,
         'form': form
