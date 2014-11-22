@@ -88,7 +88,9 @@ def home(request):
                 return HttpResponseRedirect(redirect_url)
 
         else:
-            msg = _("Sorry, that's not a valid address, transaction or block")
+            currency = COIN_SYMBOL_MAPPINGS[request.POST['coin_symbol']]['display_shortname']
+            msg = _("Sorry, that's not a valid %(currency)s address, transaction or block" % {
+                'currency': currency})
             messages.error(request, msg)
 
     return {
