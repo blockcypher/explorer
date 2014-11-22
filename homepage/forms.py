@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from blockcypher.constants import COIN_CHOICES
 from blockcypher.utils import is_valid_address, is_valid_hash, is_valid_block_num
 
+import re
+
 
 class SearchForm(forms.Form):
     search_string = forms.CharField(
@@ -18,7 +20,9 @@ class SearchForm(forms.Form):
     )
 
     def clean_search_string(self):
-        search_string = self.cleaned_data['search_string'].strip().replace(',', '')
+        search_string = self.cleaned_data['search_string'].strip()
+        # get rid of non alphanumerics
+        search_string = re.sub(r'[^a-zA-Z0-9]+', '', search_string)
 
         if is_valid_hash(search_string) or is_valid_address(search_string) or is_valid_block_num(search_string):
             return search_string
