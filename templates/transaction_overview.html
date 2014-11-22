@@ -292,7 +292,7 @@
           // Update #s
           $("#confidence-widget").css({'style': "height:" + data['confidence_pct'] + "%;"});
           $("#confidence-text").text(data['confidence_pct'] + "%");
-          $('#receive_cnt').text(data['receive_cnt']);
+          $('#receive-cnt').text(data['receive_cnt']);
 
           setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
 
