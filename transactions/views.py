@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+
 from blockcypher.api import get_transaction_details, get_transaction_url
 
 from binascii import unhexlify
@@ -97,6 +99,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
             'confidence_pct': confidence_pct,
             'preference': transaction_details.get('preference'),
             'receive_cnt': transaction_details.get('receive_count'),
+            'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 
 

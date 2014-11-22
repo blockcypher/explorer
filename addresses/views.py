@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+
 from blockcypher.api import get_address_details, get_address_url
 
 
@@ -83,4 +85,5 @@ def address_overview(request, coin_symbol, address):
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
             'has_more': bool(len(all_transactions) != address_details['final_n_tx']),
+            'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }

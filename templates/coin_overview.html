@@ -135,7 +135,10 @@
 
       ws.onopen = function() {
         console.log('Connection established.');
-        ws.send(JSON.stringify({'event': 'unconfirmed-tx'}));
+        ws.send(JSON.stringify({
+          'event': 'unconfirmed-tx',
+          'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
+        }));
         send_ping();
       };
 

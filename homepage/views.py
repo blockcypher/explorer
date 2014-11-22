@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+
 from homepage.forms import SearchForm
 
 from blockcypher.api import get_transaction_details, get_block_overview, get_latest_block_height
@@ -118,6 +120,7 @@ def coin_overview(request, coin_symbol):
             'coin_symbol': coin_symbol,
             'form': form,
             'recent_blocks': recent_blocks,
+            'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 
 

@@ -380,6 +380,7 @@
             'event': 'tx-confirmation',
             {# UGLY HACK #}
             'address': "{{ outputs.0.addresses.0 }}",
+            'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
           }
         ));
         send_ping();
