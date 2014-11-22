@@ -78,7 +78,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
             'api_url': api_url,
             'is_coinbase_tx': is_coinbase_tx,
             'coinbase_msg': coinbase_msg,
-            'double_spend_detected': transaction_details['double_spend'],
+            'double_of_tx': transaction_details.get('double_of'),
             'received_at': received_at,
             'confirmed_at': confirmed_at,
             'time_to_use': time_to_use,

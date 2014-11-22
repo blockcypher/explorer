@@ -27,10 +27,11 @@
   <div class="container">
     {% if tx_hash %}
 
-    {% if double_spend_detected %}
+    {% if double_of_tx %}
       <div class="alert alert-danger" role="alert">
-        <i class="fa fa-exclamation-triangle"></i> 
+        <i class="fa fa-exclamation-triangle"></i>
         Double-Spend Detected
+        (<a href="{% url transaction_overview coin_symbol double_of_tx %}">Details</a>)
       </div>
     {% endif %}
 
@@ -120,7 +121,7 @@
           data-html='true'
           data-content='
             <span{% if block_hash %} style='display:none;'{% endif %}>
-              <b>Double-Spend Detected:</b> <span id="ds-detected">{% if double_spend_detected %}YES{% else %}No{% endif %}</span>
+              <b>Double-Spend Detected:</b> <span id="ds-detected">{% if double_of_tx %}YES{% else %}No{% endif %}</span>
             </span><br>
             <span{% if block_hash %} style='display:none;'{% endif %} id="pools-section">
               <b>Memory Pools With Tx:</b> <span id="receive-cnt">{{ receive_cnt }}</span>
