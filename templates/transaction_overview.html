@@ -221,10 +221,9 @@
         {# the coinbase! #}
         from Block Reward
       {% else %}
-        {# TODO: |first is a hack #}
         from<br>
         <i class="fa fa-qrcode"></i> 
-        <a href="{% url 'address_overview' coin_symbol input.addresses|first %}">{{ input.addresses|first }}</a>
+        <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
       {% endif %}
       </div>
     {% endfor %}
