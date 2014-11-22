@@ -84,19 +84,19 @@
               </button>
           </span><br>
           {% if num_confirmations >= 6 %}
-            <span class="confirmed">
+            <span id="conf-section" class="confirmed">
               <i class="fa fa-lock"></i> 
               <span id="num-confs">6+</span>
             </span>
           {% elif num_confirmations > 0 and num_confirmations < 6 %}
-            <span class="pending">
+            <span id="conf-section" class="pending">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
+              <span id="num-confs">{{ num_confirmations|intcomma }}/6</span>
             </span>
           {% else %}
-            <span class="unconfirmed">
+            <span id="conf-section" class="unconfirmed">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ num_confirmations|intcomma }}</span>/6
+              <span id="num-confs">{{ num_confirmations|intcomma }}/6</span>
             </span>
           {% endif %}
         </li>
@@ -337,7 +337,7 @@
       ws.onmessage = function(evt) {
 
         var data = JSON.parse(evt.data);
-        console.log('Websocket Received: ' + evt.data);
+        // console.log('Websocket Received: ' + evt.data);
 
         // Weak protection against too much activity
         total_ws_received += 1;
@@ -347,15 +347,25 @@
 
         if ( data.hasOwnProperty('hash') ) {
 
+
           // Update # confirmations
           console.log('Transaction now has ' + data.confirmations + ' confirmations');
-          $('#num-confs').text(data.confirmations);
-          $('#num-confs').hide().fadeIn();
-
-          if (data.confirmations == 1) {
+          if (data.confirmations == 0) {
+            confs_formatted = '0/6';
+            // This shouldn't happen
+          } else if (data.confirmations == 1) {
             // Refresh on first confirmation
             location.reload();
+          } else if (data.confirmations < 6) {
+            confs_formatted = data.confirmations + '/6';
+            $('#conf-section').removeClass( "unconfirmed" ).addClass( "pending" );
+          } else {
+            confs_formatted = '6+';
+            $('#conf-section').removeClass( "pending unconfirmed" ).addClass( "confirmed" );
           }
+
+          $('#num-confs').text(confs_formatted);
+          $('#num-confs').hide().fadeIn();
 
         }
 
