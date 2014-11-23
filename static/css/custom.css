@@ -235,6 +235,12 @@ body {
 	text-decoration: none;
 	padding-left: 5px;
 }
+.main-footer .btn {
+	background: transparent;
+	text-decoration: none;
+	color:#888;
+	border-color:#888;
+}
 /* Homepage */
 .search-filter .active,
 .search-filter .active:hover {
