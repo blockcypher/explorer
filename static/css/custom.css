@@ -80,7 +80,7 @@
 .uro {
 	background: url(../img/uro.svg) center no-repeat;
 }
-.bc-testnet {
+.bc-testnet, .bcy {
 	background: url(../img/bc-testnet.svg) center no-repeat;
 }
 .doge {
@@ -130,7 +130,12 @@
 .mpsb {
 	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
-
+.acc {
+	display: block;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
 /* Layout */
 body {
 	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
@@ -215,6 +220,11 @@ body {
 	color: #929191;
 	text-transform: uppercase;
 	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
+.header-coin {
+	width:30px;
+	height:30px;
+	display:inline-block;
 }
 /* Footer */
 .main-footer {
