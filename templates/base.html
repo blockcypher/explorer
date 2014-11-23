@@ -46,8 +46,8 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="{% url "home" %}">
-            <strong class="logo">
+          <a class="navbar-brand" href="{% url "home" %}" title="live.blockcypher.com">
+            <strong class="logo acc">
               live.blockcypher.com
             </strong>
           </a>
@@ -84,8 +84,20 @@
               </form>
             </li>
             {% endif %}
+            {% if coin_symbol %}
+            <li>
+              <a href="{% url 'coin_overview' coin_symbol %}" style="padding:7px 0 7px 15px;" title="{{ coin_symbol|coin_symbol_to_display_name }}">
+                <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+              </a>
+            </li>
+            {% endif %}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Blockchains <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                {% if not coin_symbol %}
+                  Blockchains
+                {% endif %}
+                <span class="caret"></span>
+              </a>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="{% url 'coin_overview' 'btc' %}">Bitcoin</a>
@@ -107,8 +119,18 @@
                 </li>
               </ul>
             </li>
-            <li><a href="http://www.blockcypher.com">Home</a></li>
-            <li><a href="#">{% trans "Contact Us" %}</a></li>
+            {% if not is_home %}
+              <li>
+                <a href="http://www.blockcypher.com">
+                  Home
+                </a>
+              </li>
+            {% endif %}
+            <li>
+              <a href="mailto:contact@blockcypher.com">
+                {% trans "Contact Us" %}
+              </a>
+            </li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
                 {% get_current_language as LANGUAGE_CODE %}
@@ -163,17 +185,27 @@
     <footer class="main-footer">
       <div class="container">
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <p>We are social 
-              <a href="https://twitter.com/blockcypher" class="social">
+              <a href="https://twitter.com/blockcypher" class="social" target="_blank">
                 <i class="fa fa-twitter"></i>
               </a> 
-              <a href="https://www.facebook.com/blockcypher" class="social">
+              <a href="https://www.facebook.com/blockcypher" class="social" target="_blank">
                 <i class="fa fa-facebook"></i>
               </a> 
+              <a href="https://github.com/blockcypher" class="social" target="_blank">
+                <i class="fa fa-github-alt"></i>
+              </a>
             </p>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-4">
+            <p class="text-center">
+              <a href="#" class="btn btn-default">
+                Back to blockcypher.com
+              </a>
+            </p>
+          </div>
+          <div class="col-sm-4">
             <p class="text-right">
               Powered by the <a href="http://www.blockcypher.com/">BlockCypher Bitcoin API</a><br>
               © 2014 - BlockCypher

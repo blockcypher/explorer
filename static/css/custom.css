@@ -80,7 +80,7 @@
 .uro {
 	background: url(../img/uro.svg) center no-repeat;
 }
-.bc-testnet {
+.bc-testnet, .bcy {
 	background: url(../img/bc-testnet.svg) center no-repeat;
 }
 .doge {
@@ -130,7 +130,12 @@
 .mpsb {
 	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
-
+.acc {
+	display: block;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
 /* Layout */
 body {
 	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
@@ -211,10 +216,23 @@ body {
 	background: #fff;
 	padding:6px 0;
 }
+.navbar-brand {
+	padding:0 15px;
+}
+.logo {
+	background:url(../img/logo.svg) center no-repeat;
+	height:50px;
+	width:260px;
+}
 .navbar-default .navbar-nav > li > a {
 	color: #929191;
 	text-transform: uppercase;
 	font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
+.header-coin {
+	width:30px;
+	height:30px;
+	display:inline-block;
 }
 /* Footer */
 .main-footer {
@@ -234,6 +252,12 @@ body {
 	font-size: 20px;
 	text-decoration: none;
 	padding-left: 5px;
+}
+.main-footer .btn {
+	background: transparent;
+	text-decoration: none;
+	color:#888;
+	border-color:#888;
 }
 /* Homepage */
 .search-filter .active,
