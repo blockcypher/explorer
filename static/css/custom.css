@@ -216,6 +216,14 @@ body {
 	background: #fff;
 	padding:6px 0;
 }
+.navbar-brand {
+	padding:0 15px;
+}
+.logo {
+	background:url(../img/logo.svg) center no-repeat;
+	height:50px;
+	width:260px;
+}
 .navbar-default .navbar-nav > li > a {
 	color: #929191;
 	text-transform: uppercase;
