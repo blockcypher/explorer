@@ -170,12 +170,13 @@
 
     {% if is_home %}
       <div class="main-container home">
+        {# Including the messages for the homepage in the home template #}
     {% else %}
       <div class="main-container">
+        {% include "partials/messages.html" %}
     {% endif %}
 
       {# Begin page content #}
-      {% include "partials/messages.html" %}
       {% block content %}
       {% endblock content %}
 
