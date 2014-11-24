@@ -50,11 +50,11 @@
               <i class="fa fa-info-circle"></i>
             </button>
           {% else %}
-            {{ total_received_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_received_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_received_satoshis %}
               <br>
               <span class="dash-label">
-                ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+                ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
               </span>
             {% endif %}
           {% endif %}
@@ -73,11 +73,11 @@
               <i class="fa fa-info-circle"></i>
             </button>
           {% else %}
-            {{ total_sent_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_sent_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_sent_satoshis %}
               <br>
               <span class="dash-label">
-                ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded|intcomma }} 
+                ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounding|intcomma }} 
                 {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
               </span>
             {% endif %}
@@ -85,11 +85,11 @@
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {{ total_balance_satoshis|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ total_balance_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
           {% if unconfirmed_balance_satoshis %}
             <br>
             <span class="dash-label">
-              ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded|intcomma }} 
+              ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounding|intcomma }} 
               {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
             </span>
           {% endif %}
@@ -179,7 +179,7 @@
           </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ transaction.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            {{ transaction.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           <td>
           {% if transaction.confirmations >= 6 %}
             <span class="confirmed">
@@ -309,7 +309,7 @@
 
         if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
 
-          var btc_rounded = satoshis_to_btc(data.total);
+          var btc_rounded = satoshis_to_btc_rounding(data.total);
 
           if (data.tx_input_n >= 0) {
             sign_to_use = '+';

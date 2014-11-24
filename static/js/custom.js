@@ -5,8 +5,13 @@ function setCoin(coin, label) {
   $('.search-filter .active').removeClass('active');
 }
 
-function satoshis_to_btc(satoshis) {
+function satoshis_to_btc_full(satoshis) {
+  return satoshis/(Math.pow(10,8));
+}
+
+function satoshis_to_btc_rounding(satoshis) {
   // Round to 4 decimal places
+  // Strange name because of namespacing issue
   var btc = satoshis/(Math.pow(10,8));
   return Math.round(btc*10000)/10000;
 }

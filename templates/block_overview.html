@@ -53,7 +53,7 @@
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
-          {{ block_details.fees|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ block_details.fees|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
       </ul>
       <div class="clearfix"></div>
@@ -156,7 +156,7 @@
       {% for input in transaction.inputs %}
         <div class="txn-input truncate">
           <strong>
-            {{ input.output_value|satoshis_to_btc_rounded }}
+            {{ input.output_value|satoshis_to_btc_rounding }}
             {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
         {% if input.addresses|length == 0 %}
@@ -179,7 +179,7 @@
       {% for output in transaction.outputs %}
         <div class="txn-output truncate">
           <strong>
-            {{ output.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ output.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
           to<br>
           <i class="fa fa-qrcode"></i> 

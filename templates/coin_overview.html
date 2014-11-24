@@ -39,7 +39,7 @@
             <td>{{ block.received_time|naturaltime }}</td>
             <td>{{ block.n_tx|intcomma }}</td>
             <td>{{ block.total|satoshis_to_bitcoin|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-            <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            <td>{{ block.fees|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           </tr>
         {% endfor %}
       </table>
@@ -110,7 +110,7 @@
 
         if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
           $('#newtx-section').fadeIn(); // only matters the first time
-          var btc_rounded = satoshis_to_btc(data.total);
+          var btc_rounded = satoshis_to_btc_rounding(data.total);
           var seconds_ago = convert_time_to_seconds_ago(data.received)
           var time_ago_formatted = format_seconds_ago(seconds_ago);
 
