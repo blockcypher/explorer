@@ -38,7 +38,7 @@
             </td>
             <td>{{ block.received_time|naturaltime }}</td>
             <td>{{ block.n_tx|intcomma }}</td>
-            <td>{{ block.total|satoshis_to_bitcoin|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            <td>{{ block.total|satoshis_to_btc_full|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
             <td>{{ block.fees|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
           </tr>
         {% endfor %}
