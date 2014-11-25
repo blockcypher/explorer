@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
 from blockcypher.api import get_address_details, get_address_url
 
@@ -28,6 +28,7 @@ def address_overview(request, coin_symbol, address):
             address=address,
             coin_symbol=coin_symbol,
             txn_limit=5000,
+            api_key=BLOCKCYPHER_API_KEY,
             )
 
     #import pprint; pprint.pprint(address_details, width=1)

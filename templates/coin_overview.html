@@ -47,7 +47,7 @@
   </div>
 
   <div class="section">
-    <div id="newtx-section" style="display:none">
+    <div id="newtx-section">
       <h2>Latest Transactions</h2>
 
       <div class="table-responsive">
@@ -59,6 +59,25 @@
             <th>Miner Preference</th>
           </tr>
           <tr class="new-tx" style="display;none"></tr>
+          {% for recent_tx in recent_txs %}
+            <tr class="new-tx">
+              <td>
+                <a href="{% url 'transaction_overview' coin_symbol recent_tx.hash %}">
+                  {{ recent_tx.hash|slice:"12" }}
+                </a>
+                ...
+              </td>
+              <td>{{ recent_tx.total|satoshis_to_btc_rounding|intcomma }}{{ coin_symbol|coin_symbol_to_currency_name }}</td>
+              <td>
+                <time class="timing" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
+                  {{ recent_tx.received|naturaltime }}
+                </time>
+              </td>
+              <td>
+                {{ recent_tx.preference }}
+              </td>
+            </tr>
+          {% endfor %}
         </table>
       </div>
 
@@ -109,7 +128,6 @@
         // console.log(data);
 
         if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
-          $('#newtx-section').fadeIn(); // only matters the first time
           var btc_rounded = satoshis_to_btc_rounding(data.total);
           var seconds_ago = convert_time_to_seconds_ago(data.received)
           var time_ago_formatted = format_seconds_ago(seconds_ago);
