@@ -14,6 +14,8 @@ from blockcypher.api import get_transaction_details, get_block_overview, get_lat
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 from blockcypher.constants import SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
 
+from operator import itemgetter
+
 
 @render_to('home.html')
 def home(request):
@@ -121,6 +123,9 @@ def coin_overview(request, coin_symbol):
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY,
             limit=10)
+
+    # sort recent txs by order (they're not always returning in order)
+    recent_txs = sorted(recent_txs, key=itemgetter('received'))
 
     return {
             'coin_symbol': coin_symbol,

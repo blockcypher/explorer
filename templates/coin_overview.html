@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
 
 {% block title %}
   {% blocktrans with coin_display_name=coin_symbol|coin_symbol_to_display_name %}
@@ -67,9 +68,12 @@
                 </a>
                 ...
               </td>
-              <td>{{ recent_tx.total|satoshis_to_btc_rounding|intcomma }}{{ coin_symbol|coin_symbol_to_currency_name }}</td>
               <td>
-                <time class="timing" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
+                {{ recent_tx.total|satoshis_to_btc_rounding|intcomma }}
+                {{ coin_symbol|coin_symbol_to_currency_name }}
+              </td>
+              <td>
+                <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
                   {{ recent_tx.received|naturaltime }}
                 </time>
               </td>
@@ -90,9 +94,14 @@
 {% endblock content %}
 
 {% block extra_js %}
+
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
   <script>
 
     $(document).ready(function(){
+
+      $("time.timeago").timeago();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
@@ -129,16 +138,16 @@
 
         if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
           var btc_rounded = satoshis_to_btc_rounding(data.total);
-          var seconds_ago = convert_time_to_seconds_ago(data.received)
-          var time_ago_formatted = format_seconds_ago(seconds_ago);
 
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
             $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
-            $('<td>').attr('class', "timing").attr('received', data.received).append(time_ago_formatted),
+            $('<td>').append($('<time>').attr('class', "timeago").attr('datetime', data.received)),
             $('<td>').text(data.preference)
           )
           $('.new-tx').first().before(to_insert);
+          // Update the timing
+          $("time.timeago").timeago();
           // New row effect:
           $('.new-tx').first().hide().fadeIn();
 
@@ -169,21 +178,6 @@
 
       };
 
-    // Update timing
-    function update_timing() {
-      console.log('Updating timing...');
-
-      var times_array = $('.timing');
-      var times_length = times_array.length;
-      for (var i = 0; i < times_length; i++) {
-        times_array[i].innerHTML = format_seconds_ago(convert_time_to_seconds_ago(times_array[i].getAttribute('received')));
-      }
-      // Call self recursively
-      setTimeout(update_timing, 10000);
-    }
-
-    // Continuously update times as they become stale
-    update_timing();
 
     })
 
