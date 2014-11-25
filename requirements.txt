@@ -13,6 +13,7 @@ ipython==2.3.0
 newrelic==2.36.0.30
 psycopg2==2.5.4
 python-dateutil==2.2
+pytz==2014.9
 raven==5.1.1
 requests==2.4.3
 six==1.8.0
