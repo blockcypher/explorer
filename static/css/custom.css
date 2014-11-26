@@ -188,7 +188,7 @@ body {
 .logo {
 	background:url(../img/logo.svg) center no-repeat;
 	height:50px;
-	width:260px;
+	width:310px;
 }
 .navbar-default .navbar-nav > li > a {
 	color: #929191;
@@ -308,12 +308,12 @@ a.coin:hover {
 /* Media queries */
 @media(min-width:1200px){
 	.navbar-form .input-group>.form-control.search-input {
-		width:400px;
+		width:370px;
 	}
 }
 @media(min-width:992px) and (max-width:1199px){
 	.navbar-form .input-group>.form-control.search-input {
-		width:210px;
+		width:170px;
 	}
 }
 @media (max-width:991px){
@@ -336,7 +336,7 @@ a.coin:hover {
 }
 @media (min-width:768px) and (max-width:991px){
 	.navbar-form .input-group>.form-control.search-input {
-		width: 40px;
+		width: 30px;
 	}
 }
 @media (max-width:767px){

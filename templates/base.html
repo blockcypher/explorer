@@ -85,13 +85,13 @@
             </li>
             {% endif %}
             {% if coin_symbol %}
-            <li>
+            <li class="hidden-sm">
               <a href="{% url 'coin_overview' coin_symbol %}" style="padding:7px 0 7px 15px;" title="{{ coin_symbol|coin_symbol_to_display_name }}">
                 <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
               </a>
             </li>
             {% endif %}
-            <li class="dropdown">
+            <li class="dropdown hidden-sm">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                 {% if not coin_symbol %}
                   Blockchains
