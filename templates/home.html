@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
 
-        <h1>Search the blockchain</h1>
+        <h1>Search the block chain</h1>
         <p class="lead">Find info that other block explorers don't have</p>
 
         <form role="search" method="post" action="{% url "home" %}">
@@ -62,35 +62,37 @@
 
     <div class="row text-center">
       <h2>Browse the Blockchain</h2>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'btc' %}" class="btc coin">
-          <span class="mpsb">Bitcoin</span>
-        </a>
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'btc-testnet' %}" class="btc-testnet coin">
-          <span class="mpsb">Bitcoin Testnet</span>
-        </a>
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'ltc' %}" class="ltc coin">
-          <span class="mpsb">Litecoin</span>
-        </a>
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'doge' %}" class="doge coin">
-          <span class="mpsb">Dogecoin</span>
-        </a>
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'uro' %}" class="uro coin">
-          <span class="mpsb">URO</span>
-        </a>
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <a href="{% url 'coin_overview' 'bcy' %}" class="bc-testnet coin">
-          <span class="mpsb">BlockCypher Testnet</span>
-        </a>
+      <div class="col-lg-10 col-lg-offset-1">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'btc' %}" class="btc coin">
+            <span class="mpsb">Bitcoin</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'btc-testnet' %}" class="btc-testnet coin">
+            <span class="mpsb">Bitcoin Testnet</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'ltc' %}" class="ltc coin">
+            <span class="mpsb">Litecoin</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'doge' %}" class="doge coin">
+            <span class="mpsb">Dogecoin</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'uro' %}" class="uro coin">
+            <span class="mpsb">URO</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'bcy' %}" class="bc-testnet coin">
+            <span class="mpsb">BlockCypher Testnet</span>
+          </a>
+        </div>
       </div>
     </div>
 
