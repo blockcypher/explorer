@@ -274,7 +274,12 @@
 
   <script>
 
-    var memoryPools = {{ receive_cnt }};
+    {% if receive_cnt > 0 %}
+      var memoryPools = {{ receive_cnt }};
+    {% else %}
+      var memoryPools = 0;
+    {% endif %}
+
     var doubleSpend = {% if double_of_tx %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
