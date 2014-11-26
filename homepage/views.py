@@ -124,14 +124,23 @@ def coin_overview(request, coin_symbol):
             api_key=BLOCKCYPHER_API_KEY,
             limit=10)
 
+    recent_txs_filtered = []
+    tx_hashes_seen = set([])
+    for recent_tx in recent_txs:
+        if recent_tx['hash'] in tx_hashes_seen:
+            continue
+        else:
+            tx_hashes_seen.add(recent_tx['hash'])
+            recent_txs_filtered.append(recent_tx)
+
     # sort recent txs by order (they're not always returning in order)
-    recent_txs = sorted(recent_txs, key=itemgetter('received'))
+    recent_txs_filtered = sorted(recent_txs_filtered, key=itemgetter('received'), reverse=True)
 
     return {
             'coin_symbol': coin_symbol,
             'form': form,
             'recent_blocks': recent_blocks,
-            'recent_txs': recent_txs,
+            'recent_txs': recent_txs_filtered,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 
