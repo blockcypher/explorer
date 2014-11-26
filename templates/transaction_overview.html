@@ -270,9 +270,12 @@
 
 {% block extra_js %}
 
-  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+  <script src="{% static "js/jquery.timeago.js" %}"></script>
 
-  <script type="text/javascript">
+  <script>
+
+    var memoryPools = {{ receive_cnt }};
+    var doubleSpend = {% if double_of_tx %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
@@ -289,6 +292,8 @@
           $("#confidence-widget").height(data['confidence_pct'] + '%');
           $("#confidence-text").text(data['confidence_pct'] + "%");
           $('#receive-cnt').text(data['receive_cnt']);
+
+          memoryPools = data['receive_cnt'];
 
           setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
 
@@ -386,6 +391,22 @@
 
       };
 
+    {% if num_confirmations == 0 %}
+      poll_confidence()
+    {% endif %}
+
+    function popoverContent(){
+      var html = '';
+      html += '<span{% if block_hash %} style="display:none;"{% endif %}>' +
+              '<b>Double-Spend Detected:</b> ' +
+              '<span id="ds-detected">'+doubleSpend+'</span>' +
+            '</span><br>' +
+            '<span{% if block_hash %} style="display:none;"{% endif %} id="pools-section">' +
+              '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
+            '</span>';
+      return html;
+    }
+
       //init popover
       $('[data-toggle="popover"]').popover({'html': true});
 
@@ -394,25 +415,12 @@
         'html':true,
         'placement':'top',
         'trigger': 'click',
-        'content': '<span{% if block_hash %} style="display:none;"{% endif %}>' +
-              '<b>Double-Spend Detected:</b> ' +
-              '<span id="ds-detected">{% if double_of_tx %}YES{% else %}No{% endif %}</span>' +
-            '</span><br>' +
-            '<span{% if block_hash %} style="display:none;"{% endif %} id="pools-section">' +
-              '<b>Memory Pools With Tx:</b> <span id="receive-cnt">{{ receive_cnt }}</span>'+
-            '</span>'
-      })
-      //Update confidence popover on show
-      $('#confidence-popover').on('show.bs.popover', function () {
-        poll_confidence();
+        'content': function () {
+          return popoverContent();
+        }
       })
 
     })
-
-    {% if num_confirmations == 0 %}
-      poll_confidence()
-    {% endif %}
-
 
   </script>
 {% endblock extra_js %}
