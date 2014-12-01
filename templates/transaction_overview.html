@@ -112,20 +112,7 @@
     <div class="row">
       <div {% if block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
         <strong>Confidence</strong>
-        <button
-          type='button'
-          class='btn-link'
-          data-container='body'
-          data-toggle='popover'
-          data-placement='top'
-          data-html='true'
-          data-content='
-            <span{% if block_hash %} style='display:none;'{% endif %}>
-              <b>Double-Spend Detected:</b> <span id="ds-detected">{% if double_of_tx %}YES{% else %}No{% endif %}</span>
-            </span><br>
-            <span{% if block_hash %} style='display:none;'{% endif %} id="pools-section">
-              <b>Memory Pools With Tx:</b> <span id="receive-cnt">{{ receive_cnt }}</span>
-            </span>'>
+        <button id="confidence-popover" type='button' class='btn-link'>
           <i class="fa fa-info-circle"></i>
         </button>
         <div class="circle-chart">
@@ -283,9 +270,17 @@
 
 {% block extra_js %}
 
-  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+  <script src="{% static "js/jquery.timeago.js" %}"></script>
 
-  <script type="text/javascript">
+  <script>
+
+    {% if receive_cnt > 0 %}
+      var memoryPools = {{ receive_cnt }};
+    {% else %}
+      var memoryPools = 0;
+    {% endif %}
+
+    var doubleSpend = {% if double_of_tx %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
@@ -299,9 +294,11 @@
           CONFIDENCE_TIMEOUT_MS += 1.1;
 
           // Update #s
-          $("#confidence-widget").css({'style': "height:" + data['confidence_pct'] + "%;"});
+          $("#confidence-widget").height(data['confidence_pct'] + '%');
           $("#confidence-text").text(data['confidence_pct'] + "%");
           $('#receive-cnt').text(data['receive_cnt']);
+
+          memoryPools = data['receive_cnt'];
 
           setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
 
@@ -399,15 +396,36 @@
 
       };
 
-      //init popover
-      $('[data-toggle="popover"]').popover({'html': true});
-
-    })
-
     {% if num_confirmations == 0 %}
       poll_confidence()
     {% endif %}
 
+    function popoverContent(){
+      var html = '';
+      html += '<span{% if block_hash %} style="display:none;"{% endif %}>' +
+              '<b>Double-Spend Detected:</b> ' +
+              '<span id="ds-detected">'+doubleSpend+'</span>' +
+            '</span><br>' +
+            '<span{% if block_hash %} style="display:none;"{% endif %} id="pools-section">' +
+              '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
+            '</span>';
+      return html;
+    }
+
+      //init popover
+      $('[data-toggle="popover"]').popover({'html': true});
+
+      //init confidence popover
+      $('#confidence-popover').popover({
+        'html':true,
+        'placement':'top',
+        'trigger': 'click',
+        'content': function () {
+          return popoverContent();
+        }
+      })
+
+    })
 
   </script>
 {% endblock extra_js %}
