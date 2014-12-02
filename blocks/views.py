@@ -10,6 +10,8 @@ from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
 from blockcypher.api import get_block_details, get_block_overview_url, get_latest_block_height
 
+from utils import get_max_pages
+
 
 @assert_valid_coin_symbol
 @render_to('block_overview.html')
@@ -34,7 +36,7 @@ def block_overview(request, coin_symbol, block_representation):
             api_key=BLOCKCYPHER_API_KEY,
             )
 
-    #import pprint; pprint.pprint(block_details, width=1)
+    # import pprint; pprint.pprint(block_details, width=1)
 
     if 'error' in block_details:
         msg = _('Sorry, that block was not found')
@@ -49,7 +51,7 @@ def block_overview(request, coin_symbol, block_representation):
             'api_url': api_url,
             'block_details': block_details,
             'current_page': current_page,
-            'max_pages': block_details['n_tx'] // TXNS_PER_PAGE - 1,
+            'max_pages': get_max_pages(num_items=block_details['n_tx'], items_per_page=TXNS_PER_PAGE),
             }
 
 

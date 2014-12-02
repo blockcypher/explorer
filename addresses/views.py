@@ -10,6 +10,8 @@ from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
 from blockcypher.api import get_address_details, get_address_details_url
 
+from utils import get_max_pages
+
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
@@ -73,7 +75,7 @@ def address_overview(request, coin_symbol, address):
             'address': address,
             'api_url': api_url,
             'current_page': current_page,
-            'max_pages': address_details['final_n_tx'] // TXNS_PER_PAGE + 1,
+            'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
             'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
             'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
