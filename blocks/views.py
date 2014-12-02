@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.settings import BLOCKCYPHER_API_KEY
+
 from blockcypher.api import get_block_details, get_block_overview_url, get_latest_block_height
 
 
@@ -28,7 +30,9 @@ def block_overview(request, coin_symbol, block_representation):
             block_representation=block_representation,
             coin_symbol=coin_symbol,
             txn_limit=TXNS_PER_PAGE,
-            txn_offset=(current_page-1)*TXNS_PER_PAGE)
+            txn_offset=(current_page-1)*TXNS_PER_PAGE,
+            api_key=BLOCKCYPHER_API_KEY,
+            )
 
     #import pprint; pprint.pprint(block_details, width=1)
 
@@ -51,7 +55,8 @@ def block_overview(request, coin_symbol, block_representation):
 
 @assert_valid_coin_symbol
 def latest_block(request, coin_symbol):
-    latest_block_height = get_latest_block_height(coin_symbol=coin_symbol)
+    latest_block_height = get_latest_block_height(coin_symbol=coin_symbol,
+            api_key=BLOCKCYPHER_API_KEY)
     kwargs = {
             'coin_symbol': coin_symbol,
             'block_representation': latest_block_height,

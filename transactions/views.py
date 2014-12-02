@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
 from blockcypher.api import get_transaction_details, get_transaction_url
 
@@ -24,6 +24,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
             tx_hash=tx_hash,
             coin_symbol=coin_symbol,
             limit=500,
+            api_key=BLOCKCYPHER_API_KEY,
             )
 
     # FIXME: fails silently on pagination if there are > 20 inputs or outputs
@@ -109,6 +110,7 @@ def poll_confidence(request, coin_symbol, tx_hash):
             tx_hash=tx_hash,
             coin_symbol=coin_symbol,
             limit=1,
+            api_key=BLOCKCYPHER_API_KEY,
             )
 
     confidence = transaction_details.get('confidence')

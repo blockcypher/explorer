@@ -1,5 +1,5 @@
 Django==1.7.1
--e git://github.com/blockcypher/blockcypher-python.git@ab2699a5c21192645e45c78d9ebf5cdaded605f4#egg=blockcypher
+-e git://github.com/blockcypher/blockcypher-python.git@0f3d8c849164ae1731c5f9e0616d9c9c137d59dc#egg=blockcypher
 dj-database-url==0.3.0
 dj-static==0.0.6
 django-annoying==0.8.0
@@ -13,6 +13,7 @@ ipython==2.3.0
 newrelic==2.36.0.30
 psycopg2==2.5.4
 python-dateutil==2.2
+pytz==2014.9
 raven==5.1.1
 requests==2.4.3
 six==1.8.0

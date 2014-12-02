@@ -6,13 +6,15 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
 from homepage.forms import SearchForm
 
-from blockcypher.api import get_transaction_details, get_block_overview, get_latest_block_height
+from blockcypher.api import get_transaction_details, get_block_overview, get_latest_block_height, get_broadcast_transactions
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 from blockcypher.constants import SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
+
+from operator import itemgetter
 
 
 @render_to('home.html')
@@ -45,6 +47,7 @@ def home(request):
                             tx_hash=search_string,
                             coin_symbol=coin_symbol,
                             limit=1,
+                            api_key=BLOCKCYPHER_API_KEY,
                             )
                     if 'error' in tx_details:
                         # Not a valid TX hash, see if it's a block hash by checking blockchain
@@ -52,6 +55,7 @@ def home(request):
                                 block_representation=search_string,
                                 coin_symbol=coin_symbol,
                                 txn_limit=1,
+                                api_key=BLOCKCYPHER_API_KEY,
                                 )
                         if 'error' in block_details:
                             msg = _("Sorry, that's not a valid transaction or block hash for %(currency)s" % {'currency': coin_symbol})
@@ -111,15 +115,32 @@ def coin_overview(request, coin_symbol):
             }
     form = SearchForm(initial=initial)
 
-    latest_bh = get_latest_block_height(coin_symbol=coin_symbol)
+    latest_bh = get_latest_block_height(coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
 
-    recent_blocks = [get_block_overview(block_height, coin_symbol=coin_symbol, txn_limit=1) for block_height in reversed(range(latest_bh-4, latest_bh+1))]
+    recent_blocks = [get_block_overview(block_height, coin_symbol=coin_symbol, txn_limit=1, api_key=BLOCKCYPHER_API_KEY) for block_height in reversed(range(latest_bh-3, latest_bh+1))]
     #import pprint; pprint.pprint(recent_blocks, width=1)
+
+    recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
+            api_key=BLOCKCYPHER_API_KEY,
+            limit=10)
+
+    recent_txs_filtered = []
+    tx_hashes_seen = set([])
+    for recent_tx in recent_txs:
+        if recent_tx['hash'] in tx_hashes_seen:
+            continue
+        else:
+            tx_hashes_seen.add(recent_tx['hash'])
+            recent_txs_filtered.append(recent_tx)
+
+    # sort recent txs by order (they're not always returning in order)
+    recent_txs_filtered = sorted(recent_txs_filtered, key=itemgetter('received'), reverse=True)
 
     return {
             'coin_symbol': coin_symbol,
             'form': form,
             'recent_blocks': recent_blocks,
+            'recent_txs': recent_txs_filtered,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 
