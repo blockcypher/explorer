@@ -8,7 +8,7 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_address_details, get_address_url
+from blockcypher.api import get_address_details, get_address_details_url
 
 
 @assert_valid_coin_symbol
@@ -64,7 +64,7 @@ def address_overview(request, coin_symbol, address):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
-    api_url = get_address_url(address=address, coin_symbol=coin_symbol)
+    api_url = get_address_details_url(address=address, coin_symbol=coin_symbol)
 
     all_txids = set([tx['tx_hash'] for tx in all_transactions])
 
