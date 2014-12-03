@@ -7,9 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from transactions.forms import PushTXForm
+
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_transaction_details, get_transaction_url
+from blockcypher.api import get_transaction_details, get_transaction_url, pushtx
 
 from binascii import unhexlify
 
@@ -129,3 +131,36 @@ def poll_confidence(request, coin_symbol, tx_hash):
     json_response = json.dumps(json_dict, cls=DjangoJSONEncoder)
 
     return HttpResponse(json_response, content_type='application/json')
+
+
+@render_to('pushtx.html')
+def push_tx(request, coin_symbol):
+    form = PushTXForm(initial={'coin_symbol': coin_symbol})
+    if request.method == 'POST':
+        form = PushTXForm(data=request.POST)
+        if form.is_valid():
+            # broadcast the transaction
+            tx_hex = form.cleaned_data['tx_hex']
+            coin_symbol_to_use = form.cleaned_data['coin_symbol']
+
+            result = pushtx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use, api_key=BLOCKCYPHER_API_KEY)
+            import pprint; pprint.pprint(result, width=1)
+
+            if result.get('errors'):
+                err_msg = _('Transaction not broadcast for the following errors')
+                messages.error(request, err_msg)
+                for error in result['errors']:
+                    messages.info(request, error['error'])
+            else:
+                success_msg = _('Transaction Succesfully Broadcst')
+                messages.success(request, success_msg)
+                url = reverse('transaction_overview', kwargs={
+                    'coin_symbol': coin_symbol_to_use,
+                    'tx_hash': result['tx']['hash'],
+                    })
+                return HttpResponseRedirect(url)
+
+    return {
+            'coin_symbol': coin_symbol,
+            'form': form,
+            }

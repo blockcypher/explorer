@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <h1>
+      <i class="fa fa-send"></i> 
+      Broadcast Your Transaction
+    </h1>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <form role="form" method="post" action="{% url 'push_tx' coin_symbol %}">
+      {% load crispy_forms_tags %}
+      {{ form|crispy }}
+      {% csrf_token %}
+      <p class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "Broadcast Transaction" %} </button>
+      </p>
+    </form>
+
+    {% comment %}
+    {# waiting for this feature in the API #}
+    <p class="text-center">
+      <a href="#">Click here</a>
+      to decode the transaction without broadcasting.
+    </p>
+    {% endcomment %}
+
+  </div>
+</div>
+
+{% endblock content %}
