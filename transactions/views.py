@@ -144,7 +144,7 @@ def push_tx(request, coin_symbol):
             coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
             result = pushtx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use, api_key=BLOCKCYPHER_API_KEY)
-            import pprint; pprint.pprint(result, width=1)
+            #import pprint; pprint.pprint(result, width=1)
 
             if result.get('errors'):
                 err_msg = _('Transaction not broadcast for the following errors')
