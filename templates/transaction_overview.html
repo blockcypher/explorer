@@ -241,6 +241,8 @@
       {% if output.script_type == 'null-data' %}
         {# TODO: add explanation #}
         <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+      {% elif output.script_type == 'pay-to-multi-pubkey-hash' %}
+        <a href="http://dev.blockcypher.com/reference.html#transactions">Multi-Pubkey Hash</a>
       {% else %}
         <i class="fa fa-qrcode"></i> 
         <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
