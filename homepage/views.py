@@ -72,20 +72,19 @@ def home(request):
                 kwargs['address'] = search_string
                 first_char = search_string[0]
                 # Override coin_symbol if we can infer it from the blockchain
-                # TODO: find multisig prefixes for altcoins
                 if first_char in ('1', '3'):
                     # Do not force addresses starting with 3 to be BTC because that's also used by litecoin
                     kwargs['coin_symbol'] = 'btc'
-                elif first_char in ('m', '2'):
+                elif first_char in ('m', 'n', '2'):
                     # Note that addresses starting in 2 can be LTC testnet, but since we don't support that it's okay to include
                     kwargs['coin_symbol'] = 'btc-testnet'
-                elif first_char in ('D', ):
+                elif first_char in ('D', '9', 'A'):
                     kwargs['coin_symbol'] = 'doge'
-                elif first_char in ('L', ):
+                elif first_char in ('L', '3'):
                     kwargs['coin_symbol'] = 'ltc'
                 elif first_char in ('U', ):
                     kwargs['coin_symbol'] = 'uro'
-                elif first_char in ('C', ):
+                elif first_char in ('B', 'C', 'D'):
                     kwargs['coin_symbol'] = 'bcy'
 
                 redirect_url = reverse('address_overview', kwargs=kwargs)
