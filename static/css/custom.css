@@ -97,6 +97,9 @@ body {
 	font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
 	background: #000;
 }
+.container {
+	min-width:310px;
+}
 .main-container {
 	margin-top:50px;
 	background: #fff;
@@ -350,6 +353,11 @@ a.coin:hover {
 	}
 	.pager .text-right, .pager .text-left {
 		text-align: center !important;
+	}
+}
+@media (max-width:480px) {
+	.logo {
+		width:220px;
 	}
 }
 
