@@ -191,7 +191,7 @@ body {
 .logo {
 	background:url(../img/logo.svg) center no-repeat;
 	height:50px;
-	width:310px;
+	width:313px;
 }
 .navbar-default .navbar-nav > li > a {
 	color: #929191;
@@ -316,15 +316,18 @@ a.coin:hover {
 /* Media queries */
 @media(min-width:1200px){
 	.navbar-form .input-group>.form-control.search-input {
-		width:370px;
+		width:360px;
 	}
 }
 @media(min-width:992px) and (max-width:1199px){
 	.navbar-form .input-group>.form-control.search-input {
-		width:170px;
+		width:160px;
 	}
 }
 @media (max-width:991px){
+	.logo {
+		width:220px;
+	}
 	.dash {
 		padding:0 20px;
 	}
@@ -344,7 +347,7 @@ a.coin:hover {
 }
 @media (min-width:768px) and (max-width:991px){
 	.navbar-form .input-group>.form-control.search-input {
-		width: 30px;
+		width: 120px;
 	}
 }
 @media (max-width:767px){
@@ -355,9 +358,3 @@ a.coin:hover {
 		text-align: center !important;
 	}
 }
-@media (max-width:480px) {
-	.logo {
-		width:220px;
-	}
-}
-
