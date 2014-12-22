@@ -16,6 +16,17 @@ urlpatterns = patterns('',
     url(r'(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', 'transactions.views.poll_confidence', name='poll_confidence'),
     url(r'(?P<coin_symbol>[-\w]+)/block/(?P<block_representation>[-\w]+)/$', 'blocks.views.block_overview', name='block_overview'),
     url(r'(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
-    # So broad it must be last
+
+    # Login
+    url(r'^github/authorized/', 'users.views.github_authorized', name='github_authorized'),
+    url(r'^github/login/', 'users.views.github_login', name='github_login'),
+    url(r'^login/', 'users.views.user_login', name='user_login'),
+    url(r'^logout/?$', 'users.views.logout_request', name='logout'),
+    url(r'^sign-up/', 'users.views.signup', name='signup'),
+
+    # Profile
+    url(r'^dashboard/', 'users.views.dashboard', name='dashboard'),
+
+    # So broad it must be last (app page)
     url(r'(?P<coin_symbol>[-\w]+)/$', 'homepage.views.coin_overview', name='coin_overview'),
 )

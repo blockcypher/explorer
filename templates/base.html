@@ -125,18 +125,19 @@
                 </li>
               </ul>
             </li>
-            {% if not is_home %}
-              <li>
-                <a href="http://www.blockcypher.com">
-                  Home
-                </a>
-              </li>
-            {% endif %}
+
             <li>
-              <a href="mailto:contact@blockcypher.com">
-                {% trans "Contact Us" %}
-              </a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">
+                  {% trans "Log Out" %}
+                </a>
+              {% else %}
+                <a href="{% url 'user_login' %}">
+                  {% trans "Log In" %}
+                </a>
+              {% endif %}
             </li>
+
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
                 {% get_current_language as LANGUAGE_CODE %}

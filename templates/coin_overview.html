@@ -91,11 +91,24 @@
       </div>
 
       <p class="text-center">
-        Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+        Note: Blockypher is faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
       </p>
     </div>
   </div>
 </div>
+
+<div class="container">
+  <div class="section">
+    <h2>Fun Features</h2>
+    <ul>
+      <li><a href="{% url 'push_tx' coin_symbol %}">Push Transaction</a></li>
+      <li><a href"#">Address Monitoring</a></li>
+      <li><a href"#">Payment Forwarding</a></li>
+      <li><a href="#">Decode Raw Transaction<a></li>
+    </ul>
+  </div>
+</div>
+
 {% endblock content %}
 
 {% block extra_js %}

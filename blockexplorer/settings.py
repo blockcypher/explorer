@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'storages',
     'addresses',
     'transactions',
+    'users',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,6 +77,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+AUTH_USER_MODEL = 'users.AuthUser'
 
 ROOT_URLCONF = 'blockexplorer.urls'
 
@@ -168,8 +171,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
+GH_CLIENT_ID = os.getenv('GH_CLIENT_ID')
+GH_CLIENT_SECRET = os.getenv('GH_CLIENT_SECRET')
+assert GH_CLIENT_ID and GH_CLIENT_SECRET, 'https://github.com/settings/applications'
+
 BLOCKCYPHER_PUBLIC_KEY = '31c49f33f35c85a8f4d9845a754f7c8e'
+BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 

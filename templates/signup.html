@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Login" %}{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+
+  <div class="col-md-8 col-md-offset-2">
+
+    <h1>{% trans "Sign Up" %}</h1>
+
+
+    <div class="row">
+
+      <div class="col-sm-6">
+
+        <div class="form-well">
+          <form role="form" method="post" action="{% url "signup" %}">
+            {% load crispy_forms_tags %}
+            {{ form|crispy }}
+            {% csrf_token %}
+            <p class="text-center">
+              <button type="submit" class="btn btn-primary btn-lg">{% trans "Create Account" %} </button>
+            </p>
+          </form>
+          <p class="text-center">
+            {% trans "Already have an account?" %}
+            <a href="{% url 'user_login' %}">{% trans "Sign in here" %}</a>.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="col-sm-6">
+        <p>Or, <a href="{% url 'github_login' %}">Login with GitHub</a></p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock content %}
