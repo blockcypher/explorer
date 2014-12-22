@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Dashboard" %}{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+
+  <div class="col-md-8 col-md-offset-2">
+
+    <h1>{% trans "Dashboard" %}</h1>
+
+    <p>User Info:</p>
+    <ul>
+      <li>Signup At: {{ user.date_joined }}</li>
+      <li>Email: {{ user.email }}</li>
+      <li>Login Via Github: {% if user.github_profile %}Yes{% else %}No{% endif %}</li>
+      {% if user.github_profile %}
+        <li>Github Username: {{ user.github_profile.github_username }}</li>
+      {% endif %}
+    </ul>
+
+    <p>Blockcypher Tokens:</p>
+      <ul>
+      {% for bc_token in bc_tokens %}
+        <li>{{ bc_token }}</li>
+      {% endfor %}
+      </ul>
+
+  </div>
+
+</div>
+{% endblock content %}
