@@ -30,7 +30,7 @@ class AuthUserManager(BaseUserManager):
         Creates and saves a superuser with the given email and password.
         """
         user = self.create_user(email, password=password)
-        user.is_admin = True
+        user.is_superuser = True
         user.is_staff = True
         user.save()
 
@@ -53,6 +53,9 @@ class GithubProfile(models.Model):
 
 class AuthUser(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now_add=True, db_index=True)
+    first_name = models.CharField(max_length=64, blank=True, null=True)
+    last_name = models.CharField(max_length=64, blank=True, null=True)
+
     email = models.EmailField(max_length=128, unique=True)
     github_profile = models.OneToOneField(GithubProfile, blank=True, null=True)
 
@@ -64,11 +67,6 @@ class AuthUser(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
 
-    @property
-    def is_superuser(self):
-        # FIXME
-        return self.is_superuser
-
     def __str__(self):
         return '%s: %s' % (self.id, self.email)
 
@@ -77,7 +75,7 @@ class AuthUser(AbstractBaseUser):
         return '%s %s' % (self.first_name, self.last_name)
 
     def get_short_name(self):
-        return self.self.first_name
+        return self.first_name
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
