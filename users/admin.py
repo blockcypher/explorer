@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from users.models import GithubProfile, AuthUser, LoggedLogin, BlockypherToken
+from users.models import GithubProfile, AuthUser, LoggedLogin, BlockcypherToken
 
 
 @admin.register(AuthUser)
@@ -50,8 +50,8 @@ class LoggedLoginAdmin(admin.ModelAdmin):
     raw_id_fields = ('auth_user', )
 
 
-@admin.register(BlockypherToken)
-class BlockypherTokenAdmin(admin.ModelAdmin):
+@admin.register(BlockcypherToken)
+class BlockcypherTokenAdmin(admin.ModelAdmin):
     list_display = (
             'id',
             'created_at',

@@ -188,7 +188,9 @@ def signup(request):
 @login_required
 @render_to('dashboard.html')
 def dashboard(request):
-    return {}
+    return {
+            'bc_tokens': request.user.blockcyphertoken_set.order_by('-created_at'),
+            }
 
 
 def logout_request(request):

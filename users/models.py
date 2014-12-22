@@ -109,7 +109,7 @@ class LoggedLogin(models.Model):
                 )
 
 
-class BlockypherToken(models.Model):
+class BlockcypherToken(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     auth_user = models.ForeignKey(AuthUser, blank=False, null=False)
     email_used = models.EmailField(max_length=128, unique=True, blank=False, null=False)
