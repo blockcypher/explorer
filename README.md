@@ -41,7 +41,7 @@ $ foreman run python3 manage.py migrate
 
 Run the webserver locally:
 ```
-$ foreman run ./manage.py runserver
+$ foreman run python3 manage.py runserver
 ```
 
 Now visit: http://127.0.0.1:8000/
