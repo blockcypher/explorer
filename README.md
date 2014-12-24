@@ -1,10 +1,17 @@
-# Setup Instructions for OSX #
+# Setup Instructions #
 
 ## Install ##
+
+### OSX ###
 - Follow the instructions [here](http://docs.python-guide.org/en/latest/starting/install/osx/) to install [Homebrew](http://brew.sh/) and then (re)install python.
 - If for some reason the step above does not install pip and virtualenv, follow the instructions [here](https://pip.pypa.io/en/latest/installing.html#python-os-support) to get pip and then install virtualenv using pip install virtualenv.
-- Install ngrok with `brew install ngrok` (thanks Homebrew!)
-- Install the latest stable version of postgres 9. I recommend using Postgresapp for mac, available [here](http://postgresapp.com/).
+- Install the foreman gem for accessing environmental variables:  `$ gem install foreman`
+- Optional (for webhooks): install ngrok with `brew install ngrok` (thanks Homebrew!)
+- Optional (advanced features): Install the latest stable version of postgres 9. (http://postgresapp.com/)[Postgresapp for Mac] is quite easy to install.
+
+### Ubuntu ###
+- `$ sudo apt-get install postrgresql libpq-dev ngrok`
+
 
 ## Configure ##
 - `$ cd` into your projects/workspaces directory and run `$ git clone https://github.com/blockcypher/explorer.git`. The result of `$ git remote -v` should look like this:
@@ -22,8 +29,6 @@ DJ_DEFAULT_URL=postgres://postgres:YOURLOCALPASSWORDHERE@localhost:5432/explorer
 SECRET_KEY=RANDOMLY_GENERATED_50CHAR_STRING
 SITE_DOMAIN=pick_this_yourself.ngrok.com
 BLOCKCYPHER_API_KEY=PUT_YOURS_HERE
-GH_CLIENT_ID=FROM_GITHUB
-GH_CLIENT_SECRET=FROM_GITHUB
 ```
 (these are for your local machine, production is a little different as `settings.py` is smartly designed to default to production settings)
 
