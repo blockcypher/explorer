@@ -36,10 +36,7 @@ BLOCKCYPHER_API_KEY=PUT_YOURS_HERE
 - Create DB tables from code (replace `foreman` with `heroku` for running on production, which should basically never happen again):
 
 ```bash
-# Create tables (can't remember if this is neccessary with Django 1.7 now)
-$ foreman run python3 manage.py syncdb
-
-# Run migrations:
+# Create tables and run migrations:
 $ foreman run python3 manage.py migrate
 ```
 ## Run the Site Locally ##
