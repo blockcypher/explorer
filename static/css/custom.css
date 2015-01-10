@@ -65,6 +65,10 @@
 .img-center {
 	margin:0 auto;
 }
+.reset {
+	margin:0 !important;
+	padding:0 !important;
+}
 /* Webfonts */
 @font-face {
 	font-family: 'myriad_pro_lightregular';
@@ -227,6 +231,16 @@ body {
 	text-decoration: none;
 	color:#888;
 	border-color:#888;
+}
+.btn-gh {
+	background: #444;
+	border-color:#444;
+	color:#fff;
+}
+.btn-gh:hover {
+	background: #555;
+	border-color:#555;
+	color:#fff;
 }
 /* Homepage */
 .search-filter .active,
