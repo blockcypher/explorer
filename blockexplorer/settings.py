@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'storages',
     'addresses',
     'transactions',
+    'users',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -102,6 +103,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = 'users.AuthUser'
 
 # Languages
 LANGUAGE_CODE = 'en-us'

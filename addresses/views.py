@@ -1,14 +1,22 @@
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.contrib.auth import login
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.decorators import render_to
+from annoying.functions import get_object_or_None
+
 from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_address_details, get_address_details_url
+from blockcypher.api import get_address_details, get_address_details_url, subscribe_to_address_webhook
+
+from users.models import AuthUser, LoggedLogin
+from addresses.models import AddressSubscription
+
+from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
 
 from utils import get_max_pages
 
@@ -91,4 +99,93 @@ def address_overview(request, coin_symbol, address):
             'num_all_txns': address_details['final_n_tx'],
             'has_more': bool(len(all_txids) != address_details['final_n_tx']),
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
+            }
+
+
+@assert_valid_coin_symbol
+@render_to('subscribe_address.html')
+def subscribe_address(request, coin_symbol):
+
+    already_authenticated = request.user.is_authenticated()
+    # kind of tricky because we have to deal with both logged in and new users
+
+    initial = {'coin_symbol': coin_symbol}
+
+    if already_authenticated:
+        form = KnownUserAddressSubscriptionForm(initial=initial)
+    else:
+        form = NewUserAddressSubscriptionForm(initial=initial)
+
+    if request.method == 'POST':
+        if already_authenticated:
+            form = KnownUserAddressSubscriptionForm(initial=initial)
+        else:
+            form = NewUserAddressSubscriptionForm(data=request.POST)
+
+        if form.is_valid():
+            coin_symbol = form.cleaned_data['coin_symbol']
+            coin_address = form.cleaned_data['coin_address']
+
+            if already_authenticated:
+                auth_user = request.user
+            else:
+                user_email = form.cleaned_data['email']
+                # Check for existing user with that email
+                existing_user = get_object_or_None(AuthUser, email=user_email)
+                if existing_user:
+                    msg = _('Please first login to this account to create a notification')
+                    messages.info(request, msg)
+                    return HttpResponseRedirect(existing_user.get_login_uri())
+
+                else:
+                    # Create user with unknown (random) password
+                    auth_user = AuthUser.objects.create_user(
+                            email=user_email,
+                            password=None)
+
+                    # Login the user
+                    # http://stackoverflow.com/a/3807891/1754586
+                    auth_user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    login(request, auth_user)
+
+                    # Log the login
+                    LoggedLogin.record_login(request)
+
+            # Hit blockcypher and return subscription id
+            bcy_id = subscribe_to_address_webhook(
+                    subscription_address=coin_address,
+                    callback_url='foo',
+                    coin_symbol=coin_symbol,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    )
+
+            address_subscription = AddressSubscription.objects.create(
+                    coin_symbol=coin_symbol,
+                    b58_address=coin_address,
+                    auth_user=auth_user,
+                    blockcypher_id=bcy_id,
+                    )
+
+            if already_authenticated:
+                msg = _('You will now be emailed notifications for <b>%(coin_address)</b>')
+                messages.success(request, msg, extra_tags='safe')
+                # FIXME: make this page
+                return HttpResponseRedirect(reverse('dashboard'))
+            else:
+                address_subscription.send_welcome_email()
+                # FIXME: make this page
+                return HttpResponseRedirect(reverse('unconfirmed_email'))
+
+    elif request.method == 'GET':
+        coin_address = request.GET.get('a')
+        if coin_address:
+            initial['coin_address'] = coin_address
+            if already_authenticated:
+                form = KnownUserAddressSubscriptionForm(initial=initial)
+            else:
+                form = NewUserAddressSubscriptionForm(initial=initial)
+
+    return {
+            'form': form,
+            'coin_symbol': coin_symbol,
             }

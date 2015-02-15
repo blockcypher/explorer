@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <h1>
+      <i class="fa fa-send"></i> 
+      Subscribe to an Address
+    </h1>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <form role="form" method="post" action="{% url 'subscribe_address' coin_symbol %}">
+      {% load crispy_forms_tags %}
+      {{ form|crispy }}
+      {% csrf_token %}
+      <p class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "Subscribe" %} </button>
+      </p>
+    </form>
+
+    {% if not user.is_authenticated %}
+      <p>
+      If you have an account, please <a href=#">login first</a>.
+      </p>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock content %}
