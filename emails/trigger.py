@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 
-from bitmit.settings import POSTMARK_SENDER, EMAIL_DEV_PREFIX, BASE_URL, ADMINS
+from blockexplorer.settings import POSTMARK_SENDER, EMAIL_DEV_PREFIX, BASE_URL, ADMINS
 
 from utils import split_email_header, cat_email_header, simple_pw_generator
 

@@ -1,3 +1,4 @@
+import re
 import random
 
 
@@ -43,3 +44,20 @@ def simple_pw_generator(num_chars=10, eligible_chars='abcdefghjkmnpqrstuvwxyz234
     http://stackoverflow.com/a/2257449
     """
     return ''.join(random.choice(eligible_chars) for x in range(num_chars))
+
+
+def cat_email_header(name, email):
+    assert '@' in email, email
+    if name:
+        return '%s <%s>' % (name, email)
+    return email
+
+
+def split_email_header(header):
+    if '<' in header and '>' in header:
+        name, email = re.findall('(.*)<(.*)>', header)[0]
+    else:
+        name = None
+        email = header
+    assert '@' in email
+    return name, email

@@ -10,9 +10,11 @@ django-toolbelt==0.0.1
 gnureadline==6.3.3
 gunicorn==19.1.1
 ipython==2.3.0
+jsonfield==1.0.2
 newrelic==2.36.0.30
 psycopg2==2.5.4
 python-dateutil==2.2
+python-postmark==0.4.7
 pytz==2014.9
 raven==5.1.1
 requests==2.4.3

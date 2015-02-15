@@ -174,6 +174,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
 BLOCKCYPHER_PUBLIC_KEY = '31c49f33f35c85a8f4d9845a754f7c8e'
 
+POSTMARK_SMTP_SERVER = 'smtp.postmarkapp.com'
+POSTMARK_SENDER = 'Blockcypher Block Explorer <support@live.blockcypher.com>'
+POSTMARK_TEST_MODE = os.getenv('POSTMARK_TEST_MODE', False)
+POSTMARK_API_KEY = os.getenv('POSTMARK_API_KEY')
+if not POSTMARK_API_KEY:
+    print('WARNING: Without a Postmark API Key you cannot send emails')
+
+EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
+
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 
 # http://scanova.io/blog/engineering/2014/05/21/error-logging-in-javascript-and-python-using-sentry/
