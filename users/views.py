@@ -15,6 +15,8 @@ from emails.models import SentEmail
 
 from users.forms import LoginForm, RegistrationForm
 
+from utils import get_client_ip, get_user_agent
+
 
 @render_to('login.html')
 def user_login(request):
@@ -79,22 +81,18 @@ def signup(request):
             existing_user = get_object_or_None(AuthUser, email=email)
 
             if existing_user:
-                if hasattr(existing_user, 'github_profile') and existing_user.github_profile:
-                    return HttpResponseRedirect(reverse_lazy('github_login'))
-                else:
-                    msg = _('That email already belongs to someone, please login:')
-                    messages.warning(request, msg)
-                    return HttpResponseRedirect(existing_user.get_login_uri())
+                msg = _('That email already belongs to someone, please login:')
+                messages.warning(request, msg)
+                return HttpResponseRedirect(existing_user.get_login_uri())
 
             else:
                 # create user
                 user = AuthUser.objects.create_user(
                         email=email.lower(),
                         password=password,
+                        creation_ip=get_client_ip(request),
+                        creation_user_agent=get_user_agent(request),
                 )
-
-                # Assign new BC key
-                user.create_new_bc_token()
 
                 # login user
                 user_to_login = authenticate(email=email, password=password)
@@ -126,22 +124,37 @@ def signup(request):
 
 def confirm_subscription(request, verif_code):
     sent_email = get_object_or_404(SentEmail, verif_code=verif_code)
-    if sent_email.verified_at and sent_email.auth_user.is_email_verified():
+    auth_user = sent_email.auth_user
+
+    # Login the user
+    # http://stackoverflow.com/a/3807891/1754586
+    auth_user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, auth_user)
+
+    # Log the login
+    LoggedLogin.record_login(request)
+
+    if sent_email.verified_at and auth_user.is_email_verified:
         # already verified
-        # FIXME: flow for this
-        pass
+        msg = _('<b>%(email_address)s</b> already verified' % {'email_address': sent_email.to_email})
+        messages.info(request, msg, extra_tags='safe')
     else:
         # not yet verified
-        # FIXME: flow for this
-        pass
+        sent_email.verify_user_email()
+
+        msg = _('<b>%(email_address)s</b> verified. You will now receive notifcations for %(b58_address)s' % {
+            'email_address': sent_email.to_email,
+            'b58_address': sent_email.address_subscription.b58_address,
+            })
+        messages.info(request, msg, extra_tags='safe')
+
+    return HttpResponseRedirect(reverse_lazy('dashboard'))
 
 
 @login_required
 @render_to('dashboard.html')
 def dashboard(request):
-    return {
-            'bc_tokens': request.user.blockcyphertoken_set.order_by('-created_at'),
-            }
+    return {}
 
 
 def logout_request(request):
@@ -150,14 +163,6 @@ def logout_request(request):
     msg = _("You Are Now Logged Out")
     messages.success(request, msg)
     return HttpResponseRedirect(reverse_lazy('user_login'))
-
-
-@login_required
-def create_new_key(request):
-    bc_token = request.user.create_new_bc_token()
-    msg = _("New Key <b>%(bc_key)s</b> Added" % {'bc_key': bc_token.key})
-    messages.success(request, msg, extra_tags='safe')
-    return HttpResponseRedirect(reverse_lazy('dashboard'))
 
 
 def fail500(request):

@@ -18,7 +18,7 @@ from addresses.models import AddressSubscription
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
 
-from utils import get_max_pages
+from utils import get_max_pages, get_user_agent, get_client_ip
 
 
 @assert_valid_coin_symbol
@@ -74,14 +74,12 @@ def address_overview(request, coin_symbol, address):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
-    api_url = get_address_details_url(address=address, coin_symbol=coin_symbol)
-
     all_txids = set([tx['tx_hash'] for tx in all_transactions])
 
     return {
             'coin_symbol': coin_symbol,
             'address': address,
-            'api_url': api_url,
+            'api_url': get_address_details_url(address=address, coin_symbol=coin_symbol),
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
@@ -141,7 +139,10 @@ def subscribe_address(request, coin_symbol):
                     # Create user with unknown (random) password
                     auth_user = AuthUser.objects.create_user(
                             email=user_email,
-                            password=None)
+                            password=None,  # it will create a random pw
+                            ip_address=get_client_ip(request),
+                            user_agent=get_user_agent(request),
+                            )
 
                     # Login the user
                     # http://stackoverflow.com/a/3807891/1754586

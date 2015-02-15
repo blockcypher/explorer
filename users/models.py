@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.urlresolvers import reverse_lazy
 
-from utils import get_client_ip
+from utils import get_client_ip, get_user_agent
 
 # For more info, see the django docs here:
 # https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#a-full-example
@@ -51,6 +51,8 @@ class AuthUser(AbstractBaseUser):
     creation_ip = models.IPAddressField(null=False, blank=False, db_index=True)
     creation_user_agent = models.CharField(max_length=1024, blank=True, db_index=True)
 
+    email_verified = models.BooleanField(default=False, db_index=True)
+
     objects = AuthUserManager()
 
     USERNAME_FIELD = 'email'
@@ -93,5 +95,5 @@ class LoggedLogin(models.Model):
         return cls.objects.create(
                 auth_user=request.user,
                 ip_address=get_client_ip(request),
-                user_agent=request.META.get('HTTP_USER_AGENT'),
+                user_agent=get_user_agent(request),
                 )

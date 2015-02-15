@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Login" %}{% endblock title %}
+
+{% block content %}
+
+<div class="form-page">
+  {% include "partials/messages.html" %}
+  <div class="container">
+    <div class="row">
+       <div class="col-md-4 col-md-offset-4">
+
+        <div class="form-well">
+          <form role="form" method="post" action="{% url "user_login" %}">
+            <div class="form-group text-center">
+              <h1 class="reset">{% trans "Login" %}</h1>
+            </div>
+            {% load crispy_forms_tags %}
+            {{ form|crispy }}
+            {% csrf_token %}
+            <p class="text-center">
+              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans "Login" %}</button>
+            </p>
+          </form>
+
+          <p class="text-center reset">
+            {% trans "Don't have an account?" %}
+            <a href="{% url 'signup' %}">{% trans "Create one here" %}</a>.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

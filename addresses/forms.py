@@ -29,7 +29,7 @@ class KnownUserAddressSubscriptionForm(forms.Form):
                 msg = _("Sorry, that's not a valid address for %(coin_symbol)s" % {'coin_symbol': cs_display})
                 raise forms.ValidationError(msg)
 
-        return address
+        return self.cleaned_data
 
 
 class NewUserAddressSubscriptionForm(KnownUserAddressSubscriptionForm):

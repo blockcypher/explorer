@@ -23,6 +23,10 @@ def get_client_ip(request):
     return ip
 
 
+def get_user_agent(request):
+    return request.META.get('HTTP_USER_AGENT')
+
+
 def simple_csprng(num_chars=32, eligible_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'):
 
     """

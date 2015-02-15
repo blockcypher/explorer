@@ -6,8 +6,18 @@ urlpatterns = patterns('',
     # Logging Test
     url(r'^fail500/$', 'homepage.views.fail500', name='fail500'),
 
-    url(r'^admin/', include(admin.site.urls)),
+    # Login
+    url(r'^signup/?$', 'users.views.signup', name='signup'),
+    url(r'^login/?$', 'users.views.user_login', name='user_login'),
+    url(r'^logout/?$', 'users.views.logout_request', name='logout_request'),
 
+    # Webhooks:
+
+    # Process emails:
+    url(r'confirm/(?P<verif_code>[-\w]+)/$', 'users.views.confirm_subscription', name='confirm_subscription'),
+
+    # Admin
+    url(r'^admin/', include(admin.site.urls)),
     # App pages
     url(r'^$', 'homepage.views.home', name='home'),
     url(r'(?P<coin_symbol>[-\w]+)/subscribe/$', 'addresses.views.subscribe_address', name='subscribe_address'),
@@ -19,10 +29,5 @@ urlpatterns = patterns('',
     url(r'(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
     # So broad it must be last
     url(r'(?P<coin_symbol>[-\w]+)/$', 'homepage.views.coin_overview', name='coin_overview'),
-
-    # Webhooks:
-
-    # Process emails:
-    url(r'confirm/(?P<verif_code>[-\w]+)/$', 'users.views.confirm_subscription', name='confirm_subscription'),
 
 )

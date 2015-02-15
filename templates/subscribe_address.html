@@ -29,7 +29,8 @@
 
     {% if not user.is_authenticated %}
       <p>
-      If you have an account, please <a href=#">login first</a>.
+      If you already have an account, please
+      <a href="{% url 'user_login' %}">login first</a>.
       </p>
     {% endif %}
 
