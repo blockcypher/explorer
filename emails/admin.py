@@ -2,10 +2,8 @@ from django.contrib import admin
 
 from emails.models import SentEmail
 
-from bitmit.custom import ReadOnlyModelAdmin
 
-
-class SentEmailAdmin(ReadOnlyModelAdmin):
+class SentEmailAdmin(admin.ModelAdmin):
     list_display = (
             'id',
             'sent_at',
@@ -15,11 +13,12 @@ class SentEmailAdmin(ReadOnlyModelAdmin):
             'to_name',
             'body_template',
             'subject',
+            'auth_user',
             'address_subscription',
-            'transaction_notification',
+            'transaction_event',
             )
     list_filter = ('body_template', )
-    raw_id_fields = ('address_subscription', 'transaction_notification', )
+    raw_id_fields = ('auth_user', 'address_subscription', 'transaction_event', )
 
     class Meta:
         model = SentEmail

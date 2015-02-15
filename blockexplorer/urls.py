@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^logout/?$', 'users.views.logout_request', name='logout_request'),
 
     # Webhooks:
+    url(r'address-webhook/(?P<secret_key>[-\w]+)/(?P<ignored_key>[-\w]+)?$', 'addresses.views.address_webhook', name='address_webhook'),
 
     # Process emails:
     url(r'confirm/(?P<verif_code>[-\w]+)/$', 'users.views.confirm_subscription', name='confirm_subscription'),

@@ -9,7 +9,7 @@ from utils import get_client_ip, get_user_agent
 
 
 class AuthUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, password, creation_ip, creation_user_agent):
         """
         Creates and saves a user with the given email and password.
         """
@@ -21,15 +21,22 @@ class AuthUserManager(BaseUserManager):
             # Create random and unknowable password
             password = self.make_random_password(length=15)
         user.set_password(password)
+        user.creation_ip = creation_ip
+        user.creation_user_agent = creation_user_agent
         user.save()
 
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, creation_ip, creation_user_agent):
         """
         Creates and saves a superuser with the given email and password.
         """
-        user = self.create_user(email, password=password)
+        user = self.create_user(
+                email=email,
+                password=password,
+                creation_ip=creation_ip,
+                creation_user_agent=creation_user_agent,
+                )
         user.is_superuser = True
         user.is_staff = True
         user.save()

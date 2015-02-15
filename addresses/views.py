@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import login
@@ -9,16 +9,19 @@ from annoying.functions import get_object_or_None
 
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY
 
 from blockcypher.api import get_address_details, get_address_details_url, subscribe_to_address_webhook
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription
+from services.models import WebHook
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
 
-from utils import get_max_pages, get_user_agent, get_client_ip
+from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
+
+import json
 
 
 @assert_valid_coin_symbol
@@ -140,8 +143,8 @@ def subscribe_address(request, coin_symbol):
                     auth_user = AuthUser.objects.create_user(
                             email=user_email,
                             password=None,  # it will create a random pw
-                            ip_address=get_client_ip(request),
-                            user_agent=get_user_agent(request),
+                            creation_ip=get_client_ip(request),
+                            creation_user_agent=get_user_agent(request),
                             )
 
                     # Login the user
@@ -153,9 +156,16 @@ def subscribe_address(request, coin_symbol):
                     LoggedLogin.record_login(request)
 
             # Hit blockcypher and return subscription id
+            callback_uri = reverse('address_webhook', kwargs={
+                'secret_key': WEBHOOK_SECRET_KEY,
+                # hack for rare case of two webhooks requested on same address:
+                'ignored_key': simple_pw_generator(num_chars=10),
+                })
+            callback_url = uri_to_url(callback_uri)
+            #callback_url = 'http://requestb.in/ug43skug'
             bcy_id = subscribe_to_address_webhook(
                     subscription_address=coin_address,
-                    callback_url='foo',
+                    callback_url=callback_url,
                     coin_symbol=coin_symbol,
                     api_key=BLOCKCYPHER_API_KEY,
                     )
@@ -190,3 +200,26 @@ def subscribe_address(request, coin_symbol):
             'form': form,
             'coin_symbol': coin_symbol,
             }
+
+
+def address_webhook(request, secret_key, ignored_key):
+    '''
+    Process an inbound webhook from blockcypher
+    '''
+
+    # Log webhook
+    webhook = WebHook.log_webhook(request, WebHook.BLOCKCYPHER_ADDRESS_NOTIFICATION)
+
+    assert secret_key == WEBHOOK_SECRET_KEY
+    assert request.method == 'POST', 'Request has no post'
+
+    event_type = request.META.get('HTTP_X_EVENTTYPE')
+    print(event_type)
+    payload = json.loads(request.body.decode())
+    print(payload)
+
+    # Update logging
+    webhook.succeeded = True
+    webhook.save()
+
+    return HttpResponse("*ok*")

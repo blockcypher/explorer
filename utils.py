@@ -1,6 +1,8 @@
 import re
 import random
 
+from blockexplorer.settings import BASE_URL
+
 
 def get_max_pages(num_items, items_per_page):
     if num_items < items_per_page:
@@ -27,6 +29,15 @@ def get_user_agent(request):
     return request.META.get('HTTP_USER_AGENT')
 
 
+def is_good_status_code(status_code):
+    return str(status_code).startswith('2')
+
+
+def assert_good_status_code(status_code):
+    err_msg = 'Expected status code 2XX but got %s' % status_code
+    assert is_good_status_code(status_code), err_msg
+
+
 def simple_csprng(num_chars=32, eligible_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'):
 
     """
@@ -48,6 +59,18 @@ def simple_pw_generator(num_chars=10, eligible_chars='abcdefghjkmnpqrstuvwxyz234
     http://stackoverflow.com/a/2257449
     """
     return ''.join(random.choice(eligible_chars) for x in range(num_chars))
+
+
+def uri_to_url(uri, base_url=BASE_URL):
+    """
+    Take a URI and map it a URL:
+    /foo -> http://coinsafe.com/foo
+    """
+    if not uri:
+        return base_url
+    if uri.startswith('/'):
+        return '%s%s' % (base_url, uri)
+    return '%s/%s' % (base_url, uri)
 
 
 def cat_email_header(name, email):

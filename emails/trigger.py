@@ -95,8 +95,9 @@ def send_and_log(subject, body_template, to_email=None, to_name=None,
             subject=subject,
             unsub_code=unsub_code,
             verif_code=verif_code,
+            auth_user=fkey_objs.get('auth_user'),
             address_subscription=fkey_objs.get('address_subscription'),
-            transaction_notification=fkey_objs.get('transaction_notification'),
+            transaction_event=fkey_objs.get('transaction_event'),
             )
 
     postmark_send(**send_dict)

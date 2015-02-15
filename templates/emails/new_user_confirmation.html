@@ -2,7 +2,7 @@
 
 {% block content %}
 Please click the following link to confirm your request for email notifications of the {{ cs_display }} address <b>{{ b58_address }}</b>:<br />
-<a href="{% url confirm_subscription verif_code %}">{% url confirm_subscription verif_code %}</a>
+<a href="{% url 'confirm_subscription' verif_code %}">{% url 'confirm_subscription' verif_code %}</a>
 {% endblock content %}
 
 {% block ps %}

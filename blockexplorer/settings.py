@@ -66,6 +66,8 @@ INSTALLED_APPS = (
     'addresses',
     'transactions',
     'users',
+    'emails',
+    'services',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -179,7 +181,11 @@ POSTMARK_SENDER = 'Blockcypher Block Explorer <support@live.blockcypher.com>'
 POSTMARK_TEST_MODE = os.getenv('POSTMARK_TEST_MODE', False)
 POSTMARK_API_KEY = os.getenv('POSTMARK_API_KEY')
 if not POSTMARK_API_KEY:
-    print('WARNING: Without a Postmark API Key you cannot send emails')
+    print('WARNING: without a POSTMARK_API_KEY you cannot send emails')
+
+WEBHOOK_SECRET_KEY = os.getenv('WEBHOOK_SECRET_KEY')
+if not WEBHOOK_SECRET_KEY:
+    print('WARNING: without a WEBHOOK_SECRET_KEY you cannot receive webhooks')
 
 EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
 
