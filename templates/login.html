@@ -7,6 +7,14 @@
 
 {% block content %}
 
+<div class="page-header">
+  <div class="container">
+    <h1>
+      {% trans "Login" %}
+    </h1>
+  </div>
+</div>
+
 <div class="form-page">
   {% include "partials/messages.html" %}
   <div class="container">
@@ -15,9 +23,6 @@
 
         <div class="form-well">
           <form role="form" method="post" action="{% url "user_login" %}">
-            <div class="form-group text-center">
-              <h1 class="reset">{% trans "Login" %}</h1>
-            </div>
             {% load crispy_forms_tags %}
             {{ form|crispy }}
             {% csrf_token %}
