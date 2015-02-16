@@ -162,7 +162,6 @@ def subscribe_address(request, coin_symbol):
                 'ignored_key': simple_pw_generator(num_chars=10),
                 })
             callback_url = uri_to_url(callback_uri)
-            #callback_url = 'http://requestb.in/ug43skug'
             bcy_id = subscribe_to_address_webhook(
                     subscription_address=coin_address,
                     callback_url=callback_url,
