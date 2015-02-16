@@ -44,7 +44,8 @@ def test_mail_merge(body_template, context_dict):
 # TODO: create non-blocking queue system and move email sending to queue
 def send_and_log(subject, body_template, to_email=None, to_name=None,
         body_context={}, from_name=None, from_email=None, cc_name=None,
-        cc_email=None, replyto_name=None, replyto_email=None, fkey_objs={}):
+        cc_email=None, replyto_name=None, replyto_email=None,
+        fkey_objs={}):
     """
     Send and log an email
     """
@@ -76,6 +77,8 @@ def send_and_log(subject, body_template, to_email=None, to_name=None,
         send_dict['cc_info'] = cat_email_header(cc_name, cc_email)
     if replyto_email:
         send_dict['replyto_info'] = cat_email_header(replyto_name, replyto_email)
+    else:
+        send_dict['replyto_info'] = 'BlockCypher <contact@blockcypher.com>'
 
     if EMAIL_DEV_PREFIX:
         send_dict['subject'] += ' [DEV]'
