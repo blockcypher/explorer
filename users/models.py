@@ -68,8 +68,10 @@ class AuthUser(AbstractBaseUser):
         return '%s: %s' % (self.id, self.email)
 
     def get_full_name(self):
-        # May be null
-        return '%s %s' % (self.first_name, self.last_name)
+        if self.first_name and self.last_name:
+            return '%s %s' % (self.first_name, self.last_name)
+        else:
+            return ''
 
     def get_short_name(self):
         return self.first_name
@@ -86,6 +88,9 @@ class AuthUser(AbstractBaseUser):
 
     def get_login_uri(self):
         return '%s?e=%s' % (reverse_lazy('user_login'), self.email)
+
+    def get_address_subscriptions(self):
+        return self.addresssubscription_set.order_by('-id')
 
 
 class LoggedLogin(models.Model):

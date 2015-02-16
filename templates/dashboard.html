@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block title %}
+  Dashboard
+{% endblock title %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <h1>
+      Dashboard
+    </h1>
+  </div>
+</div>
+
+{% if not user.email_verified %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12" id="messages">
+        <div class="nofadeout alert alert-danger">
+          Your email address (<b>{{ user.email }}</b>) has not been confirmed.<br />
+          Please check your email and click the link to activate subscriptions.
+          <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <p>User Info</p>
+      <ul>
+        <li>Email: {{ user.email }}</li>
+        <li><a href="#">Change Password</a></li>
+      </ul>
+    </div>
+    <div class="row">
+      <p>Subscriptions</p>
+      {% if address_subscriptions %}
+      <ul>
+        {% for address_subscription in address_subscriptions %}
+        <li>
+          <a href="{% url 'address_overview' address_subscription.coin_symbol address_subscription.b58_address %}"
+            >{{ address_subscription.coin_symbol|coin_symbol_to_display_name }} address {{ address_subscription.b58_address }}</a>
+          (<a href="#">delete</a>)
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>
+        You have no subscriptions.
+      </p>
+      {% endif %}
+      <a href="{% url 'subscribe_address' 'btc' %}">Subscribe to Another Address</a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+

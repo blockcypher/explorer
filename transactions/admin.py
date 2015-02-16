@@ -9,11 +9,12 @@ class TransactionEventAdmin(admin.ModelAdmin):
             'id',
             'created_at',
             'tx_hash',
-            'b58_address',
             'address_subscription',
+            'conf_num',
+            'double_spend',
             )
     raw_id_fields = ('address_subscription', )
-    search_fields = ('tx_hash', 'b58_address', )
+    search_fields = ('tx_hash', 'address_subscription', )
 
     class Meta:
         model = TransactionEvent

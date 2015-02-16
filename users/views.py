@@ -140,9 +140,9 @@ def confirm_subscription(request, verif_code):
         messages.info(request, msg, extra_tags='safe')
     else:
         # not yet verified
-        sent_email.verify_user_email()
+        sent_email.verify_user_email(request)
 
-        msg = _('<b>%(email_address)s</b> verified. You will now receive notifcations for %(b58_address)s' % {
+        msg = _('<b>%(email_address)s</b> verified. You will now receive notifcations for <b>%(b58_address)s</b>' % {
             'email_address': sent_email.to_email,
             'b58_address': sent_email.address_subscription.b58_address,
             })
@@ -154,7 +154,22 @@ def confirm_subscription(request, verif_code):
 @login_required
 @render_to('dashboard.html')
 def dashboard(request):
-    return {}
+    user = request.user
+    return {
+            'user': user,
+            'address_subscriptions': user.get_address_subscriptions(),
+            }
+
+
+@login_required
+@render_to('unconfirmed_email.html')
+def unconfirmed_email(request):
+    user = request.user
+    if user.email_verified:
+        # User actually is confirmed
+        return HttpResponseRedirect(reverse_lazy('dashboard'))
+    else:
+        return {'user': user}
 
 
 def logout_request(request):

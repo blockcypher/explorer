@@ -74,7 +74,7 @@ def uri_to_url(uri, base_url=BASE_URL):
 
 
 def cat_email_header(name, email):
-    assert '@' in email, email
+    assert '@' in email
     if name:
         return '%s <%s>' % (name, email)
     return email

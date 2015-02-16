@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import login
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from annoying.decorators import render_to
 from annoying.functions import get_object_or_None
@@ -15,6 +16,7 @@ from blockcypher.api import get_address_details, get_address_details_url, subscr
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription
+from transactions.models import TransactionEvent
 from services.models import WebHook
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
@@ -119,7 +121,7 @@ def subscribe_address(request, coin_symbol):
 
     if request.method == 'POST':
         if already_authenticated:
-            form = KnownUserAddressSubscriptionForm(initial=initial)
+            form = KnownUserAddressSubscriptionForm(data=request.POST)
         else:
             form = NewUserAddressSubscriptionForm(data=request.POST)
 
@@ -177,7 +179,7 @@ def subscribe_address(request, coin_symbol):
                     )
 
             if already_authenticated:
-                msg = _('You will now be emailed notifications for <b>%(coin_address)</b>')
+                msg = _('You will now be emailed notifications for <b>%(coin_address)s</b>' % {'coin_address': coin_address})
                 messages.success(request, msg, extra_tags='safe')
                 # FIXME: make this page
                 return HttpResponseRedirect(reverse('dashboard'))
@@ -201,6 +203,7 @@ def subscribe_address(request, coin_symbol):
             }
 
 
+@csrf_exempt
 def address_webhook(request, secret_key, ignored_key):
     '''
     Process an inbound webhook from blockcypher
@@ -212,13 +215,24 @@ def address_webhook(request, secret_key, ignored_key):
     assert secret_key == WEBHOOK_SECRET_KEY
     assert request.method == 'POST', 'Request has no post'
 
-    event_type = request.META.get('HTTP_X_EVENTTYPE')
-    print(event_type)
+    # event_type = request.META.get('HTTP_X_EVENTTYPE')
     payload = json.loads(request.body.decode())
-    print(payload)
+
+    blockcypher_id = payload['blockcypher_id']  # FIXME
+    address_subscription = AddressSubscription.objects.get(blockcypher_id=blockcypher_id)
+
+    tx_event = TransactionEvent.objects.create(
+            tx_hash=payload['hash'],
+            address_subscription=address_subscription,
+            conf_num=payload['confirmations'],
+            double_spend=payload['double_spend'],
+            )
+
+    tx_event.send_email_notification()
 
     # Update logging
     webhook.succeeded = True
     webhook.save()
 
+    # Return something
     return HttpResponse("*ok*")

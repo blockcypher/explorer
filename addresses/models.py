@@ -26,15 +26,10 @@ class AddressSubscription(models.Model):
                 'b58_address': b58_address,
                 'cs_display': COIN_SYMBOL_MAPPINGS[self.coin_symbol]['display_name']
                 }
-        fkey_objs = {
-                'address_subscription': self,
-                'auth_user': self.auth_user,
-                }
         return send_and_log(
                 subject='Please Confirm Your Email Subscription to %s' % b58_address,
                 body_template='new_user_confirmation.html',
-                to_email=self.auth_user.email,
-                to_name=self.auth_user.get_full_name(),
+                to_user=self.auth_user,
                 body_context=context_dict,
-                fkey_objs=fkey_objs,
+                fkey_objs={'address_subscription': self},
                 )
