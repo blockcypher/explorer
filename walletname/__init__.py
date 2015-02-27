@@ -17,9 +17,12 @@ def lookup_wallet_name(wallet_name, currency='btc', wns_base=WNS_URL_BASE):
 
     assert is_valid_wallet_name(wallet_name)
 
-    r = requests.get('%s/%s/%s' % (wns_base, wallet_name, currency), verify=True, timeout=TIMEOUT_IN_SECONDS)
-    rdict = json.loads(r.text)
-    if rdict.get('success', False) and rdict.get('wallet_name','') == wallet_name and rdict.get('currency','') == currency:
-        return rdict.get('wallet_address')
+    try:
+        r = requests.get('%s/%s/%s' % (wns_base, wallet_name, currency), verify=True, timeout=TIMEOUT_IN_SECONDS)
+        rdict = json.loads(r.text)
+        if rdict.get('success', False) and rdict.get('wallet_name','') == wallet_name and rdict.get('currency','') == currency:
+            return rdict.get('wallet_address')
+    except:
+        pass
 
     return None
