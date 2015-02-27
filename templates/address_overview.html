@@ -20,6 +20,7 @@
       {{ coin_symbol|coin_symbol_to_display_name }} Address
     </h1>
     <h2 class="tagline wrapit semi">({{ address }})</h2>
+    {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
   </div>
 </div>
   
