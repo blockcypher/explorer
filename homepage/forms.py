@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from blockcypher.constants import COIN_CHOICES
 from blockcypher.utils import is_valid_address, is_valid_hash, is_valid_block_num
 
-from walletname import is_valid_wallet_name
+from blockexplorer.walletname import is_valid_wallet_name
 
 import re
 

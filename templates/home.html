@@ -38,7 +38,8 @@
 
           <p class="help-block search-filter">
             Enter an 
-            <a href="javascript:void(0);" onclick="filterSearch('address', this)">address</a>, 
+            <a href="javascript:void(0);" onclick="filterSearch('address', this)">address</a>,
+            <a href="javascript:void(0);" onclick="filterSearch('wallet_name', this)">wallet name</a>,
             <a href="javascript:void(0);" onclick="filterSearch('tx_hash', this)">transaction hash</a>, 
             <a href="javascript:void(0);" onclick="filterSearch('block_hash', this)">block hash</a>, or 
             <a href="javascript:void(0);" onclick="filterSearch('block_num', this)">block number</a>.
@@ -109,36 +110,42 @@
       var search_placeholders = {
         'btc': {
           'address': '16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': '2509e5b65ed362557fcf2104e89f3c2430ceecc6a3275556c1b966eb641fe092',
           'block_hash': '0000000000000000001e847e71b955482dab7228f4849a4659c0cf5cf323f247',
           'block_num': '330,027',
         },
         'btc-testnet': {
           'address': '2N1rjhumXA3ephUQTDMfGhufxGQPZuZUTMk',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': '7f827d4a3ae3b6e408fa1737f12f9dbfa2bb8fd79e0e3e63256a6e78310790a4',
           'block_hash': '00000000b5017a924643958b430f073608142bf72a3cec1bfe30fed460246737',
           'block_num': '308,576',
         },
         'ltc': {
           'address': 'LcFFkbRUrr8j7TMi8oXUnfR4GPsgcXDepo',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': '3826e17bbac2724cd74b7377f0bd1489a82440d651016adda0132c42a179ad02',
           'block_hash': '515683dee4ea5ec9341450b4f6a6c9f842a75680e96ee130bf8605e785ad59ff',
           'block_num': '675,566',
         },
         'doge': {
           'address': 'D7Y55r6Yoc1G8EECxkQ6SuSjTgGJJ7M6yD',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': '28132b9676b227f16bb687f49139fbb38d185caba4533a8c36d49f0fa470d83a',
           'block_hash': '3c36f6b2abcc2e30111b997e551336db60bead9a0cd3c03fb192110bfbfe1841',
           'block_num': '460,882',
         },
         'uro': {
           'address': 'Uhf1LGdgmWe33hB9VVtubyzq1GduUAtaAJ',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': 'edb1537e92acb934890baf29794b45a5f30e6e648f376b1d2c5f50509ab10d29',
           'block_hash': '00000000005ce75d7668175a10f0d402e985b3ae0bdde50adece45c1772aba4b',
           'block_num': '85,430',
         },
         'bcy': {
           'address': 'CFr99841LyMkyX5ZTGepY58rjXJhyNGXHf',
+          'wallet_name': 'sample.walletname.bit',
           'tx_hash': '48cebffe1ed93ae2ce758abb52375cc7f89ecc94fd8244f6a9f6dd07463fc1cb',
           'block_hash': '0000a577e78b310c7a5fe75abfc70f8f638aa56aae33552955c2becf509cd19a',
           'block_num': '32,528',

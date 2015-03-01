@@ -65,8 +65,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'storages',
     'addresses',
-    'transactions',
-    'walletname'
+    'transactions'
 )
 
 MIDDLEWARE_CLASSES = (

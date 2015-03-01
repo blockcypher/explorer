@@ -7,9 +7,9 @@ from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
+from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 
 from homepage.forms import SearchForm
-from walletname import lookup_wallet_name, is_valid_wallet_name
 
 from blockcypher.api import get_transaction_details, get_block_overview, get_latest_block_height, get_broadcast_transactions
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
@@ -99,6 +99,9 @@ def home(request):
                     kwargs['address'] = addr
                     kwargs['wallet_name'] = search_string
                     redirect_url = reverse('address_overview', kwargs=kwargs)
+                else:
+                    msg = _("Sorry, that's not a valid wallet name")
+                    messages.error(request, msg)
 
             if redirect_url:
                 return HttpResponseRedirect(redirect_url)
