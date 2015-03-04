@@ -15,7 +15,7 @@ from utils import get_max_pages
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
-def address_overview(request, coin_symbol, address):
+def address_overview(request, coin_symbol, address, wallet_name=None):
 
     TXNS_PER_PAGE = 100
 
@@ -73,6 +73,7 @@ def address_overview(request, coin_symbol, address):
     return {
             'coin_symbol': coin_symbol,
             'address': address,
+            'wallet_name': wallet_name,
             'api_url': api_url,
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),

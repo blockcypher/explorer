@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
         'blockcypher.herokuapp.com',
         '127.0.0.1',
         'miyagi-9570.herokussl.com',
+        'localhost'
         ]
 
 ADMINS = (
@@ -64,7 +65,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'storages',
     'addresses',
-    'transactions',
+    'transactions'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -172,6 +173,9 @@ BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
 BLOCKCYPHER_PUBLIC_KEY = '31c49f33f35c85a8f4d9845a754f7c8e'
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+# Wallet Name
+WNS_URL_BASE='https://pubapi.netki.com/api/wallet_lookup'
 
 # http://scanova.io/blog/engineering/2014/05/21/error-logging-in-javascript-and-python-using-sentry/
 LOGGING = {
