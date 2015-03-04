@@ -7,6 +7,7 @@ from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
+from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 
 from homepage.forms import SearchForm
 
@@ -92,12 +93,22 @@ def home(request):
 
                 redirect_url = reverse('address_overview', kwargs=kwargs)
 
+            elif is_valid_wallet_name(search_string):
+                addr = lookup_wallet_name(search_string, kwargs['coin_symbol'])
+                if addr:
+                    kwargs['address'] = addr
+                    kwargs['wallet_name'] = search_string
+                    redirect_url = reverse('address_overview', kwargs=kwargs)
+                else:
+                    msg = _("Sorry, that's not a valid wallet name")
+                    messages.error(request, msg)
+
             if redirect_url:
                 return HttpResponseRedirect(redirect_url)
 
         else:
             currency = COIN_SYMBOL_MAPPINGS[request.POST['coin_symbol']]['display_shortname']
-            msg = _("Sorry, that's not a valid %(currency)s address, transaction or block" % {
+            msg = _("Sorry, that's not a valid %(currency)s address, wallet name, transaction or block" % {
                 'currency': currency})
             messages.error(request, msg)
 
