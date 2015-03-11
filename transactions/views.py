@@ -115,6 +115,8 @@ def poll_confidence(request, coin_symbol, tx_hash):
             api_key=BLOCKCYPHER_API_KEY,
             )
 
+    #import pprint; pprint.pprint(transaction_details, width=1)
+
     confidence = transaction_details.get('confidence')
     if confidence:
         confidence_pct = min(round(confidence * 100, 2), 99.99)
