@@ -6,7 +6,7 @@ import requests
 
 from blockexplorer.settings import WNS_URL_BASE
 
-WALLET_NAME_RE = re.compile('^([0-9a-z][0-9a-z\-]*\.)+[a-z]{2,}$')
+WALLET_NAME_RE = re.compile('^([0-9a-z_][0-9a-z\-_]*\.)+[a-z]{2,}$', re.IGNORECASE)
 TIMEOUT_IN_SECONDS = 20
 
 def is_valid_wallet_name(string):
