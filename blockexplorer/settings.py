@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
         'blockcypher.herokuapp.com',
         '127.0.0.1',
         'miyagi-9570.herokussl.com',
+        'localhost'
         ]
 
 ADMINS = (
@@ -190,6 +191,9 @@ if not WEBHOOK_SECRET_KEY:
 EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+# Wallet Name
+WNS_URL_BASE='https://pubapi.netki.com/api/wallet_lookup'
 
 # http://scanova.io/blog/engineering/2014/05/21/error-logging-in-javascript-and-python-using-sentry/
 LOGGING = {

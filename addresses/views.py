@@ -28,7 +28,7 @@ import json
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
-def address_overview(request, coin_symbol, address):
+def address_overview(request, coin_symbol, address, wallet_name=None):
 
     TXNS_PER_PAGE = 100
 
@@ -85,6 +85,7 @@ def address_overview(request, coin_symbol, address):
             'coin_symbol': coin_symbol,
             'address': address,
             'api_url': get_address_details_url(address=address, coin_symbol=coin_symbol),
+            'wallet_name': wallet_name,
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
             'confirmed_sent_satoshis': confirmed_sent_satoshis,
