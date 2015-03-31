@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+A new transaction of <b>{{ sent_in_btc }}</b> {{ currency_abbrev }} was just detected on the {{ currency_name }} blockchain.
+You can see the transaction details here:<br />
+<a href="{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}">{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}</a>
+
+<br /><br />
+Note that this transaction has {{ num_confs }} confirmations on the {{ currency_display_name }} blockchain, meaning that the transaction could theoretically still be reversed.
+{% endblock content %}
+
+{% block ps %}
+P.S. You were sent this email because you subscribed to email notifcations on <b>{{ b58_address }}</b>.
+To unsubscribe, please
+<a href="{{ BASE_URL }}{% url 'unsubscribe_address' unsub_code %}">click here</a>.
+{% endblock ps %}

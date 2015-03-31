@@ -3,14 +3,14 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{% trans "Login" %}{% endblock title %}
+{% block title %}{% trans "Change Password" %}{% endblock title %}
 
 {% block content %}
 
 <div class="page-header">
   <div class="container">
     <h1>
-      {% trans "Login" %}
+      {% trans "Change Password" %}
     </h1>
   </div>
 </div>
@@ -21,19 +21,15 @@
        <div class="col-md-4 col-md-offset-4">
 
         <div class="form-well">
-          <form role="form" method="post" action="{% url "user_login" %}">
+          <form role="form" method="post" action="{% url "change_password" %}">
             {% load crispy_forms_tags %}
             {{ form|crispy }}
             {% csrf_token %}
             <p class="text-center">
-              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans "Login" %}</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans "Change Password" %}</button>
             </p>
           </form>
 
-          <p class="text-center reset">
-            {% trans "Don't have an account?" %}
-            <a href="{% url 'signup' %}">{% trans "Create one here" %}</a>.
-          </p>
         </div>
 
       </div>
@@ -42,3 +38,5 @@
 </div>
 
 {% endblock content %}
+
+

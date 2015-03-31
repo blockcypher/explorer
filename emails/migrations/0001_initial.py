@@ -9,37 +9,35 @@ import jsonfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('transactions', '0001_initial'),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('addresses', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
             name='SentEmail',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sent_at', models.DateTimeField(db_index=True, auto_now_add=True)),
-                ('from_email', models.EmailField(max_length=256, db_index=True)),
-                ('from_name', models.CharField(max_length=256, blank=True, db_index=True, null=True)),
-                ('to_email', models.EmailField(max_length=256, db_index=True)),
-                ('to_name', models.CharField(max_length=256, blank=True, db_index=True, null=True)),
-                ('cc_email', models.EmailField(max_length=256, blank=True, db_index=True, null=True)),
-                ('cc_name', models.CharField(max_length=256, blank=True, db_index=True, null=True)),
-                ('body_template', models.CharField(max_length=256, db_index=True)),
+                ('from_email', models.EmailField(db_index=True, max_length=256)),
+                ('from_name', models.CharField(blank=True, max_length=256, db_index=True, null=True)),
+                ('to_email', models.EmailField(db_index=True, max_length=256)),
+                ('to_name', models.CharField(blank=True, max_length=256, db_index=True, null=True)),
+                ('cc_email', models.EmailField(blank=True, max_length=256, db_index=True, null=True)),
+                ('cc_name', models.CharField(blank=True, max_length=256, db_index=True, null=True)),
+                ('body_template', models.CharField(db_index=True, max_length=256)),
                 ('body_context', jsonfield.fields.JSONField()),
                 ('subject', models.TextField()),
-                ('unsub_code', models.CharField(max_length=64, db_index=True, unique=True)),
-                ('unsubscribed_at', models.DateTimeField(db_index=True, blank=True, null=True)),
+                ('unsub_code', models.CharField(unique=True, db_index=True, max_length=64)),
+                ('unsubscribed_at', models.DateTimeField(blank=True, db_index=True, null=True)),
                 ('unsub_ip', models.IPAddressField(blank=True, db_index=True, null=True)),
-                ('unsub_ua', models.CharField(max_length=1024, blank=True, db_index=True)),
+                ('unsub_ua', models.CharField(blank=True, db_index=True, max_length=1024)),
                 ('verif_code', models.CharField(blank=True, max_length=64, unique=True, db_index=True, null=True)),
-                ('verified_at', models.DateTimeField(db_index=True, blank=True, null=True)),
+                ('verified_at', models.DateTimeField(blank=True, db_index=True, null=True)),
                 ('verif_ip', models.IPAddressField(blank=True, db_index=True, null=True)),
-                ('verif_ua', models.CharField(max_length=1024, blank=True, db_index=True)),
+                ('verif_ua', models.CharField(blank=True, db_index=True, max_length=1024)),
                 ('address_subscription', models.ForeignKey(blank=True, to='addresses.AddressSubscription', null=True)),
                 ('auth_user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-                ('transaction_event', models.ForeignKey(blank=True, to='transactions.TransactionEvent', null=True)),
             ],
             options={
             },

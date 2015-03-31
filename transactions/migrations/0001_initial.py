@@ -12,12 +12,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='TransactionEvent',
+            name='OnChainTransaction',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_at', models.DateTimeField(db_index=True, auto_now_add=True)),
                 ('tx_hash', models.CharField(db_index=True, max_length=128)),
-                ('b58_address', models.CharField(db_index=True, max_length=64)),
+                ('conf_num', models.IntegerField(db_index=True)),
+                ('double_spend', models.BooleanField(db_index=True, default=False)),
+                ('satoshis_sent', models.BigIntegerField(db_index=True)),
+                ('fee_in_satoshis', models.BigIntegerField(db_index=True)),
                 ('address_subscription', models.ForeignKey(to='addresses.AddressSubscription')),
             ],
             options={

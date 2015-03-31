@@ -12,6 +12,9 @@ urlpatterns = patterns('',
     url(r'^logout/?$', 'users.views.logout_request', name='logout_request'),
     url(r'^confirm/(?P<verif_code>[-\w]+)/$', 'users.views.confirm_subscription', name='confirm_subscription'),
     url(r'^unconfirmed-email/?$', 'users.views.unconfirmed_email', name='unconfirmed_email'),
+    url(r'^set-password/?$', 'users.views.password_upsell', name='password_upsell'),
+    url(r'^change-password/?$', 'users.views.change_password', name='change_password'),
+    url(r'^unsubscribe/(?P<unsub_code>[-\w]+)/$', 'addresses.views.unsubscribe_address', name='unsubscribe_address'),
     url(r'^dashboard/?$', 'users.views.dashboard', name='dashboard'),
 
     # Webhooks:

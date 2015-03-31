@@ -7,18 +7,25 @@ from emails.trigger import send_and_log
 
 class AddressSubscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    unsubscribed_at = models.DateTimeField(blank=True, null=True, db_index=True)
     coin_symbol = models.CharField(choices=COIN_CHOICES, max_length=16, null=False, blank=False, db_index=True)
     b58_address = models.CharField(blank=False, null=False, max_length=64, db_index=True)
     notify_on_broadcast = models.BooleanField(db_index=True, default=True)
-    notify_on_first_confirm = models.BooleanField(db_index=True, default=True)
-    notify_on_sixth_confirm = models.BooleanField(db_index=True, default=False)
+    notify_on_first_confirm = models.BooleanField(db_index=True, default=False)
+    notify_on_sixth_confirm = models.BooleanField(db_index=True, default=True)
     notify_on_deposit = models.BooleanField(db_index=True, default=True)
     notify_on_withdrawal = models.BooleanField(db_index=True, default=True)
     auth_user = models.ForeignKey('users.AuthUser', blank=False, null=False)
-    blockcypher_id = models.CharField(choices=COIN_CHOICES, max_length=64, null=False, blank=False, db_index=True)
+    blockcypher_id = models.CharField(max_length=64, null=False, blank=False, db_index=True)
 
     def __str__(self):
         return '%s to %s' % (self.id, self.b58_address)
+
+    def get_currency_abbrev(self):
+        return COIN_SYMBOL_MAPPINGS[self.coin_symbol]['currency_abbrev']
+
+    def get_currency_display_name(self):
+        return COIN_SYMBOL_MAPPINGS[self.coin_symbol]['display_name']
 
     def send_welcome_email(self):
         b58_address = self.b58_address

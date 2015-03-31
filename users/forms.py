@@ -3,7 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 from blockcypher.constants import COIN_CHOICES
-from blockcypher.utils import is_valid_address_for_coinsymbol
 
 
 class LoginForm(forms.Form):
@@ -33,7 +32,11 @@ class RegistrationForm(forms.Form):
         label=_('Email'),
         required=True,
         max_length=100,
-        widget=forms.TextInput(attrs={'placeholder': 'me@example.com', 'class': 'input-lg'}),
+        widget=forms.TextInput(attrs={
+            'placeholder': 'me@example.com',
+            'autofocus': 'autofocus',
+            'class': 'input-lg',
+            }),
     )
     password = forms.CharField(
         required=True,
@@ -73,28 +76,76 @@ class CoinSymbolForm(forms.Form):
         )
 
 
-class BCYFaucetForm(forms.Form):
-    btc_to_send = forms.DecimalField(
-            label=_('BTC to Send'),
-            max_value=.1,
-            required=True,
-            widget=forms.TextInput(attrs={
-                'autofocus': 'autofocus',
-                }),
-        )
-    address_to_fund = forms.CharField(
-            label=_('Blockcypher Testnet Address'),
-            required=False,
-            min_length=27,
-            max_length=34,
-            help_text=_('If blank we will create one for you but you will not have the private key.'),
-            widget=forms.TextInput(),
+class PasswordUpsellForm(forms.Form):
+    password = forms.CharField(
+        required=True,
+        label=_('Password'),
+        widget=forms.PasswordInput(attrs={
+            'class': 'input-lg',
+            'autofocus': 'autofocus',
+            }),
+        min_length=8,
+    )
+    password_confirm = forms.CharField(
+        required=True,
+        label=_('Confirm Password'),
+        widget=forms.PasswordInput(attrs={'class': 'input-lg'}),
+        min_length=8,
     )
 
-    def clean_address_to_fund(self):
-        address = self.cleaned_data.get('address_to_fund').strip()
-        if address and not is_valid_address_for_coinsymbol(address, coin_symbol='bcy'):
-            msg = _("Sorry, that's not a valid Blockcypher (not bitcoin) Testnet address")
-            raise forms.ValidationError(msg)
+    def __init__(self, *args, **kwargs):
+        super(PasswordUpsellForm, self).__init__(*args, **kwargs)
 
-        return address
+    def clean(self):
+        pw = self.cleaned_data.get('password')
+        pwc = self.cleaned_data.get('password_confirm')
+        if pw != pwc:
+            err_msg = _('Those passwords did not match. Please try again.')
+            raise forms.ValidationError(err_msg)
+        else:
+            return self.cleaned_data
+
+
+class ChangePWForm(forms.Form):
+
+    oldpassword = forms.CharField(
+            required=True,
+            label=_('Current Password'),
+            widget=forms.PasswordInput(attrs={
+                'autocomplete': 'off',
+                'autofocus': 'autofocus',
+                }),
+            help_text=_('Your existing password that you no longer want to use'),
+    )
+
+    newpassword = forms.CharField(
+            required=True,
+            label=_('New Password'),
+            widget=forms.PasswordInput(attrs={'autocomplete': 'off'}),
+            min_length=7,
+            help_text=_('Please choose a new secure password'),
+    )
+
+    newpassword_confirm = forms.CharField(
+            required=True,
+            label=_('Confirm New Password'),
+            widget=forms.PasswordInput(attrs={'autocomplete': 'off'}),
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(ChangePWForm, self).__init__(*args, **kwargs)
+
+    def clean_oldpassword(self):
+        password = self.cleaned_data['oldpassword']
+        if not self.user.check_password(password):
+            raise forms.ValidationError(_('Sorry, that password is not correct'))
+        return password
+
+    def clean(self):
+        if self.cleaned_data.get('newpassword') != self.cleaned_data.get('newpassword_confirm'):
+            raise forms.ValidationError(_('Your new passwords did not match.  Please try again.'))
+        if self.cleaned_data.get('newpassword') == self.cleaned_data.get('oldpassword'):
+            raise forms.ValidationError(_('Your old password matches your new password. Your password was not changed.'))
+        else:
+            return self.cleaned_data

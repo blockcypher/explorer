@@ -17,9 +17,7 @@ class AuthUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(email=self.normalize_email(email))
-        if not password:
-            # Create random and unknowable password
-            password = self.make_random_password(length=15)
+        # if no password it calls set_unusuable_password() under the hood:
         user.set_password(password)
         user.creation_ip = creation_ip
         user.creation_user_agent = creation_user_agent
@@ -27,10 +25,16 @@ class AuthUserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email, password, creation_ip, creation_user_agent):
+    def create_superuser(self, email, password, creation_ip=None,
+            creation_user_agent=None):
         """
         Creates and saves a superuser with the given email and password.
         """
+        if not creation_ip:
+            creation_ip = '127.0.0.1'
+        if not creation_user_agent:
+            creation_user_agent = 'admin'
+
         user = self.create_user(
                 email=email,
                 password=password,
@@ -90,7 +94,7 @@ class AuthUser(AbstractBaseUser):
         return '%s?e=%s' % (reverse_lazy('user_login'), self.email)
 
     def get_address_subscriptions(self):
-        return self.addresssubscription_set.order_by('-id')
+        return self.addresssubscription_set.filter(unsubscribed_at=None).order_by('-id')
 
 
 class LoggedLogin(models.Model):

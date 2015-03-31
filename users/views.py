@@ -13,16 +13,13 @@ from annoying.decorators import render_to
 from users.models import AuthUser, LoggedLogin
 from emails.models import SentEmail
 
-from users.forms import LoginForm, RegistrationForm
+from users.forms import LoginForm, RegistrationForm, PasswordUpsellForm, ChangePWForm
 
 from utils import get_client_ip, get_user_agent
 
 
 @render_to('login.html')
 def user_login(request):
-    """
-    Email/pass logins, github logins are processed separately via github_authorized
-    """
     user = request.user
     if user.is_authenticated():
         # TODO: notification
@@ -35,11 +32,7 @@ def user_login(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user_found = get_object_or_None(AuthUser, email=email)
-            if hasattr(user_found, 'github_profile') and user_found.github_profile:
-                return HttpResponseRedirect(reverse_lazy('github_login'))
-
-            if user_found:
+            if get_object_or_None(AuthUser, email=email):
                 user = authenticate(email=email, password=password)
                 if user:
                     login(request, user)
@@ -61,10 +54,8 @@ def user_login(request):
         email = request.GET.get('e')
         if email:
             form = LoginForm(initial={'email': email})
-    return {
-            'form': form,
-            'is_login_page': True,
-            }
+
+    return {'form': form}
 
 
 @render_to('signup.html')
@@ -118,8 +109,58 @@ def signup(request):
 
     return {
             'form': form,
-            'is_signup_page': True,
             }
+
+
+@login_required
+@render_to('change_pw.html')
+def change_password(request):
+    user = request.user
+    form = ChangePWForm(user=user)
+    if request.method == 'POST':
+        form = ChangePWForm(user=user, data=request.POST)
+        if form.is_valid():
+            new_pw = form.cleaned_data['newpassword']
+            user.set_password(new_pw)
+            user.save()
+
+            msg = _('Your password has been changed.')
+            messages.success(request, msg, extra_tags='safe')
+
+            return HttpResponseRedirect(reverse_lazy('home'))
+
+    return {'form': form}
+
+
+@login_required
+@render_to('password_upsell.html')
+def password_upsell(request):
+
+    # safety check - users who already have passwords can't use this flow
+    if request.user.has_usable_password() and request.method == 'GET':
+        msg = _('Password Already Set')
+        messages.info(request, msg)
+        return HttpResponseRedirect(reverse_lazy('dashboard'))
+
+    form = PasswordUpsellForm()
+    if request.method == 'POST':
+        form = PasswordUpsellForm(data=request.POST)
+        if form.is_valid():
+            pw = form.cleaned_data['password']
+            user = request.user
+            user.set_password(pw)
+            user.save()
+
+            msg = _('Password Set')
+            messages.success(request, msg)
+
+            # (Re)login the user, since setting password logs them out
+            user = authenticate(email=user.email, password=pw)
+            login(request, user)
+
+            return HttpResponseRedirect(reverse_lazy('dashboard'))
+
+    return {'form': form}
 
 
 def confirm_subscription(request, verif_code):
@@ -138,17 +179,20 @@ def confirm_subscription(request, verif_code):
         # already verified
         msg = _('<b>%(email_address)s</b> already verified' % {'email_address': sent_email.to_email})
         messages.info(request, msg, extra_tags='safe')
+        return HttpResponseRedirect(reverse_lazy('dashboard'))
+
     else:
         # not yet verified
         sent_email.verify_user_email(request)
 
-        msg = _('<b>%(email_address)s</b> verified. You will now receive notifcations for <b>%(b58_address)s</b>' % {
+        msg = _('<b>%(email_address)s</b> verified. You will now receive notifcations for <b>%(b58_address)s</b>.' % {
             'email_address': sent_email.to_email,
             'b58_address': sent_email.address_subscription.b58_address,
             })
         messages.info(request, msg, extra_tags='safe')
 
-    return HttpResponseRedirect(reverse_lazy('dashboard'))
+        # Ask them to create a new PW
+        return HttpResponseRedirect(reverse_lazy('password_upsell'))
 
 
 @login_required

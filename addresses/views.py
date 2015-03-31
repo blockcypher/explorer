@@ -3,7 +3,9 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import login
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 from annoying.decorators import render_to
 from annoying.functions import get_object_or_None
@@ -16,8 +18,9 @@ from blockcypher.api import get_address_details, get_address_details_url, subscr
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription
-from transactions.models import TransactionEvent
+from transactions.models import OnChainTransaction
 from services.models import WebHook
+from emails.models import SentEmail
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
 
@@ -172,6 +175,9 @@ def subscribe_address(request, coin_symbol):
                     api_key=BLOCKCYPHER_API_KEY,
                     )
 
+            print('bcy_id')
+            print(bcy_id)
+
             address_subscription = AddressSubscription.objects.create(
                     coin_symbol=coin_symbol,
                     b58_address=coin_address,
@@ -182,11 +188,9 @@ def subscribe_address(request, coin_symbol):
             if already_authenticated:
                 msg = _('You will now be emailed notifications for <b>%(coin_address)s</b>' % {'coin_address': coin_address})
                 messages.success(request, msg, extra_tags='safe')
-                # FIXME: make this page
                 return HttpResponseRedirect(reverse('dashboard'))
             else:
                 address_subscription.send_welcome_email()
-                # FIXME: make this page
                 return HttpResponseRedirect(reverse('unconfirmed_email'))
 
     elif request.method == 'GET':
@@ -204,6 +208,38 @@ def subscribe_address(request, coin_symbol):
             }
 
 
+def unsubscribe_address(request, unsub_code):
+    sent_email = get_object_or_404(SentEmail, unsub_code=unsub_code)
+
+    auth_user = sent_email.auth_user
+
+    # Login the user
+    # http://stackoverflow.com/a/3807891/1754586
+    auth_user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, auth_user)
+
+    # Log the login
+    LoggedLogin.record_login(request)
+
+    if sent_email.unsubscribed_at:
+        msg = _("You've already unsubscribed from this alert")
+        messages.info(request, msg)
+
+    else:
+        address_subscription = sent_email.address_subscription
+        assert address_subscription
+
+        address_subscription.deleted_at = now()
+        address_subscription.save()
+
+        msg = _("You've been unsubscribed from notifications on %(b58_address)s" % {
+            'b58_address': address_subscription.b58_address,
+            })
+        messages.info(request, msg)
+
+    return HttpResponseRedirect(reverse('dashboard'))
+
+
 @csrf_exempt
 def address_webhook(request, secret_key, ignored_key):
     '''
@@ -216,22 +252,43 @@ def address_webhook(request, secret_key, ignored_key):
     assert secret_key == WEBHOOK_SECRET_KEY
     assert request.method == 'POST', 'Request has no post'
 
-    # event_type = request.META.get('HTTP_X_EVENTTYPE')
+    blockcypher_id = request.META.get('HTTP_X_EVENTID')
+    assert 'tx-confirmation' == request.META.get('HTTP_X_EVENTTYPE')
+
     payload = json.loads(request.body.decode())
 
-    blockcypher_id = payload['blockcypher_id']  # FIXME
     address_subscription = AddressSubscription.objects.get(blockcypher_id=blockcypher_id)
 
-    tx_event = TransactionEvent.objects.create(
-            tx_hash=payload['hash'],
+    tx_hash = payload['hash']
+    num_confs = payload['confirmations']
+    double_spend = payload['double_spend']
+    satoshis_sent = payload['total']
+    fee_in_satoshis = payload['fees']
+
+    tx_event = get_object_or_None(
+            OnChainTransaction,
+            tx_hash=tx_hash,
             address_subscription=address_subscription,
-            conf_num=payload['confirmations'],
-            double_spend=payload['double_spend'],
             )
+
+    if tx_event:
+        tx_event.num_confs = num_confs
+        tx_event.double_spend = double_spend
+        tx_event.save()
+    else:
+        tx_event = OnChainTransaction.objects.create(
+                tx_hash=tx_hash,
+                address_subscription=address_subscription,
+                num_confs=num_confs,
+                double_spend=double_spend,
+                satoshis_sent=satoshis_sent,
+                fee_in_satoshis=fee_in_satoshis,
+                )
 
     tx_event.send_email_notification()
 
     # Update logging
+    webhook.address_subscription = address_subscription
     webhook.succeeded = True
     webhook.save()
 

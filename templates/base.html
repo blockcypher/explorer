@@ -49,10 +49,8 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="http://www.blockcypher.com" title="live.blockcypher.com">
-            <strong class="logo acc">
-              www.blockcypher.com
-            </strong>
+          <a class="navbar-brand" href="{% url 'home' %}" title="live.blockcypher.com">
+            <strong class="logo acc"></strong>
           </a>
         </div>
 
@@ -122,13 +120,6 @@
                 </li>
               </ul>
             </li>
-            {% if not is_home %}
-              <li>
-                <a href="http://www.blockcypher.com">
-                  Home
-                </a>
-              </li>
-            {% endif %}
             <li>
               <a href="mailto:contact@blockcypher.com">
                 {% trans "Contact Us" %}

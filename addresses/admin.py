@@ -15,6 +15,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'notify_on_deposit',
             'notify_on_withdrawal',
             'auth_user',
+            'blockcypher_id',
             )
 
     raw_id_fields = ('auth_user', )
