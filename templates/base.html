@@ -49,7 +49,7 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="{% url 'home' %}" title="live.blockcypher.com">
+          <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}" title="live.blockcypher.com">
             <strong class="logo acc"></strong>
           </a>
         </div>
