@@ -198,7 +198,6 @@ def confirm_subscription(request, verif_code):
 @login_required
 @render_to('dashboard.html')
 def dashboard(request):
-    messages.info(request, 'foo bar baz')
     user = request.user
     return {
             'user': user,
