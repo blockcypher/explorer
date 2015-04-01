@@ -121,9 +121,11 @@
               </ul>
             </li>
             <li>
-              <a href="mailto:contact@blockcypher.com">
-                {% trans "Contact Us" %}
-              </a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'logout_request' %}">{% trans "Sign Out" %}</a>
+              {% else %}
+                <a href="{% url 'user_login' %}">{% trans "Sign In" %}</a>
+              {% endif %}
             </li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
