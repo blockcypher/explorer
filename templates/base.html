@@ -172,11 +172,8 @@
         {# Page Header Stuff #}
         <div class="page-header">
           <div class="container">
-            <h1>
-              {% block page_header %}
-                Dashboard
-              {% endblock page_header %}
-            </h1>
+            {% block page_header %}
+            {% endblock page_header %}
           </div>
         </div>
         {% include "partials/messages.html" %}
