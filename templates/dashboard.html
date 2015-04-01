@@ -7,7 +7,13 @@
 
 {% block title %}Dashboard{% endblock title %}
 
-{% block page_header %}Dashboard{% endblock page_header %}
+{% block page_header %}
+  <h1>Dashboard</h1>
+  <h4>
+    {{ user.email }}
+    {% if user.email_verified %}(verified){% endif %}
+  </h4>
+{% endblock page_header %}
 
 {% block content %}
 
@@ -28,19 +34,7 @@
 <div class="container">
   <div class="section">
     <div class="row">
-      <p>User Info</p>
-      <ul>
-        <li>
-          Email: {{ user.email }}
-          {% if user.email_verified %}
-            (verified) 
-          {% endif %}
-        </li>
-        <li><a href="{% url 'change_password' %}">Change Password</a></li>
-      </ul>
-    </div>
-    <div class="row">
-      <p>Subscriptions</p>
+      <h4>Subscriptions:</h4>
       {% if address_subscriptions %}
       <ul>
         {% for address_subscription in address_subscriptions %}
@@ -57,6 +51,12 @@
       </p>
       {% endif %}
       <a href="{% url 'subscribe_address' 'btc' %}">+ Subscribe to Another Address</a>
+    </div>
+    <div class="row">
+      <hr />
+      <p>
+        <a href="{% url 'change_password' %}">Change Password</a>
+      </p>
     </div>
   </div>
 </div>
