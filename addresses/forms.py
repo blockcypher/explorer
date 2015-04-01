@@ -6,6 +6,9 @@ from blockcypher.utils import is_valid_address_for_coinsymbol
 
 
 class KnownUserAddressSubscriptionForm(forms.Form):
+
+    # TODO: add advanced granulatiry for confirms (broadcast/1/6), amount, & send/receive
+
     coin_address = forms.CharField(
         label=_('Address to Subscribe To'),
         required=True,

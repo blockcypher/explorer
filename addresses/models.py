@@ -28,6 +28,7 @@ class AddressSubscription(models.Model):
         return COIN_SYMBOL_MAPPINGS[self.coin_symbol]['display_name']
 
     def send_welcome_email(self):
+        # TODO: add abuse check so you can only send this email to an  unconvirmed user X times
         b58_address = self.b58_address
         context_dict = {
                 'b58_address': b58_address,

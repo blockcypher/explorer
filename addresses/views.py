@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
@@ -175,9 +176,6 @@ def subscribe_address(request, coin_symbol):
                     api_key=BLOCKCYPHER_API_KEY,
                     )
 
-            print('bcy_id')
-            print(bcy_id)
-
             address_subscription = AddressSubscription.objects.create(
                     coin_symbol=coin_symbol,
                     b58_address=coin_address,
@@ -185,7 +183,7 @@ def subscribe_address(request, coin_symbol):
                     blockcypher_id=bcy_id,
                     )
 
-            if already_authenticated:
+            if already_authenticated and auth_user.email_verified:
                 msg = _('You will now be emailed notifications for <b>%(coin_address)s</b>' % {'coin_address': coin_address})
                 messages.success(request, msg, extra_tags='safe')
                 return HttpResponseRedirect(reverse('dashboard'))
@@ -208,7 +206,33 @@ def subscribe_address(request, coin_symbol):
             }
 
 
+@login_required
+def user_unsubscribe_address(request, address_subscription_id):
+    '''
+    For logged-in users to unsubscribe an address
+    '''
+    address_subscription = get_object_or_404(AddressSubscription, id=address_subscription_id)
+    assert address_subscription.auth_user == request.user
+
+    if address_subscription.unsubscribed_at:
+        msg = _("You've already unsubscribed from this alert")
+        messages.info(request, msg)
+    else:
+        address_subscription.unsubscribed_at = now()
+        address_subscription.save()
+
+        msg = _("You've been unsubscribed from notifications on %(b58_address)s" % {
+            'b58_address': address_subscription.b58_address,
+            })
+        messages.info(request, msg)
+
+    return HttpResponseRedirect(reverse('dashboard'))
+
+
 def unsubscribe_address(request, unsub_code):
+    '''
+    1-click unsubscribe an address via email
+    '''
     sent_email = get_object_or_404(SentEmail, unsub_code=unsub_code)
 
     auth_user = sent_email.auth_user
@@ -229,7 +253,7 @@ def unsubscribe_address(request, unsub_code):
         address_subscription = sent_email.address_subscription
         assert address_subscription
 
-        address_subscription.deleted_at = now()
+        address_subscription.unsubscribed_at = now()
         address_subscription.save()
 
         msg = _("You've been unsubscribed from notifications on %(b58_address)s" % {

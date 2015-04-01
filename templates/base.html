@@ -169,6 +169,16 @@
         {# Including the messages for the homepage in the home template #}
     {% else %}
       <div class="main-container">
+        {# Page Header Stuff #}
+        <div class="page-header">
+          <div class="container">
+            <h1>
+              {% block page_header %}
+                Dashboard
+              {% endblock page_header %}
+            </h1>
+          </div>
+        </div>
         {% include "partials/messages.html" %}
     {% endif %}
 
@@ -176,7 +186,7 @@
       {% block content %}
       {% endblock content %}
 
-    </div>
+      </div>
 
     {# Footer #}
 

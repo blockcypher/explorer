@@ -122,7 +122,7 @@ class ChangePWForm(forms.Form):
             required=True,
             label=_('New Password'),
             widget=forms.PasswordInput(attrs={'autocomplete': 'off'}),
-            min_length=7,
+            min_length=8,
             help_text=_('Please choose a new secure password'),
     )
 

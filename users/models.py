@@ -16,7 +16,8 @@ class AuthUserManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = self.model(email=self.normalize_email(email))
+        # force whole email to lowercase. violates spec but better usability.
+        user = self.model(email=email.lower().strip())
         # if no password it calls set_unusuable_password() under the hood:
         user.set_password(password)
         user.creation_ip = creation_ip
