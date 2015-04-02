@@ -48,7 +48,11 @@ def user_login(request):
                             post_login_url = reverse_lazy('dashboard')
                             return HttpResponseRedirect(post_login_url)
                     else:
-                        msg = _("Sorry, that password is incorrect.")
+                        pw_reset_uri = reverse_lazy('forgot_password')
+                        pw_reset_uri = '%s?e=%s' % (pw_reset_uri, escape(email))
+                        msg = _('Sorry, that password is incorrect. Would you like to <a href="%(pw_reset_uri)s">reset your password</a>?' % {
+                            'pw_reset_uri': pw_reset_uri,
+                            })
                         messages.warning(request, msg, extra_tags='safe')
                 else:
                     msg = _("Sorry, that account doesn't have a password set yet.")
