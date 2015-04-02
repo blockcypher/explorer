@@ -91,7 +91,8 @@ def send_and_log(subject, body_template, to_user=None, to_email=None,
     if EMAIL_DEV_PREFIX:
         send_dict['subject'] += ' [DEV]'
     else:
-        send_dict['bcc_info'] = ','.join([POSTMARK_SENDER, ])
+        # send_dict['bcc_info'] = ','.join([POSTMARK_SENDER, ])
+        pass
 
     # Log everything
     se = SentEmail.objects.create(
