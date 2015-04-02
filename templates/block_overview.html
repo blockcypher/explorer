@@ -10,18 +10,15 @@
   {% endblocktrans %}
 {% endblock title %}
 
+{% block page_header %}
+  <h1>
+    <i class="fa fa-cube"></i> 
+    {{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}
+  </h1>
+  <h2 class="tagline wrapit semi">({{ block_details.hash }})</h2>
+{% endblock page_header %}
+
 {% block content %}
-
-<div class="page-header">
-  <div class="container">
-    <h1>
-      <i class="fa fa-cube"></i> 
-      {{ coin_symbol|coin_symbol_to_display_name }} Block {{ block_details.height|intcomma }}
-    </h1>
-    <h2 class="tagline wrapit semi">({{ block_details.hash }})</h2>
-  </div>
-</div>
-
 <div class="container">
   <nav>
     <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
@@ -101,7 +98,7 @@
               API Call
             </a>
             <a href="http://dev.blockcypher.com/#blocks" class="btn btn-default">
-              <i class="fa fa-code"></i> 
+              <i class="fa fa-external-link"></i> 
               API Docs
             </a>
           </td>

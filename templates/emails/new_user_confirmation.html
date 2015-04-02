@@ -1,0 +1,13 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+Thank you for requesting email notifications of the {{ cs_display }} address <b>{{ b58_address }}</b>!
+Please click this link to confirm your email address:<br />
+<a href="{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}">{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}</a>
+{% endblock content %}
+
+{% block ps %}
+P.S. You were sent this email because you recently requested email notifcations from us.
+If you didn't make this request, just ignore this email and you won't hear from us again.
+Sorry for the inconvenience!
+{% endblock ps %}

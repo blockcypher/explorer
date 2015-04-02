@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block page_header %}
+  <h1>Dashboard</h1>
+  <h4>{{ user.email }}</h4>
+{% endblock page_header %}
+
+{% block content %}
+
+{% if not user.email_verified %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="nofadeout alert alert-danger">
+          Your email address (<b>{{ user.email }}</b>) has not been confirmed,
+          email notifications will not be sent.
+          {# FIXME: add flow for reverification #}
+          <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <h4>Subscriptions:</h4>
+      {% if address_subscriptions %}
+      <ul>
+        {% for address_subscription in address_subscriptions %}
+        <li>
+          <a href="{% url 'address_overview' address_subscription.coin_symbol address_subscription.b58_address %}"
+            >{{ address_subscription.coin_symbol|coin_symbol_to_display_name }} address {{ address_subscription.b58_address }}</a>
+          (<a href="{% url 'user_unsubscribe_address' address_subscription.id %}">delete</a>)
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>
+        You have no subscriptions.
+      </p>
+      {% endif %}
+      <a href="{% url 'subscribe_address' 'btc' %}">+ Subscribe to Another Address</a>
+    </div>
+    <div class="row">
+      <hr />
+      <p>
+        <a href="{% url 'change_password' %}">Change Password</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+

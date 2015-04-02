@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block title %}
+  Please Confirm Your Email Address
+{% endblock title %}
+
+{% block page_header %}
+  <h1>Confirm Your Email Address to Receive Notifications</h1>
+{% endblock page_header %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <p>
+        Please check your email
+        (<b>{{ user.email }}</b>)
+        and click the link to confirm your subscription.
+      </p>
+
+      <p>
+        <a class="btn btn-default" data-toggle="collapse" data-target="#viewdetails">Didn't get the email?</a>
+      </p>
+      <p class="collapse" id="viewdetails">
+        Please wait one minute and then check your spam folder for a message from <b>notifications@blockcypher.com</b>.
+        If it still hasn't arrived, please
+        <a href="mailto:contact@blockcypher.com">contact us</a>
+        so we can fix it.
+        Sorry about that!
+      </p>
+
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

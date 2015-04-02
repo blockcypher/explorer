@@ -11,19 +11,16 @@
   {% endblocktrans %}
 {% endblock title %}
 
-{% block content %}
+{% block page_header %}
+  <h1>
+    <i class="fa fa-qrcode"></i> 
+    {{ coin_symbol|coin_symbol_to_display_name }} Address
+  </h1>
+  <h2 class="tagline wrapit semi">({{ address }})</h2>
+  {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
+{% endblock page_header %}
 
-<div class="page-header">
-  <div class="container">
-    <h1>
-      <i class="fa fa-qrcode"></i> 
-      {{ coin_symbol|coin_symbol_to_display_name }} Address
-    </h1>
-    <h2 class="tagline wrapit semi">({{ address }})</h2>
-    {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
-  </div>
-</div>
-  
+{% block content %}
 <div class="container">
   <div class="section">
     <div class="col-md-4 text-center">
@@ -100,19 +97,23 @@
       </div>
 
       <p class="text-center section">
-      {% if coin_symbol = 'btc' %}
-        {# TODO: support this for other blockchains #}
-        <a href="bitcoin:{{ address }}" class="btn btn-default">
-          <i class="fa fa-exchange"></i> 
-          Pay this address
+        <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-default">
+          <i class="fa fa-inbox"></i> 
+          Subscribe
         </a>
-      {% endif %}
+        {% if coin_symbol = 'btc' %}
+          {# TODO: support this for other blockchains #}
+          <a href="bitcoin:{{ address }}" class="btn btn-default">
+            <i class="fa fa-exchange"></i> 
+            Pay this address
+          </a>
+        {% endif %}
         <a href="{{ api_url }}" class="btn btn-default">
           <i class="fa fa-code"></i> 
           API Call
         </a>
         <a href="http://dev.blockcypher.com/#address_details" class="btn btn-default">
-          <i class="fa fa-code"></i> 
+          <i class="fa fa-external-link"></i> 
           API Docs
         </a>
       </p>

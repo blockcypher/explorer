@@ -8,7 +8,7 @@
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
-    Broadcast Your Transaction
+    Subscribe to an Address
   </h1>
 {% endblock page_header %}
 
@@ -16,23 +16,21 @@
 
 <div class="section">
   <div class="container">
-
-    <form role="form" method="post" action="{% url 'push_tx' coin_symbol %}">
+    <form role="form" method="post" action="{% url 'subscribe_address' coin_symbol %}">
       {% load crispy_forms_tags %}
       {{ form|crispy }}
       {% csrf_token %}
       <p class="text-center">
-        <button type="submit" class="btn btn-primary btn-lg">{% trans "Broadcast Transaction" %} </button>
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "Subscribe" %} </button>
       </p>
     </form>
 
-    {% comment %}
-    {# waiting for this feature in the API #}
-    <p class="text-center">
-      <a href="#">Click here</a>
-      to decode the transaction without broadcasting.
-    </p>
-    {% endcomment %}
+    {% if not user.is_authenticated %}
+      <p>
+      If you already have an account, please
+      <a href="{% url 'user_login' %}">login first</a>.
+      </p>
+    {% endif %}
 
   </div>
 </div>

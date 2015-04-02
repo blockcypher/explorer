@@ -11,17 +11,15 @@
   {% endblocktrans %}
 {% endblock title %}
 
-{% block content %}
+{% block page_header %}
+  <h1>
+    <i class="fa fa-exchange"></i> 
+    {{ coin_symbol|coin_symbol_to_display_name }} Transaction
+  </h1>
+  <h2 class="tagline wrapit semi">({{ tx_hash }})</h2>
+{% endblock page_header %}
 
-<div class="page-header">
-  <div class="container">
-    <h1>
-      <i class="fa fa-exchange"></i> 
-      {{ coin_symbol|coin_symbol_to_display_name }} Transaction
-    </h1>
-    <h2 class="tagline wrapit semi">({{ tx_hash }})</h2>
-  </div>
-</div>
+{% block content %}
 
 <div class="section">
   <div class="container">
@@ -179,7 +177,7 @@
                   API Call
                 </a>
                 <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                  <i class="fa fa-code"></i> 
+                  <i class="fa fa-external-link"></i> 
                   API Docs
                 </a>
               </td>
