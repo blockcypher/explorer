@@ -8,6 +8,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
     list_display = (
             'id',
             'created_at',
+            'unsubscribed_at',
             'b58_address',
             'notify_on_broadcast',
             'notify_on_first_confirm',
