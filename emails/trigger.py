@@ -58,11 +58,8 @@ def send_and_log(subject, body_template, to_user=None, to_email=None,
     assert to_email or to_user
 
     if to_user:
-        auth_user = fkey_objs.get('auth_user')
         to_email = to_user.email
         to_name = to_user.get_full_name()
-    else:
-        auth_user = to_user
 
     if not from_email:
         from_name, from_email = split_email_header(POSTMARK_SENDER)
@@ -109,7 +106,7 @@ def send_and_log(subject, body_template, to_user=None, to_email=None,
             subject=subject,
             unsub_code=unsub_code,
             verif_code=verif_code,
-            auth_user=auth_user,
+            auth_user=fkey_objs.get('auth_user', to_user),
             address_subscription=fkey_objs.get('address_subscription'),
             transaction_event=fkey_objs.get('transaction_event'),
             )
