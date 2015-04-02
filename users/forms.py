@@ -6,7 +6,7 @@ from blockcypher.constants import COIN_CHOICES
 
 
 class LoginForm(forms.Form):
-    email = forms.CharField(
+    email = forms.EmailField(
         label=_('Email'),
         required=True,
         widget=forms.TextInput(attrs={
@@ -20,6 +20,22 @@ class LoginForm(forms.Form):
         required=True,
         min_length=6,
         widget=forms.PasswordInput(attrs={'class': 'input-lg'}, render_value=False)
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        return email.lower().strip()
+
+
+class PWResetForm(forms.Form):
+    email = forms.EmailField(
+        label=_('Email'),
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'me@example.com',
+            'autofocus': 'autofocus',
+            'class': 'input-lg',
+            }),
     )
 
     def clean_email(self):
@@ -76,7 +92,7 @@ class CoinSymbolForm(forms.Form):
         )
 
 
-class PasswordUpsellForm(forms.Form):
+class SetPWForm(forms.Form):
     password = forms.CharField(
         required=True,
         label=_('Password'),
@@ -94,7 +110,7 @@ class PasswordUpsellForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        super(PasswordUpsellForm, self).__init__(*args, **kwargs)
+        super(SetPWForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         pw = self.cleaned_data.get('password')

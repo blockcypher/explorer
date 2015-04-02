@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.urlresolvers import reverse_lazy
 
+from emails.trigger import send_and_log
+
 from utils import get_client_ip, get_user_agent
+
 
 # For more info, see the django docs here:
 # https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#a-full-example
@@ -96,6 +99,19 @@ class AuthUser(AbstractBaseUser):
 
     def get_address_subscriptions(self):
         return self.addresssubscription_set.filter(unsubscribed_at=None).order_by('-id')
+
+    def send_pwreset_email(self):
+        """
+        Send password reset email to user.
+        """
+        # TODO: add some sort of throttling
+        return send_and_log(
+                subject='Blockcypher Password Reset',
+                body_template='password_reset.html',
+                to_user=self,
+                body_context=None,
+                fkey_objs={'auth_user': self},
+                )
 
 
 class LoggedLogin(models.Model):

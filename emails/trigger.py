@@ -57,11 +57,11 @@ def send_and_log(subject, body_template, to_user=None, to_email=None,
     assert body_template
     assert to_email or to_user
 
-    if to_email:
+    if to_user:
         auth_user = fkey_objs.get('auth_user')
-    else:
         to_email = to_user.email
         to_name = to_user.get_full_name()
+    else:
         auth_user = to_user
 
     if not from_email:

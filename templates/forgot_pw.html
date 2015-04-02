@@ -3,10 +3,10 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{% trans "Login" %}{% endblock title %}
+{% block title %}{% trans "Reset Password" %}{% endblock title %}
 
 {% block page_header %}
-  <h1>{% trans "Login" %}</h1>
+  <h1>{% trans "Reset Password" %}</h1>
 {% endblock page_header %}
 
 {% block content %}
@@ -17,20 +17,17 @@
        <div class="col-md-4 col-md-offset-4">
 
         <div class="form-well">
-          <form role="form" method="post" action="{% url "user_login" %}">
+          <form role="form" method="post" action="{% url "forgot_password" %}">
             {% load crispy_forms_tags %}
             {{ form|crispy }}
             {% csrf_token %}
             <p class="text-center">
-              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans "Login" %}</button>
+              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans "Reset Password" %}</button>
             </p>
           </form>
 
           <p class="text-center reset">
-            You can also
-            <a href="{% url 'signup' %}">{% trans "create a new account" %}</a>
-            or 
-            <a href="{% url 'forgot_password' %}">{% trans "reset your password" %}</a>.
+            Or, <a href="{% url 'signup' %}">{% trans "create a new account" %}</a>.
           </p>
         </div>
 
