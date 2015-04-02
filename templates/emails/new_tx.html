@@ -1,7 +1,7 @@
 {% extends "emails/base_email.html" %}
 
 {% block content %}
-A new transaction of <b>{{ sent_in_btc }}</b> {{ currency_abbrev }} was just detected on the {{ currency_name }} blockchain.
+A new transaction of <b>{{ sent_in_btc }}</b> {{ currency_abbrev }} was just detected on the blockchain.
 You can see the transaction details here:<br />
 <a href="{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}">{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}</a>
 

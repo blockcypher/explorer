@@ -22,8 +22,9 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="nofadeout alert alert-danger">
-          Your email address (<b>{{ user.email }}</b>) has not been confirmed.<br />
-          Please check your email and click the link to activate subscriptions.
+          Your email address (<b>{{ user.email }}</b>) has not been confirmed,
+          email notifications will not be sent.
+          {# FIXME: add flow for reverification #}
           <button type="button" class="close" data-dismiss="alert">×</button>
         </div>
       </div>
