@@ -227,6 +227,7 @@ def reset_pw(request, verif_code):
     return {
             # 'user': sent_email.auth_user,
             'form': form,
+            'verif_code': verif_code,
             }
 
 
