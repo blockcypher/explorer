@@ -209,7 +209,7 @@ def reset_pw(request, verif_code):
                 auth_user = sent_email.auth_user
 
                 auth_user.set_password(password)
-                auth_user = auth_user.save()
+                auth_user.save()
 
                 msg = _('Your password has been set.')
                 messages.success(request, msg)
