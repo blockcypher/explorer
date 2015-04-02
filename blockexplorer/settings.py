@@ -136,7 +136,7 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 TEMPLATE_DIRS = (os.path.join(PROJECT_PATH, 'templates'),)
 
-PRODUCTION_DOMAIN = 'blockcypher.herokuapp.com'
+PRODUCTION_DOMAIN = 'live.blockcypher.com'
 STAGING_DOMAIN = 'TODO'
 SITE_DOMAIN = os.getenv('SITE_DOMAIN', PRODUCTION_DOMAIN)
 
