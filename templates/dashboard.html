@@ -9,10 +9,7 @@
 
 {% block page_header %}
   <h1>Dashboard</h1>
-  <h4>
-    {{ user.email }}
-    {% if user.email_verified %}(verified){% endif %}
-  </h4>
+  <h4>{{ user.email }}</h4>
 {% endblock page_header %}
 
 {% block content %}
