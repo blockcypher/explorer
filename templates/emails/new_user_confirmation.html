@@ -1,7 +1,7 @@
 {% extends "emails/base_email.html" %}
 
 {% block content %}
-Thank you for requesting email notifications of the {{ cs_display }} address <b>{{ b58_address }}</b>!
+Thank you for requesting email notifications of the {{ cs_display }} address <b>{{ b58_address }}</b>.
 Please click this link to confirm your email address:<br />
 <a href="{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}">{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}</a>
 {% endblock content %}
