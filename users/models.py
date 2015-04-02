@@ -109,7 +109,7 @@ class AuthUser(AbstractBaseUser):
                 subject='Blockcypher Password Reset',
                 body_template='password_reset.html',
                 to_user=self,
-                body_context=None,
+                body_context={},
                 fkey_objs={'auth_user': self},
                 )
 
