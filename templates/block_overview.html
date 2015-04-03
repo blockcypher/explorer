@@ -148,61 +148,8 @@
         </a>
       </h4>
 
-      <div class="col-md-5">
-        <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
-      {% for input in transaction.inputs %}
-        <div class="txn-input truncate">
-          <strong>
-            {{ input.output_value|satoshis_to_btc_rounding }}
-            {{ coin_symbol|coin_symbol_to_currency_name }}
-          </strong>
-        {% if not input.prev_hash %}
-          {# the coinbase! #}
-          from Block Reward
-        {% else %}
-          from<br>
-          <i class="fa fa-qrcode"></i> 
-          <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-        {% endif %}
-        </div>
-      {% endfor %}
-      {% if inputs|length < transaction.vin_sz %}...{% endif %}
-      </div>
-      <div class="col-md-2">
-        <div class="txn-arrow"></div>
-      </div>
-      <div class="col-md-5">
-        <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
-      {% for output in transaction.outputs %}
-        <div class="txn-output truncate">
-          <strong>
-            {{ output.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          </strong>
+      {% include "partials/tx_hash.html" %}
 
-          {% if output.script_type == 'null-data' %}
-            {# TODO: add explanation #}
-            <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-          {% elif output.script_type == 'pay-to-multi-pubkey-hash' %}
-            <a href="http://dev.blockcypher.com/#transactions">Multi-Pubkey Hash</a>
-          {% elif output.script_type == 'unknown' %}
-            <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
-          {% else %}
-            to<br>
-            <i class="fa fa-qrcode"></i> 
-            <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-            {% if output.spent_by %}
-              (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-            {% else %}
-              (unspent)
-            {% endif %}
-          {% endif %}
-
-        </div>
-      {% endfor %}
-      {% if outputs|length < transaction.vout_sz %}...{% endif %}
-      </div>
-
-      <div class="clearfix"></div>
     </div>
   {% endfor %}
 
