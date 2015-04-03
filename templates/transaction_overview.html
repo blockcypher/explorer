@@ -42,7 +42,7 @@
         </li>
         <li>
           <span class="dash-label">Fees Collected</span><br>
-          {{ fee_in_satoshis_coinbase|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ fee_in_satoshis_coinbase|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
       {% else %}
         <li>
@@ -51,7 +51,7 @@
         </li>
         <li>
           <span class="dash-label">Fees</span><br>
-          {{ fee_in_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {{ fee_in_satoshis|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
         </li>
       {% endif %}
         <li>
