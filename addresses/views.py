@@ -193,8 +193,12 @@ def subscribe_address(request, coin_symbol):
 
     elif request.method == 'GET':
         coin_address = request.GET.get('a')
+        subscriber_email = request.GET.get('e')
         if coin_address:
             initial['coin_address'] = coin_address
+        if subscriber_email and not already_authenticated:
+            initial['email'] = subscriber_email
+        if coin_address or subscriber_email:
             if already_authenticated:
                 form = KnownUserAddressSubscriptionForm(initial=initial)
             else:
