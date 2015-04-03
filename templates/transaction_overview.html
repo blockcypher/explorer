@@ -212,7 +212,7 @@
       {% for input in inputs %}
         <div class="txn-input truncate">
           <strong>
-            {{ input.output_value|satoshis_to_btc_rounding }}
+            {{ input.output_value|satoshis_to_btc_rounding|intcomma }}
             {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
         {% if input.addresses|length == 0 %}
@@ -235,7 +235,7 @@
       {% for output in outputs %}
         <div class="txn-output truncate">
           <strong>
-            {{ output.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {{ output.value|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
           to<br>
         {% if output.script_type == 'null-data' %}
