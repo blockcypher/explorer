@@ -17,16 +17,14 @@
       from<br>
       <i class="fa fa-qrcode"></i> 
       <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-    {% else %}
-      {% if input.script_type == 'null-data' %}
-        {# TODO: add explanation #}
-        <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-      {% elif input.script_type == 'empty' %}
-        from 
-        <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
-      {% elif input.script_type == 'unknown' %}
-        <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
-      {% endif %}
+    {% elif input.script_type == 'null-data' %}
+      {# TODO: add explanation #}
+      <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+    {% elif input.script_type == 'empty' %}
+      from
+      <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
+    {% elif input.script_type == 'unknown' %}
+      <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
     {% endif %}
     </div>
   {% endfor %}
