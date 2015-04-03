@@ -110,7 +110,7 @@ def signup(request):
                 # Log the login
                 LoggedLogin.record_login(request)
 
-                msg = _('Login Succesful')
+                msg = _('Login Successful')
                 messages.success(request, msg)
 
                 return HttpResponseRedirect(reverse_lazy('dashboard'))
