@@ -65,7 +65,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
     else:
         time_to_use = received_at
 
-    if inputs[0]['addresses']:
+    if 'prev_hash' in inputs[0]:
         is_coinbase_tx = False
         total_satoshis_coinbase, fee_in_satoshis_coinbase = None, None
         coinbase_msg = None
