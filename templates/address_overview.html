@@ -16,7 +16,11 @@
     <i class="fa fa-qrcode"></i> 
     {{ coin_symbol|coin_symbol_to_display_name }} Address
   </h1>
-  <h2 class="tagline wrapit semi">({{ address }})</h2>
+
+  <h2 class="tagline wrapit semi">
+    {{ address }}
+  </h2>
+
   {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
 {% endblock page_header %}
 
@@ -25,7 +29,8 @@
   <div class="section">
     <div class="col-md-4 text-center">
       <p>
-        <a href="{% url 'address_overview' coin_symbol address %}">
+        {# TODO: support this for other blockchains #}
+        <a href="{% if coin_symbol = 'btc' %}bitcoin:{{ address }}"{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
           <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
         </a>
       </p>
@@ -96,27 +101,42 @@
         <div class="clearfix"></div>
       </div>
 
-      <p class="text-center section">
-        <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-default">
+      <br />
+
+      <p class="text-center">
+        <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-lg btn-default">
           <i class="fa fa-inbox"></i> 
           Subscribe
         </a>
-        {% if coin_symbol = 'btc' %}
-          {# TODO: support this for other blockchains #}
-          <a href="bitcoin:{{ address }}" class="btn btn-default">
-            <i class="fa fa-exchange"></i> 
-            Pay this address
-          </a>
-        {% endif %}
-        <a href="{{ api_url }}" class="btn btn-default">
-          <i class="fa fa-code"></i> 
-          API Call
-        </a>
-        <a href="http://dev.blockcypher.com/#address_details" class="btn btn-default">
-          <i class="fa fa-external-link"></i> 
-          API Docs
-        </a>
+
+        <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
+          Advanced Details 
+          <b class="caret"></b>
+        </button>
       </p>
+      <div class="col-md-12 collapse" id="advanced-details">
+        <div class="table-responsive">
+          <table class="table">
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{{ api_url }}" class="btn btn-default">
+                  <i class="fa fa-code"></i> 
+                  API Call
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                  <i class="fa fa-external-link"></i> 
+                  API Docs
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
