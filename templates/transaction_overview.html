@@ -25,11 +25,11 @@
   <div class="container">
     {% if tx_hash %}
 
-    {% if double_of_tx %}
+    {% if transaction.double_of_tx %}
       <div class="alert alert-danger" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         Double-Spend Detected
-        (<a href="{% url transaction_overview coin_symbol double_of_tx %}">Details</a>)
+        (<a href="{% url transaction_overview coin_symbol transaction.double_of_tx %}">Details</a>)
       </div>
     {% endif %}
 
@@ -75,27 +75,27 @@
                 data-placement='top'
                 data-html='true'
                 data-content='
-                      <span id="confs-popover">{{ num_confirmations|intcomma }}</span> confirmations.
+                      <span id="confs-popover">{{ transaction.confirmations|intcomma }}</span> confirmations.
                       <br />
                       Anything over 6 confirmations is considered completed and irreversible.
                 '>
                 <i class="fa fa-info-circle"></i>
               </button>
           </span><br>
-          {% if num_confirmations >= 6 %}
+          {% if transaction.confirmations >= 6 %}
             <span id="conf-section" class="confirmed">
               <i class="fa fa-lock"></i> 
               <span id="num-confs">6+</span>
             </span>
-          {% elif num_confirmations > 0 and num_confirmations < 6 %}
+          {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
             <span id="conf-section" class="pending">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ num_confirmations|intcomma }}/6</span>
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
             </span>
           {% else %}
             <span id="conf-section" class="unconfirmed">
               <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ num_confirmations|intcomma }}/6</span>
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
             </span>
           {% endif %}
         </li>
@@ -108,7 +108,7 @@
 <div class="section">
   <div class="container">
     <div class="row">
-      <div {% if block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
+      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
         <strong>Confidence</strong>
         <button id="confidence-popover" type='button' class='btn-link'>
           <i class="fa fa-info-circle"></i>
@@ -119,15 +119,15 @@
         </div>
       </div>
 
-      <div {% if block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
+      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
         <strong>Miner Preference</strong>
         <div class="circle-chart">
-          <div class="fill {{ preference }}"></div>
-          <span class="val">{{ preference }}</span>
+          <div class="fill {{ transaction.preference }}"></div>
+          <span class="val">{{ transaction.preference }}</span>
         </div>
       </div>
 
-    {% if block_hash %}
+    {% if transaction.block_hash %}
       <p class="text-center">
         <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
           Advanced Details 
@@ -140,19 +140,19 @@
     {% endif %}
         <div class="table-responsive">
           <table class="table">
-            {% if block_hash %}
+            {% if transaction.block_hash %}
               <tr>
                 <th>In Block</th>
                 <td>
-                  <a href="{% url 'block_overview' coin_symbol block_hash %}" class="hidden-xs">{{ block_hash }}</a>
-                  <a href="{% url 'block_overview' coin_symbol block_hash %}" class="visible-xs">See Block</a>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
                 </td>
               </tr>
 
               <tr>
                 <th>Block Height</th>
                 <td>
-                  <a href="{% url 'block_overview' coin_symbol block_height %}">{{ block_height|intcomma }}</a>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transction.block_height|intcomma }}</a>
                 </td>
               </tr>
             {% endif %}
@@ -164,10 +164,10 @@
               </tr>
             {% endif %}
 
-            {% if relayed_by %}
+            {% if transaction.relayed_by %}
               <tr>
                 <th>Relayed By:</th>
-                <td>{{ relayed_by }}</td>
+                <td>{{ transaction.relayed_by }}</td>
               </tr>
             {% endif %}
             <tr>
@@ -207,59 +207,7 @@
         <h3>Details</h3>
       </div>
 
-      <div class="col-md-5">
-        <h4 class="text-center">Inputs Consumed ({{ num_inputs }})</h4>
-      {% for input in inputs %}
-        <div class="txn-input truncate">
-          <strong>
-            {{ input.output_value|satoshis_to_btc_rounding|intcomma }}
-            {{ coin_symbol|coin_symbol_to_currency_name }}
-          </strong>
-        {% if not input.prev_hash %}
-          {# the coinbase! #}
-          from Block Reward
-        {% else %}
-          from<br>
-          <i class="fa fa-qrcode"></i> 
-          <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-        {% endif %}
-        </div>
-      {% endfor %}
-      {% if inputs|length < num_inputs %}...{% endif %}
-      </div>
-      <div class="col-md-2">
-        <div class="txn-arrow"></div>
-      </div>
-      <div class="col-md-5">
-        <h4 class="text-center">Outputs Created ({{ num_outputs }})</h4>
-      {% for output in outputs %}
-        <div class="txn-output truncate">
-          <strong>
-            {{ output.value|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          </strong>
-          to<br>
-        {% if output.script_type == 'null-data' %}
-          {# TODO: add explanation #}
-          <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-        {% elif output.script_type == 'pay-to-multi-pubkey-hash' %}
-          <a href="http://dev.blockcypher.com/#transactions">Multi-Pubkey Hash</a>
-        {% elif output.script_type == 'unknown' %}
-          <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
-        {% else %}
-          <i class="fa fa-qrcode"></i> 
-          <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-        {% endif %}
-        {% if output.spent_by %}
-          (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-        {% else %}
-          (unspent)
-        {% endif %}
-        </div>
-    {% endfor %}
-    {% if outputs|length < num_outputs %}...{% endif %}
-    </div>
- 
-    </div>
+    {% include "partials/tx_hash.html" %}
 
   {% else %}
     <p>
@@ -278,13 +226,13 @@
 
   <script>
 
-    {% if receive_cnt > 0 %}
-      var memoryPools = {{ receive_cnt }};
+    {% if transaction.receive_cnt > 0 %}
+      var memoryPools = {{ transaction.receive_cnt }};
     {% else %}
       var memoryPools = 0;
     {% endif %}
 
-    var doubleSpend = {% if double_of_tx %}"YES"{% else %}"No"{% endif %};
+    var doubleSpend = {% if transaction.double_of_tx %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
@@ -400,17 +348,17 @@
 
       };
 
-    {% if num_confirmations == 0 %}
+    {% if transaction.confirmations == 0 %}
       poll_confidence()
     {% endif %}
 
     function popoverContent(){
       var html = '';
-      html += '<span{% if block_hash %} style="display:none;"{% endif %}>' +
+      html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
               '<b>Double-Spend Detected:</b> ' +
               '<span id="ds-detected">'+doubleSpend+'</span>' +
             '</span><br>' +
-            '<span{% if block_hash %} style="display:none;"{% endif %} id="pools-section">' +
+            '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
               '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
             '</span>';
       return html;
