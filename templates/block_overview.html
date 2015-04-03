@@ -156,7 +156,7 @@
             {{ input.output_value|satoshis_to_btc_rounding }}
             {{ coin_symbol|coin_symbol_to_currency_name }}
           </strong>
-        {% if not input.prev_hash == 0 %}
+        {% if not input.prev_hash %}
           {# the coinbase! #}
           from Block Reward
         {% else %}
