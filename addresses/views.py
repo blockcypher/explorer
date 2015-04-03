@@ -110,6 +110,12 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             }
 
 
+def subscribe_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('subscribe_address', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)
+
+
 @assert_valid_coin_symbol
 @render_to('subscribe_address.html')
 def subscribe_address(request, coin_symbol):

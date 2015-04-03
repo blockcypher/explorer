@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 
     # App pages
     url(r'^$', 'homepage.views.home', name='home'),
+    url(r'^subscribe/$', 'addresses.views.subscribe_forwarding', name='subscribe_forwarding'),
     url(r'^(?P<coin_symbol>[-\w]+)/subscribe/$', 'addresses.views.subscribe_address', name='subscribe_address'),
     url(r'(?P<coin_symbol>[-\w]+)/latest-block/$', 'blocks.views.latest_block', name='latest_block'),
     url(r'(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/$', 'addresses.views.address_overview', name='address_overview'),
