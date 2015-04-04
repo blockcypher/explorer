@@ -289,7 +289,7 @@ def confirm_subscription(request, verif_code):
         # not yet verified
         sent_email.verify_user_email(request)
 
-        msg = _('<b>%(email_address)s</b> verified, you will now receive email notifcations for <b>%(b58_address)s</b>.' % {
+        msg = _('<b>%(email_address)s</b> verified, you will now receive email notifications for <b>%(b58_address)s</b>.' % {
             'email_address': sent_email.to_email,
             'b58_address': sent_email.address_subscription.b58_address,
             })
