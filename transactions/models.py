@@ -41,7 +41,7 @@ class OnChainTransaction(models.Model):
                 'address_subscription': self.address_subscription,
                 }
         return send_and_log(
-                subject='New Unconfirmed Transaction for %s' % b58_address,
+                subject='Unconfirmed Transaction for %s' % b58_address,
                 body_template='new_tx.html',
                 to_user=self.address_subscription.auth_user,
                 body_context=context_dict,
@@ -62,7 +62,7 @@ class OnChainTransaction(models.Model):
                 'address_subscription': self.address_subscription,
                 }
         return send_and_log(
-                subject='Transaction %s Confirmed' % self.tx_hash,
+                subject='Transaction %s... Confirmed' % self.tx_hash[:10],
                 body_template='confirmed_tx.html',
                 to_user=self.address_subscription.auth_user,
                 body_context=context_dict,
