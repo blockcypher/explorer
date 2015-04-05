@@ -279,7 +279,7 @@ def confirm_subscription(request, verif_code):
     # Log the login
     LoggedLogin.record_login(request)
 
-    if sent_email.verified_at and auth_user.is_email_verified:
+    if sent_email.verified_at and auth_user.email_verified:
         # already verified
         msg = _('<b>%(email_address)s</b> already verified' % {'email_address': sent_email.to_email})
         messages.info(request, msg, extra_tags='safe')
