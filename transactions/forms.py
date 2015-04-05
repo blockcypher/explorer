@@ -20,7 +20,7 @@ class PushTXForm(forms.Form):
 
     def clean_tx_hex(self):
         tx_hex = self.cleaned_data['tx_hex'].strip().upper()
-        if len(tx_hex['tx']) % 2 == 1:
+        if len(tx_hex) % 2 == 1:
             err_msg = _('Please enter a valid transaction hex')
             raise forms.ValidationError(err_msg)
         return tx_hex
