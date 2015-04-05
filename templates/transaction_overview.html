@@ -142,7 +142,7 @@
           <table class="table">
             {% if transaction.block_hash %}
               <tr>
-                <th>In Block</th>
+                <th>Block Hash</th>
                 <td>
                   <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
                   <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
