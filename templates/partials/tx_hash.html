@@ -8,23 +8,26 @@
         {{ input.output_value|satoshis_to_btc_rounding }}
         {{ coin_symbol|coin_symbol_to_currency_name }}
       </strong>
-    {% if not input.prev_hash %}
+    {% if input.prev_hash %}
+      {% if input.addresses %}
+        {# 'pay-to-pubkey-hash` `pay-to-multi-pubkey-hash` `pay-to-pubkey` `pay-to-script-hash` #}
+        {# TODO: something unique for each of these types? #}
+        from<br>
+        <i class="fa fa-qrcode"></i> 
+        <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+      {% elif input.script_type == 'null-data' %}
+        {# TODO: add explanation #}
+        <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+      {% elif input.script_type == 'empty' %}
+        from
+        <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
+      {% elif input.script_type == 'unknown' %}
+        <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
+      {% endif %}
+      (<a href="{% url 'transaction_overview' coin_symbol input.prev_hash %}">output</a>)
+    {% else %}
       {# the coinbase! #}
       from Block Reward
-    {% elif input.addresses %}
-      {# 'pay-to-pubkey-hash` `pay-to-multi-pubkey-hash` `pay-to-pubkey` `pay-to-script-hash` #}
-      {# TODO: something unique for each of these types? #}
-      from<br>
-      <i class="fa fa-qrcode"></i> 
-      <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-    {% elif input.script_type == 'null-data' %}
-      {# TODO: add explanation #}
-      <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-    {% elif input.script_type == 'empty' %}
-      from
-      <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
-    {% elif input.script_type == 'unknown' %}
-      <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
     {% endif %}
     </div>
   {% endfor %}
