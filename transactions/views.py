@@ -18,6 +18,16 @@ from binascii import unhexlify
 import json
 
 
+def scale_confidence(confidence):
+    """
+    Hack so that 95% confidence doesn't look like basically 100%
+    """
+    assert confidence <= 1
+
+    confidence_scaled = confidence**10  # arbitrary fudge factor
+    return confidence_scaled * 100
+
+
 @assert_valid_coin_symbol
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
@@ -42,8 +52,9 @@ def transaction_overview(request, coin_symbol, tx_hash):
     confidence = transaction_details.get('confidence')
     if confidence:
         confidence_pct = confidence * 100
+        confidence_pct_scaled = scale_confidence(confidence)
     else:
-        confidence_pct = None
+        confidence_pct, confidence_pct_scaled = None, None
 
     received_at = transaction_details['received']
     confirmed_at = transaction_details.get('confirmed')
@@ -93,6 +104,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
             'inputs': inputs,
             'outputs': outputs,
             'confidence_pct': confidence_pct,
+            'confidence_pct_scaled': confidence_pct_scaled,
             'transaction': transaction_details,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
@@ -118,6 +130,7 @@ def poll_confidence(request, coin_symbol, tx_hash):
     json_dict = {
             'confidence': confidence,
             'confidence_pct': confidence_pct,
+            'confidence_pct_scaled': scale_confidence(confidence),
             'double_spend_detected': transaction_details['double_spend'],
             'receive_cnt': transaction_details.get('receive_count'),
             }

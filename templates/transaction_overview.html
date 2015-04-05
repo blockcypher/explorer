@@ -114,7 +114,7 @@
           <i class="fa fa-info-circle"></i>
         </button>
         <div class="circle-chart">
-          <div id="confidence-widget" class="fill" style="height:{{ confidence_pct|add:"-5" }}%;"></div>
+          <div id="confidence-widget" class="fill" style="height:{{ confidence_pct_scaled }}%;"></div>
           <span id="confidence-text" class="val">{{ confidence_pct|floatformat:2 }}%</span>
         </div>
       </div>
@@ -256,7 +256,7 @@
           CONFIDENCE_TIMEOUT_MS += 1.1;
 
           // Update #s
-          $("#confidence-widget").height(data['confidence_pct'] - 5 + '%');
+          $("#confidence-widget").height(data['confidence_pct_scaled'] + '%');
           $("#confidence-text").text(data['confidence_pct'] + "%");
           $('#receive-cnt').text(data['receive_cnt']);
 
@@ -370,7 +370,8 @@
             '</span><br>' +
             '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
               '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
-            '</span>';
+              '</span><br />' +
+            '<span><a href="http://www.tik.ee.ethz.ch/file/848064fa2e80f88a57aef43d7d5956c6/P2P2013_093.pdf">How Calculated</a></span>';
       return html;
     }
 
