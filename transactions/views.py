@@ -22,6 +22,9 @@ def scale_confidence(confidence):
     """
     Hack so that 95% confidence doesn't look like basically 100%
     """
+    if confidence is None:
+        return 0
+
     assert confidence <= 1
 
     confidence_scaled = confidence**10  # arbitrary fudge factor
