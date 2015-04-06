@@ -24,7 +24,10 @@ class KnownUserAddressSubscriptionForm(forms.Form):
     )
 
     def clean(self):
-        address = self.cleaned_data.get('coin_address').strip()
+        address = self.cleaned_data.get('coin_address')
+        if not address:
+            return None
+        address = address.strip()
         coin_symbol = self.cleaned_data.get('coin_symbol')
         if address and coin_symbol:
             if not is_valid_address_for_coinsymbol(address, coin_symbol=coin_symbol):
