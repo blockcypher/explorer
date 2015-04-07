@@ -56,7 +56,6 @@
 .truncate {
   min-width: 5em;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 .wrapit {
