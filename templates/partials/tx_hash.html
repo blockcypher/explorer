@@ -49,11 +49,13 @@
       to<br>
       <i class="fa fa-qrcode"></i> 
       <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-      {% if output.spent_by %}
-        (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
-      {% else %}
-        (unspent)
-      {% endif %}
+      <span class="truncate">
+        {% if output.spent_by %}
+          (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}">spent</a>)
+        {% else %}
+            (unspent)
+        {% endif %}
+      </span>
     {% elif output.script_type == 'null-data' %}
       {# TODO: add explanation #}
       <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
