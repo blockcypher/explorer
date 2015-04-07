@@ -17,7 +17,7 @@ from utils import get_max_pages
 @render_to('block_overview.html')
 def block_overview(request, coin_symbol, block_representation):
 
-    TXNS_PER_PAGE = 5
+    TXNS_PER_PAGE = 10
 
     # 1 indexed page
     current_page = request.GET.get('page')
