@@ -26,13 +26,11 @@
       </p>
     </form>
 
-    {% comment %}
-    {# waiting for this feature in the API #}
     <p class="text-center">
-      <a href="#">Click here</a>
-      to decode the transaction without broadcasting.
+      Not ready to broadcast?
+      <a href="{% url 'decode_tx' coin_symbol %}">Click here</a>
+      to decode a raw transaction without broadcasting.
     </p>
-    {% endcomment %}
 
   </div>
 </div>

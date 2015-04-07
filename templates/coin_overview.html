@@ -23,6 +23,7 @@
 {% block content %}
 
 <div class="container">
+
   <div class="section">
     <h2>Recent Blocks</h2>
 
@@ -91,8 +92,18 @@
       <p class="text-center">
         Note: Blockypher is faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
       </p>
+
     </div>
   </div>
+
+  <div class="section">
+    <p class="text-center">
+      <a class="btn btn-default" href="{% url 'push_tx' coin_symbol %}">Push Transaction</a>
+      <a class="btn btn-default" href="{% url 'decode_tx' coin_symbol %}">Decode Raw Transaction</a>
+    </p>
+  </div>
+
+
 </div>
 {% endblock content %}
 

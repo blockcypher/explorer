@@ -29,7 +29,6 @@ urlpatterns = patterns('',
 
     # App pages
     url(r'^$', 'homepage.views.home', name='home'),
-    url(r'^subscribe/$', 'addresses.views.subscribe_forwarding', name='subscribe_forwarding'),
     url(r'^(?P<coin_symbol>[-\w]+)/subscribe/$', 'addresses.views.subscribe_address', name='subscribe_address'),
     url(r'(?P<coin_symbol>[-\w]+)/latest-block/$', 'blocks.views.latest_block', name='latest_block'),
     url(r'(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/$', 'addresses.views.address_overview', name='address_overview'),
@@ -38,6 +37,12 @@ urlpatterns = patterns('',
     url(r'(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', 'transactions.views.poll_confidence', name='poll_confidence'),
     url(r'(?P<coin_symbol>[-\w]+)/block/(?P<block_representation>[-\w]+)/$', 'blocks.views.block_overview', name='block_overview'),
     url(r'(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
+    url(r'(?P<coin_symbol>[-\w]+)/decodetx/$', 'transactions.views.decode_tx', name='decode_tx'),
+
+    # Forwarding Pages (URL hacks)
+    url(r'^subscribe/$', 'addresses.views.subscribe_forwarding', name='subscribe_forwarding'),
+    url(r'^pushtx/$', 'transactions.views.pushtx_forwarding', name='pushtx_forwarding'),
+    url(r'^decodetx/$', 'transactions.views.decodetx_forwarding', name='decodetx_forwarding'),
 
     # So broad it must be last
     url(r'^(?P<coin_symbol>[-\w]+)/$', 'homepage.views.coin_overview', name='coin_overview'),

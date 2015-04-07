@@ -7,11 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from transactions.forms import PushTXForm
+from transactions.forms import RawTXForm
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_transaction_details, get_transaction_url, pushtx
+from blockcypher.api import get_transaction_details, get_transaction_url, pushtx, decodetx
 
 from binascii import unhexlify
 
@@ -143,11 +143,21 @@ def poll_confidence(request, coin_symbol, tx_hash):
     return HttpResponse(json_response, content_type='application/json')
 
 
+def pushtx_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('push_tx', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)
+
+
 @render_to('pushtx.html')
 def push_tx(request, coin_symbol):
-    form = PushTXForm(initial={'coin_symbol': coin_symbol})
+    '''
+    Push a raw TX to the bitcoin network
+    '''
+    initial = {'coin_symbol': coin_symbol}
+    form = RawTXForm(initial=initial)
     if request.method == 'POST':
-        form = PushTXForm(data=request.POST)
+        form = RawTXForm(data=request.POST)
         if form.is_valid():
             # broadcast the transaction
             tx_hex = form.cleaned_data['tx_hex']
@@ -169,8 +179,52 @@ def push_tx(request, coin_symbol):
                     'tx_hash': result['tx']['hash'],
                     })
                 return HttpResponseRedirect(url)
+    elif request.method == 'GET':
+        # Preseed tx hex if passed through GET string
+        tx_hex = request.GET.get('t')
+        if tx_hex:
+            initial['tx_hex'] = tx_hex
+            form = RawTXForm(initial=initial)
 
     return {
             'coin_symbol': coin_symbol,
             'form': form,
             }
+
+
+@render_to('decodetx.html')
+def decode_tx(request, coin_symbol):
+    '''
+    Decode a raw transaction
+    '''
+    initial = {'coin_symbol': coin_symbol}
+    form = RawTXForm(initial=initial)
+    tx_in_json_str = ''
+    if request.method == 'POST':
+        form = RawTXForm(data=request.POST)
+        if form.is_valid():
+            # Display the TX
+            tx_hex = form.cleaned_data['tx_hex']
+            coin_symbol_to_use = form.cleaned_data['coin_symbol']
+
+            tx_in_json = decodetx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use)
+            tx_in_json_str = json.dumps(tx_in_json, indent=4)
+            # print(tx_in_json_str)
+
+    elif request.method == 'GET':
+        # Preseed tx hex if passed through GET string
+        tx_hex = request.GET.get('t')
+        if tx_hex:
+            initial['tx_hex'] = tx_hex
+            form = RawTXForm(initial=initial)
+    return {
+            'coin_symbol': coin_symbol,
+            'form': form,
+            'tx_in_json_str': tx_in_json_str,
+            }
+
+
+def decodetx_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('decode_tx', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)

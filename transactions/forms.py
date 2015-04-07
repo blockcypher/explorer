@@ -4,7 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from blockcypher.constants import COIN_CHOICES
 
 
-class PushTXForm(forms.Form):
+class RawTXForm(forms.Form):
+    '''
+    Used for both pushing and decoding
+    '''
+
     tx_hex = forms.CharField(
         label=_('Transaction Hex'),
         required=True,
