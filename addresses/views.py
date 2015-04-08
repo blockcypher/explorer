@@ -168,34 +168,41 @@ def subscribe_address(request, coin_symbol):
                     # Log the login
                     LoggedLogin.record_login(request)
 
-            # Hit blockcypher and return subscription id
-            callback_uri = reverse('address_webhook', kwargs={
-                'secret_key': WEBHOOK_SECRET_KEY,
-                # hack for rare case of two webhooks requested on same address:
-                'ignored_key': simple_pw_generator(num_chars=10),
-                })
-            callback_url = uri_to_url(callback_uri)
-            bcy_id = subscribe_to_address_webhook(
-                    subscription_address=coin_address,
-                    callback_url=callback_url,
-                    coin_symbol=coin_symbol,
-                    api_key=BLOCKCYPHER_API_KEY,
-                    )
-
-            address_subscription = AddressSubscription.objects.create(
-                    coin_symbol=coin_symbol,
-                    b58_address=coin_address,
+            existing_subscription_cnt = AddressSubscription.objects.filter(
                     auth_user=auth_user,
-                    blockcypher_id=bcy_id,
-                    )
-
-            if already_authenticated and auth_user.email_verified:
-                msg = _('You will now be emailed notifications for <b>%(coin_address)s</b>' % {'coin_address': coin_address})
-                messages.success(request, msg, extra_tags='safe')
-                return HttpResponseRedirect(reverse('dashboard'))
+                    b58_address=coin_address).count()
+            if existing_subscription_cnt:
+                msg = _("You're already subscribed to that address. Please choose another address.")
+                messages.warning(request, msg, extra_tags='safe')
             else:
-                address_subscription.send_welcome_email()
-                return HttpResponseRedirect(reverse('unconfirmed_email'))
+                # Hit blockcypher and return subscription id
+                callback_uri = reverse('address_webhook', kwargs={
+                    'secret_key': WEBHOOK_SECRET_KEY,
+                    # hack for rare case of two webhooks requested on same address:
+                    'ignored_key': simple_pw_generator(num_chars=10),
+                    })
+                callback_url = uri_to_url(callback_uri)
+                bcy_id = subscribe_to_address_webhook(
+                        subscription_address=coin_address,
+                        callback_url=callback_url,
+                        coin_symbol=coin_symbol,
+                        api_key=BLOCKCYPHER_API_KEY,
+                        )
+
+                address_subscription = AddressSubscription.objects.create(
+                        coin_symbol=coin_symbol,
+                        b58_address=coin_address,
+                        auth_user=auth_user,
+                        blockcypher_id=bcy_id,
+                        )
+
+                if already_authenticated and auth_user.email_verified:
+                    msg = _('You will now be emailed notifications for <b>%(coin_address)s</b>' % {'coin_address': coin_address})
+                    messages.success(request, msg, extra_tags='safe')
+                    return HttpResponseRedirect(reverse('dashboard'))
+                else:
+                    address_subscription.send_welcome_email()
+                    return HttpResponseRedirect(reverse('unconfirmed_email'))
 
     elif request.method == 'GET':
         coin_address = request.GET.get('a')
