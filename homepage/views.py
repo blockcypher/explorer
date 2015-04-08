@@ -134,6 +134,7 @@ def coin_overview(request, coin_symbol):
             block_representation_list=list(reversed(range(latest_bh-4, latest_bh+1))),
             coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY)
+    recent_blocks = sorted(recent_blocks, key=lambda k: k['height'], reverse=True)
     #import pprint; pprint.pprint(recent_blocks, width=1)
 
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
