@@ -28,13 +28,20 @@ def block_overview(request, coin_symbol, block_representation):
 
     # TODO: fail gracefully if the user picks a number of pages that is too large
     # Waiting on @matthieu's change to API first (currently throws 502)
-    block_details = get_block_details(
-            block_representation=block_representation,
-            coin_symbol=coin_symbol,
-            txn_limit=TXNS_PER_PAGE,
-            txn_offset=(current_page-1)*TXNS_PER_PAGE,
-            api_key=BLOCKCYPHER_API_KEY,
-            )
+
+    try:
+        block_details = get_block_details(
+                block_representation=block_representation,
+                coin_symbol=coin_symbol,
+                txn_limit=TXNS_PER_PAGE,
+                txn_offset=(current_page-1)*TXNS_PER_PAGE,
+                api_key=BLOCKCYPHER_API_KEY,
+                )
+    except AssertionError:
+        msg = _('Invalid Block Representation')
+        messages.warning(request, msg)
+        redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
+        return HttpResponseRedirect(redir_url)
 
     # import pprint; pprint.pprint(block_details, width=1)
 

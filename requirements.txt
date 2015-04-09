@@ -1,5 +1,5 @@
 Django==1.7.1
--e git://github.com/blockcypher/blockcypher-python.git@71b77399dc2bb3410e066f493c609512cb690e32#egg=blockcypher
+-e git://github.com/blockcypher/blockcypher-python.git@e32ecb184f19ab9fa124afc61f5dd9391ad9738d#egg=blockcypher
 dj-database-url==0.3.0
 dj-static==0.0.6
 django-annoying==0.8.0

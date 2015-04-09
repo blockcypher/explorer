@@ -35,14 +35,18 @@ def scale_confidence(confidence):
 @render_to('transaction_overview.html')
 def transaction_overview(request, coin_symbol, tx_hash):
 
-    transaction_details = get_transaction_details(
-            tx_hash=tx_hash,
-            coin_symbol=coin_symbol,
-            limit=500,
-            api_key=BLOCKCYPHER_API_KEY,
-            )
-
-    # FIXME: fails silently on pagination if there are > 20 inputs or outputs
+    try:
+        transaction_details = get_transaction_details(
+                tx_hash=tx_hash,
+                coin_symbol=coin_symbol,
+                limit=500,
+                api_key=BLOCKCYPHER_API_KEY,
+                )
+    except AssertionError:
+        msg = _('Invalid Transaction Hash')
+        messages.warning(request, msg)
+        redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
+        return HttpResponseRedirect(redir_url)
 
     #import pprint; pprint.pprint(transaction_details, width=1)
 

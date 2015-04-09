@@ -43,12 +43,18 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     else:
         current_page = 1
 
-    address_details = get_address_details(
-            address=address,
-            coin_symbol=coin_symbol,
-            txn_limit=5000,
-            api_key=BLOCKCYPHER_API_KEY,
-            )
+    try:
+        address_details = get_address_details(
+                address=address,
+                coin_symbol=coin_symbol,
+                txn_limit=5000,
+                api_key=BLOCKCYPHER_API_KEY,
+                )
+    except AssertionError:
+        msg = _('Invalid Address')
+        messages.warning(request, msg)
+        redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
+        return HttpResponseRedirect(redir_url)
 
     #import pprint; pprint.pprint(address_details, width=1)
 
