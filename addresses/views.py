@@ -23,7 +23,7 @@ from transactions.models import OnChainTransaction
 from services.models import WebHook
 from emails.models import SentEmail
 
-from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
+from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm
 
 from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
 
@@ -341,3 +341,43 @@ def address_webhook(request, secret_key, ignored_key):
 
     # Return something
     return HttpResponse("*ok*")
+
+
+def render_address_widget(request, coin_symbol, b58_address):
+    pass
+
+
+@render_to('search_widgets.html')
+def search_widgets(request, coin_symbol):
+    form = AddressSearchForm()
+    if request.method == 'POST':
+        form = AddressSearchForm(data=request.POST)
+        if form.is_valid():
+            kwargs = {
+                    'coin_symbol': form.cleaned_data['coin_symbol'],
+                    'address': form.cleaned_data['coin_address'],
+                    }
+            redir_url = reverse('widgets_overview', kwargs=kwargs)
+            return HttpResponseRedirect(redir_url)
+    elif request.method == 'GET':
+        new_coin_symbol = request.GET.get('c')
+        if new_coin_symbol:
+            initial = {'coin_symbol': new_coin_symbol}
+            form = AddressSearchForm(initial=initial)
+
+    return {
+            'form': form,
+            'coin_symbol': coin_symbol,
+            }
+
+
+@render_to('widgets.html')
+def widgets_overview(request, coin_symbol, address):
+    #FIXME: implement
+    return {}
+
+
+def widget_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('search_widgets', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)
