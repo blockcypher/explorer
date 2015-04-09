@@ -200,12 +200,14 @@
       {% for transaction in all_transactions %}
       <tr class="tx-row" id="{{ transaction.tx_hash }}">
           <td class="truncate">
-            <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="hidden-xs">
-              {{ transaction.tx_hash }}
-            </a>
-            <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="visible-xs">
-              View Transaction
-            </a>
+            {% if transaction.tx_hash %}
+              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="hidden-xs">
+                {{ transaction.tx_hash }}
+              </a>
+              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="visible-xs">
+                View Transaction
+              </a>
+            {% endif %}
           </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
