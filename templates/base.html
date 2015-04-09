@@ -49,7 +49,7 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}" title="live.blockcypher.com">
+          <a class="navbar-brand" href="{% url 'home' %}" title="live.blockcypher.com">
             <strong class="logo acc"></strong>
           </a>
         </div>
@@ -120,12 +120,26 @@
                 </li>
               </ul>
             </li>
-            <li>
-              {% if user.is_authenticated %}
-                <a href="{% url 'logout_request' %}">{% trans "Sign Out" %}</a>
-              {% else %}
+            {% if user.is_authenticated %}
+            <li class="dropdown {# hidden-sm #}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                Account
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a>
+                </li>
+                <li>
+                  <a href="{% url 'logout_request' %}">{% trans "Sign Out" %}</a>
+                </li>
+              </ul>
+            </li>
+            {% else %}
+              <li>
                 <a href="{% url 'user_login' %}">{% trans "Sign In" %}</a>
-              {% endif %}
+              </li>
+            {% endif %}
             </li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
