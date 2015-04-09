@@ -5,6 +5,10 @@
 {% load btc_formats %}
 {% load static %}
 
+{% block title %}
+  Subscribe to a {{ coin_symbol|coin_symbol_to_display_name }} Address
+{% endblock title %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
