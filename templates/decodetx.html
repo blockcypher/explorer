@@ -5,10 +5,14 @@
 {% load btc_formats %}
 {% load static %}
 
+{% block title %}
+  Decode Raw {{ coin_symbol|coin_symbol_to_display_name }} Hexadecimal Transaction
+{% endblock %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
-    Decode Your Transaction
+    Decode A Transaction
   </h1>
 {% endblock page_header %}
 

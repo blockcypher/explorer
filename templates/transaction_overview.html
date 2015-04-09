@@ -142,20 +142,26 @@
           <table class="table">
             {% if transaction.block_hash %}
               <tr>
+                <th>Block Height</th>
+                <td>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
+                </td>
+              </tr>
+              <tr>
                 <th>Block Hash</th>
                 <td>
                   <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
                   <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
                 </td>
               </tr>
-
-              <tr>
-                <th>Block Height</th>
-                <td>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
-                </td>
-              </tr>
             {% endif %}
+
+            <tr>
+              <th>TX Hex</th>
+              <td>
+                <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
+              </td>
+            </tr>
 
             {% if is_coinbase_tx and coinbase_msg %}
               <tr>
@@ -182,7 +188,7 @@
             {% endif %}
             <tr>
               <td colspan="2" class="text-center">
-                <a href="{{ api_url }}" class="btn btn-default">
+                <a href="{{ api_url }}?includeHex=true" class="btn btn-default">
                   <i class="fa fa-code"></i> 
                   API Call
                 </a>

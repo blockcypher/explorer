@@ -5,6 +5,10 @@
 {% load btc_formats %}
 {% load static %}
 
+{% block title %}
+  Push Raw {{ coin_symbol|coin_symbol_to_display_name }} Hexadecimal Transaction
+{% endblock %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
