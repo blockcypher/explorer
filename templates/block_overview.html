@@ -149,9 +149,11 @@
     <div class="well section">
       <h4 class="text-center truncate">
         <i class="fa fa-exchange"></i> 
-        <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
-          {{ transaction.hash }}
-        </a>
+        {% if transaction.hash %}
+          <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
+            {{ transaction.hash }}
+          </a>
+        {% endif %}
       </h4>
 
       {% include "partials/tx_hash.html" %}
