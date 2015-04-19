@@ -42,7 +42,8 @@ urlpatterns = patterns('',
     # Widget
     url(r'^widgets/(?P<coin_symbol>[-\w]+)/?$', 'addresses.views.search_widgets', name='search_widgets'),
     url(r'show-widgets/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/$', 'addresses.views.widgets_overview', name='widgets_overview'),
-    url(r'widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/$', 'addresses.views.render_address_widget', name='render_address_widget'),
+    url(r'widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/balance/$', 'addresses.views.render_balance_widget', name='render_balance_widget'),
+    url(r'widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/received/$', 'addresses.views.render_received_widget', name='render_received_widget'),
     url(r'^widgets/$', 'addresses.views.widget_forwarding', name='widget_forwarding'),
 
     # Forwarding Pages (URL hacks)

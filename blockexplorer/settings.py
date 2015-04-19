@@ -164,6 +164,12 @@ else:
     MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
     INSTALLED_APPS += ('debug_toolbar', )
 
+# Debug Toolbar
+INTERNAL_IPS = (
+        '127.0.0.1',
+        'localhost',
+        )
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',

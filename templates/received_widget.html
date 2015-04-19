@@ -1,0 +1,15 @@
+{% load btc_formats %}
+
+<html>
+  <head>
+    <title></title>
+    {# Bootstrap core CSS #}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <a target="_blank" href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}" class="btn btn-default">
+      {{ address_overview.total_received|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      Received
+    </a>
+  </body>
+</html>
