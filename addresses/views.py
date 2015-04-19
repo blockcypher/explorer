@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import get_object_or_404
 
 from annoying.decorators import render_to
@@ -13,9 +14,9 @@ from annoying.functions import get_object_or_None
 
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY
+from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_details_url, subscribe_to_address_webhook
+from blockcypher.api import get_address_details, get_address_details_url, get_address_overview, subscribe_to_address_webhook
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription
@@ -23,7 +24,7 @@ from transactions.models import OnChainTransaction
 from services.models import WebHook
 from emails.models import SentEmail
 
-from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm
+from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm
 
 from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
 
@@ -341,3 +342,68 @@ def address_webhook(request, secret_key, ignored_key):
 
     # Return something
     return HttpResponse("*ok*")
+
+
+@xframe_options_exempt
+@render_to('balance_widget.html')
+def render_balance_widget(request, coin_symbol, address):
+    address_overview = get_address_overview(address=address,
+            coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
+    return {
+            'address_overview': address_overview,
+            'coin_symbol': coin_symbol,
+            'b58_address': address,
+            'BASE_URL': BASE_URL,
+            }
+
+
+@xframe_options_exempt
+@render_to('received_widget.html')
+def render_received_widget(request, coin_symbol, address):
+    address_overview = get_address_overview(address=address,
+            coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
+    return {
+            'address_overview': address_overview,
+            'coin_symbol': coin_symbol,
+            'b58_address': address,
+            'BASE_URL': BASE_URL,
+            }
+
+
+@render_to('search_widgets.html')
+def search_widgets(request, coin_symbol):
+    form = AddressSearchForm()
+    if request.method == 'POST':
+        form = AddressSearchForm(data=request.POST)
+        if form.is_valid():
+            kwargs = {
+                    'coin_symbol': form.cleaned_data['coin_symbol'],
+                    'address': form.cleaned_data['coin_address'],
+                    }
+            redir_url = reverse('widgets_overview', kwargs=kwargs)
+            return HttpResponseRedirect(redir_url)
+    elif request.method == 'GET':
+        new_coin_symbol = request.GET.get('c')
+        if new_coin_symbol:
+            initial = {'coin_symbol': new_coin_symbol}
+            form = AddressSearchForm(initial=initial)
+
+    return {
+            'form': form,
+            'coin_symbol': coin_symbol,
+            }
+
+
+@render_to('widgets.html')
+def widgets_overview(request, coin_symbol, address):
+    return {
+            'coin_symbol': coin_symbol,
+            'b58_address': address,
+            'BASE_URL': BASE_URL,
+            }
+
+
+def widget_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('search_widgets', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)

@@ -39,6 +39,13 @@ urlpatterns = patterns('',
     url(r'(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
     url(r'(?P<coin_symbol>[-\w]+)/decodetx/$', 'transactions.views.decode_tx', name='decode_tx'),
 
+    # Widget
+    url(r'^widgets/(?P<coin_symbol>[-\w]+)/?$', 'addresses.views.search_widgets', name='search_widgets'),
+    url(r'show-widgets/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/$', 'addresses.views.widgets_overview', name='widgets_overview'),
+    url(r'widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/balance/$', 'addresses.views.render_balance_widget', name='render_balance_widget'),
+    url(r'widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/received/$', 'addresses.views.render_received_widget', name='render_received_widget'),
+    url(r'^widgets/$', 'addresses.views.widget_forwarding', name='widget_forwarding'),
+
     # Forwarding Pages (URL hacks)
     url(r'^subscribe/$', 'addresses.views.subscribe_forwarding', name='subscribe_forwarding'),
     url(r'^pushtx/$', 'transactions.views.pushtx_forwarding', name='pushtx_forwarding'),

@@ -119,6 +119,14 @@
           <table class="table">
             <tr>
               <td colspan="2" class="text-center">
+                <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
+                  <i class="fa fa-line-chart"></i>
+                  Get Embeddable Widget
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
                 <a href="{{ api_url }}?unspentOnly=true" class="btn btn-default">
                   <i class="fa fa-code"></i>
                   Unspent Outputs

@@ -6,13 +6,13 @@
 {% load static %}
 
 {% block title %}
-  Subscribe to a {{ coin_symbol|coin_symbol_to_display_name }} Address
+  Embeddable Address Widgets
 {% endblock title %}
 
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
-    Subscribe to an Address
+    See Embeddable Address Widgets
   </h1>
 {% endblock page_header %}
 
@@ -20,23 +20,16 @@
 
 <div class="section">
   <div class="container">
-    <form role="form" method="post" action="{% url 'subscribe_address' coin_symbol %}">
+    <form role="form" method="post" action="{% url 'search_widgets' coin_symbol %}">
       {% load crispy_forms_tags %}
       {{ form|crispy }}
       {% csrf_token %}
       <p class="text-center">
-        <button type="submit" class="btn btn-primary btn-lg">{% trans "Subscribe" %} </button>
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "See Widgets" %} </button>
       </p>
     </form>
-
-    {% if not user.is_authenticated %}
-      <p>
-      If you already have an account, please
-      <a href="{% url 'user_login' %}">login first</a>.
-      </p>
-    {% endif %}
-
   </div>
 </div>
 
 {% endblock content %}
+

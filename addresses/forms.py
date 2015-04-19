@@ -50,3 +50,10 @@ class NewUserAddressSubscriptionForm(KnownUserAddressSubscriptionForm):
         max_length=100,
         widget=forms.TextInput(attrs={'placeholder': 'me@example.com', 'class': 'input-lg'}),
     )
+
+
+class AddressSearchForm(KnownUserAddressSubscriptionForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AddressSearchForm, self).__init__(*args, **kwargs)
+        self.fields['coin_address'].label = "Address"

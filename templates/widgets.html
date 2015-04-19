@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block title %}
+  Embeddable Address Widgets
+{% endblock title %}
+
+{% block page_header %}
+  <h1>
+    <i class="fa fa-send"></i> 
+    Embeddable Address Widgets
+  </h1>
+{% endblock page_header %}
+
+{% block content %}
+
+<div class="section">
+  <div class="container">
+    <h4>Address Balance Widget</h4>
+    <p>Shows the balance of an address (received minus sent). It will display a warning if the balance is unconfirmed.</p>
+    <iframe src="{{ BASE_URL }}{% url 'render_balance_widget' coin_symbol b58_address %}" frameborder="0"></iframe>
+    <p>Balance Widget Code<p>
+    <form class="form form-horizontal">
+      <textarea onclick="this.focus();this.select()" readonly="readonly" class="form-control "><iframe src="{{ BASE_URL }}{% url 'render_balance_widget' coin_symbol b58_address %}" frameborder="0"></iframe></textarea>
+    </form>
+
+    <hr />
+
+    <h4>Received Widget</h4>
+    <p>Shows the amount received by an address. Perfect for projects to show their donation count.</p>
+    <iframe src="{{ BASE_URL }}{% url 'render_received_widget' coin_symbol b58_address %}" frameborder="0"></iframe>
+    <p>Received Widget Code<p>
+    <form class="form form-horizontal">
+      <textarea onclick="this.focus();this.select()" readonly="readonly" class="form-control "><iframe src="{{ BASE_URL }}{% url 'render_received_widget' coin_symbol b58_address %}" frameborder="0"></iframe></textarea>
+    </form>
+
+  </div>
+</div>
+
+{% endblock content %}
