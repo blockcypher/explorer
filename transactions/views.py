@@ -171,11 +171,8 @@ def push_tx(request, coin_symbol):
             result = pushtx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use, api_key=BLOCKCYPHER_API_KEY)
             #import pprint; pprint.pprint(result, width=1)
 
-            if result.get('errors'):
-                err_msg = _('Transaction not broadcast for the following errors')
-                messages.error(request, err_msg)
-                for error in result['errors']:
-                    messages.info(request, error['error'])
+            if result.get('error'):
+                messages.error(request, result['error'])
             else:
                 success_msg = _('Transaction Successfully Broadcst')
                 messages.success(request, success_msg)
