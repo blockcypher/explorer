@@ -1,18 +1,42 @@
 {% load btc_formats %}
+{% load humanize %}
 
 <html>
   <head>
     <title></title>
     {# Bootstrap core CSS #}
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    {# FontAwesome #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
   </head>
   <body>
     <a target="_blank" href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}" class="btn btn-default">
-      {{ address_overview.final_balance|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
 
-      {% if address_overview.unconfirmed_n_tx %}
-        (unconfirmed)
-      {% endif %}
+      <h4>
+        {{ address_overview.final_balance|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      </h4>
+
+      <i>
+        {{ address_overview.final_n_tx|intcomma }} Transaction{{ address_overview.final_n_tx|pluralize }}
+        {% if address_overview.unconfirmed_n_tx %}
+          ({{ address_overview.unconfirmed_n_tx }} Unconfirmed)
+        {% endif %}
+      </i>
+
+      <br />
+
+      <i class="fa fa-qrcode"></i> 
+      {{ b58_address|truncatechars:"16" }}
+
+      <br />
+      <br />
+
+      <p class="text-muted">
+        Powered by BlockCypher
+      </p>
+
     </a>
   </body>
 </html>
