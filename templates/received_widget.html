@@ -13,21 +13,19 @@
   <body>
     <a target="_blank" href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}" class="btn btn-default">
 
+      <i class="fa fa-qrcode"></i> 
+      {{ b58_address }}
+
       <h4>
         {{ address_overview.total_received|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
         Received
       </h4>
 
-      <i class="fa fa-qrcode"></i> 
-      {{ b58_address|truncatechars:"16" }}
-
-      <br />
-      <br />
-
-      <p class="text-muted">
-        Powered by BlockCypher
-      </p>
-
     </a>
+
+    <p align="center">
+      <a class="text-muted" href="http://www.blockcypher.com/">Powered by BlockCypher</a>
+    </p>
+
   </body>
 </html>
