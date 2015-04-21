@@ -48,7 +48,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         address_details = get_address_details(
                 address=address,
                 coin_symbol=coin_symbol,
-                txn_limit=5000,
+                txn_limit=TXNS_PER_PAGE,
                 api_key=BLOCKCYPHER_API_KEY,
                 )
     except AssertionError:
@@ -90,8 +90,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
-    all_txids = set([tx['tx_hash'] for tx in all_transactions])
-
     return {
             'coin_symbol': coin_symbol,
             'address': address,
@@ -112,7 +110,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
-            'has_more': bool(len(all_txids) != address_details['final_n_tx']),
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 

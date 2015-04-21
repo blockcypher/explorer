@@ -41,18 +41,6 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-          {% if has_more %}
-            <button 
-              type="button"
-              class="btn-link"
-              data-container="body"
-              data-toggle="popover"
-              data-placement="top"
-              data-html="true"
-              data-content="We don't display summary data for addresses with > 5,000 transactions. Sorry, we're working on it!">
-              <i class="fa fa-info-circle"></i>
-            </button>
-          {% else %}
             {{ total_received_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_received_satoshis %}
               <br>
@@ -60,22 +48,9 @@
                 ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
               </span>
             {% endif %}
-          {% endif %}
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-          {% if has_more %}
-            <button 
-              type="button"
-              class="btn-link"
-              data-container="body"
-              data-toggle="popover"
-              data-placement="top"
-              data-html="true"
-              data-content="We don't display summary data for addresses with > 5,000 transactions. Sorry, we're working on it!">
-              <i class="fa fa-info-circle"></i>
-            </button>
-          {% else %}
             {{ total_sent_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
             {% if unconfirmed_sent_satoshis %}
               <br>
@@ -84,7 +59,6 @@
                 {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
               </span>
             {% endif %}
-          {% endif %}
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
