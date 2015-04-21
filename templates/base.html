@@ -200,6 +200,22 @@
       {% block content %}
       {% endblock content %}
 
+      {% if coin_symbol == 'btc-testnet' %}
+        <div class="container">
+          <p>
+            Check out our
+            <a href="https://accounts.blockcypher.com/testnet-faucet">Free Bitcoin Testnet Faucet</a>.
+          </p>
+        </div>
+      {% elif coin_symbol == 'bcy' %}
+        <div class="container">
+          <p>
+            Check out our
+            <a href="https://accounts.blockcypher.com/blockcypher-faucet">Blockcypher Faucet</a>.
+          </p>
+        </div>
+      {% endif %}
+
       </div>
 
     {# Footer #}
