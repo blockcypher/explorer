@@ -14,7 +14,7 @@ class OnChainTransactionAdmin(admin.ModelAdmin):
             'double_spend',
             )
     raw_id_fields = ('address_subscription', )
-    search_fields = ('tx_hash', 'address_subscription', )
+    search_fields = ('tx_hash', 'address_subscription__b58_address', )
 
     class Meta:
         model = OnChainTransaction

@@ -58,7 +58,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             )
 
     raw_id_fields = ('auth_user', )
-    search_fields = ('b58_address', 'auth_user', )
+    search_fields = ('b58_address', 'auth_user__email', )
     list_filter = (
             CSFilter,
             'notify_on_broadcast',
