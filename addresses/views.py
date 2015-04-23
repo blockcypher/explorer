@@ -16,15 +16,15 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_details_url, get_address_overview, subscribe_to_address_webhook
+from blockcypher.api import get_address_details, get_address_details_url, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
 
 from users.models import AuthUser, LoggedLogin
-from addresses.models import AddressSubscription
+from addresses.models import AddressSubscription, AddressForwarding
 from transactions.models import OnChainTransaction
 from services.models import WebHook
 from emails.models import SentEmail
 
-from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm
+from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm, KnownUserAddressForwardingForm, NewUserAddressForwardingForm
 
 from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
 
@@ -179,6 +179,8 @@ def subscribe_address(request, coin_symbol):
                 msg = _("You're already subscribed to that address. Please choose another address.")
                 messages.warning(request, msg, extra_tags='safe')
             else:
+                # TODO: this is inefficiently happening before email verification
+
                 # Hit blockcypher and return subscription id
                 callback_uri = reverse('address_webhook', kwargs={
                     'secret_key': WEBHOOK_SECRET_KEY,
@@ -205,7 +207,7 @@ def subscribe_address(request, coin_symbol):
                     messages.success(request, msg, extra_tags='safe')
                     return HttpResponseRedirect(reverse('dashboard'))
                 else:
-                    address_subscription.send_welcome_email()
+                    address_subscription.send_notifications_welcome_email()
                     return HttpResponseRedirect(reverse('unconfirmed_email'))
 
     elif request.method == 'GET':
@@ -403,4 +405,191 @@ def widgets_overview(request, coin_symbol, address):
 def widget_forwarding(request):
     kwargs = {'coin_symbol': 'btc'}
     redir_url = reverse('search_widgets', kwargs=kwargs)
+    return HttpResponseRedirect(redir_url)
+
+
+@assert_valid_coin_symbol
+@render_to('setup_address_forwarding.html')
+def setup_address_forwarding(request, coin_symbol):
+
+    # kind of tricky because we have to deal with both logged in and new users
+    already_authenticated = request.user.is_authenticated()
+
+    initial = {'coin_symbol': coin_symbol}
+
+    if already_authenticated:
+        form = KnownUserAddressForwardingForm(initial=initial)
+    else:
+        form = NewUserAddressForwardingForm(initial=initial)
+
+    if request.method == 'POST':
+        if already_authenticated:
+            form = KnownUserAddressForwardingForm(data=request.POST)
+        else:
+            form = NewUserAddressForwardingForm(data=request.POST)
+
+        if form.is_valid():
+            coin_symbol = form.cleaned_data['coin_symbol']
+            destination_address = form.cleaned_data['coin_address']
+            user_email = form.cleaned_data.get('email')
+            # optional. null in case of KnownUserAddressForwardingForm
+
+            if already_authenticated:
+                auth_user = request.user
+            else:
+                auth_user = None
+
+                if user_email:
+                    # Check for existing user with that email
+                    existing_user = get_object_or_None(AuthUser, email=user_email)
+                    if existing_user:
+                        msg = _('Please first login to this account to create a notification')
+                        messages.info(request, msg)
+                        return HttpResponseRedirect(existing_user.get_login_uri())
+
+                    else:
+                        # Create user with unknown (random) password
+                        auth_user = AuthUser.objects.create_user(
+                                email=user_email,
+                                password=None,  # it will create a random pw
+                                creation_ip=get_client_ip(request),
+                                creation_user_agent=get_user_agent(request),
+                                )
+
+                        # Login the user
+                        # http://stackoverflow.com/a/3807891/1754586
+                        auth_user.backend = 'django.contrib.auth.backends.ModelBackend'
+                        login(request, auth_user)
+
+                        # Log the login
+                        LoggedLogin.record_login(request)
+                else:
+                    # No user email given, proceed anonymously
+                    # FIXME: confirm this
+                    pass
+
+            # Setup Payment Forwarding
+            forwarding_address_details = get_forwarding_address_details(
+                    destination_address=destination_address,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    callback_url=None,  # notifications happen separately (and not always)
+                    coin_symbol=coin_symbol,
+                    )
+
+            if 'error' in forwarding_address_details:
+                # Display error message back to user
+                messages.warning(request, forwarding_address_details['error'], extra_tags='safe')
+
+            else:
+
+                initial_address = forwarding_address_details['input_address']
+
+                # create forwarding object
+                address_forwarding_obj = AddressForwarding.objects.create(
+                        coin_symbol=coin_symbol,
+                        initial_address=initial_address,
+                        destination_address=destination_address,
+                        auth_user=auth_user,
+                        blockcypher_id=forwarding_address_details['id'],
+                        )
+
+                msg_merge_dict = {
+                        'initial_address': initial_address,
+                        'destination_address': destination_address,
+                        }
+                if auth_user:
+                    msg_merge_dict['user_email'] = auth_user.email
+
+                if user_email or (already_authenticated and form.cleaned_data['wants_email_notification']):
+
+                    # Create an address subscription for all of these cases
+
+                    # Hit blockcypher and return subscription id
+                    callback_uri = reverse('address_webhook', kwargs={
+                        'secret_key': WEBHOOK_SECRET_KEY,
+                        # hack for rare case of two webhooks requested on same address:
+                        'ignored_key': simple_pw_generator(num_chars=10),
+                        })
+                    callback_url = uri_to_url(callback_uri)
+                    bcy_id = subscribe_to_address_webhook(
+                            subscription_address=initial_address,
+                            callback_url=callback_url,
+                            coin_symbol=coin_symbol,
+                            api_key=BLOCKCYPHER_API_KEY,
+                            )
+
+                    # only notify for deposits
+                    AddressSubscription.objects.create(
+                            coin_symbol=coin_symbol,
+                            b58_address=initial_address,
+                            auth_user=auth_user,
+                            blockcypher_id=bcy_id,
+                            notify_on_deposit=True,
+                            notify_on_withdrawal=False,
+                            address_forwarding_obj=address_forwarding_obj,
+                            )
+
+                    if user_email:
+                        # New signup
+                        msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b>, but you must confirm your email to receive notifications.' % msg_merge_dict)
+                        messages.success(request, msg, extra_tags='safe')
+
+                        address_forwarding_obj.send_forwarding_welcome_email()
+                        return HttpResponseRedirect(reverse('unconfirmed_email'))
+                    else:
+                        if auth_user.email_verified:
+
+                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b>, and you will immediately recieve an email notification at <b>%(user_email)s</b>.' % msg_merge_dict)
+                            messages.success(request, msg, extra_tags='safe')
+
+                            return HttpResponseRedirect(reverse('dashboard'))
+
+                        else:
+                            # existing unconfirmed user
+                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b>, but you must confirm your email to receive notifications.' % msg_merge_dict)
+                            messages.success(request, msg, extra_tags='safe')
+
+                            address_forwarding_obj.send_forwarding_welcome_email()
+
+                            return HttpResponseRedirect(reverse('unconfirmed_email'))
+
+                elif already_authenticated:
+                    # already authenticated and doesn't want subscriptions
+                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b>. You will not receive email notifications.' % msg_merge_dict)
+                    messages.success(request, msg, extra_tags='safe')
+                    return HttpResponseRedirect(reverse('dashboard'))
+
+                else:
+                    # New signup sans email
+                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b>. You will not receive email notifications.' % msg_merge_dict)
+                    messages.success(request, msg, extra_tags='safe')
+
+                    kwargs = {
+                            'coin_symbol': coin_symbol,
+                            'address': destination_address,
+                            }
+                    return HttpResponseRedirect(reverse('address_overview', kwargs=kwargs))
+
+    elif request.method == 'GET':
+        coin_address = request.GET.get('a')
+        subscriber_email = request.GET.get('e')
+        if coin_address:
+            initial['coin_address'] = coin_address
+        if subscriber_email and not already_authenticated:
+            initial['email'] = subscriber_email
+        if coin_address or subscriber_email:
+            if already_authenticated:
+                form = KnownUserAddressForwardingForm(initial=initial)
+            else:
+                form = NewUserAddressForwardingForm(initial=initial)
+
+    return {
+            'form': form,
+            'coin_symbol': coin_symbol,
+            }
+
+
+def forward_forwarding(request):
+    kwargs = {'coin_symbol': 'btc'}
+    redir_url = reverse('setup_address_forwarding', kwargs=kwargs)
     return HttpResponseRedirect(redir_url)

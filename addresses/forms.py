@@ -56,4 +56,27 @@ class AddressSearchForm(KnownUserAddressSubscriptionForm):
 
     def __init__(self, *args, **kwargs):
         super(AddressSearchForm, self).__init__(*args, **kwargs)
-        self.fields['coin_address'].label = "Address"
+        self.fields['coin_address'].label = _("Address")
+
+
+class KnownUserAddressForwardingForm(KnownUserAddressSubscriptionForm):
+    wants_email_notification = forms.EmailField(
+        label=_('Recieve Email Notification for Transactions'),
+        initial=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(KnownUserAddressForwardingForm, self).__init__(*args, **kwargs)
+        self.fields['coin_address'].label = _("Address to Forward To")
+        self.fields['coin_address'].help_text = _('We will generate a new address that will automatically forward to this address')
+
+
+class NewUserAddressForwardingForm(NewUserAddressSubscriptionForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NewUserAddressForwardingForm, self).__init__(*args, **kwargs)
+        self.fields['coin_address'].label = _("Address to Forward To")
+        self.fields['coin_address'].help_text = _('We will generate a new address that will automatically forward to this address')
+        self.fields['email'].required = False
+        self.fields['email'].label = _('Email to Receive Notices (strongly recommended)')
+        self.fields['email'].help_text = _('If you do not supply an email address, you will have to monitor the Blockchain yourself for incoming transactions')

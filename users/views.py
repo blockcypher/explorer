@@ -289,10 +289,16 @@ def confirm_subscription(request, verif_code):
         # not yet verified
         sent_email.verify_user_email(request)
 
-        msg = _('<b>%(email_address)s</b> verified, you will now receive email notifications for <b>%(b58_address)s</b>.' % {
-            'email_address': sent_email.to_email,
-            'b58_address': sent_email.address_subscription.b58_address,
-            })
+        if sent_email.address_forwarding:
+            b58_address = sent_email.address_forwarding.initial_address
+        else:
+            b58_address = sent_email.address_subscription.b58_address
+
+        msg_merge = {
+                'email_address': sent_email.to_email,
+                'b58_address': b58_address,
+                }
+        msg = _('<b>%(email_address)s</b> verified, you will now receive email notifications for <b>%(b58_address)s</b>.' % msg_merge)
         messages.info(request, msg, extra_tags='safe')
 
         # Ask them to create a new PW
