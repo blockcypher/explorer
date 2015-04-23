@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^reset-pw/(?P<verif_code>[-\w@.+]+)?$', 'users.views.reset_pw', name='reset_pw'),
     url(r'^unsubscribe/(?P<unsub_code>[-\w]+)/$', 'addresses.views.unsubscribe_address', name='unsubscribe_address'),
     url(r'^remove-subscription/(?P<address_subscription_id>[-\w]+)/$', 'addresses.views.user_unsubscribe_address', name='user_unsubscribe_address'),
+    url(r'^archive-forwarding-address/(?P<address_forwarding_id>[-\w]+)/$', 'addresses.views.user_archive_forwarding_address', name='user_archive_forwarding_address'),
     url(r'^dashboard/?$', 'users.views.dashboard', name='dashboard'),
 
     # Webhooks:

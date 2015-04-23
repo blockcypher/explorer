@@ -36,34 +36,56 @@
     <div class="row">
       <h4>Forwarding Addresses:</h4>
       {% if forwarding_addresses %}
-      <ul>
-        {% for forwarding_address in forwarding_addresses %}
-        <li>
-          {{ forwarding_address.coin_symbol|coin_symbol_to_display_name }} address
-          <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.initial_address %}">{{ forwarding_address.initial_address }}</a>
-          forwards to
-          <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.destination_address %}">{{ forwarding_address.destination_address }}</a>
-        </li>
-        {% endfor %}
-      </ul>
+        <table class="table table-striped table-bordered table-condensed">
+          <tr>
+            <th>Network</th>
+            <th>Input Address</th>
+            <th>Destination Address</th>
+            <th>Delete</th>
+          </tr>
+          {% for forwarding_address in forwarding_addresses %}
+            <tr>
+              <td>
+                {{ forwarding_address.coin_symbol|coin_symbol_to_display_name }}
+              </td>
+              <td>
+                <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.initial_address %}">{{ forwarding_address.initial_address }}</a>
+              </td>
+              <td>
+                <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.destination_address %}">{{ forwarding_address.destination_address }}</a>
+              </td>
+              <td>
+                <a href="{% url 'user_archive_forwarding_address' forwarding_address.id %}">X</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
       {% else %}
-      <p>
-        You have no forwarding addresses.
-      </p>
+        <p>
+          You have no forwarding addresses.
+        </p>
       {% endif %}
       <a href="{% url 'setup_address_forwarding' 'btc' %}">+ Create Another Forwarding Addresses</a>
-    </div>
-      <h4>Subscriptions:</h4>
+      <h4>Email Notifications Subscriptions:</h4>
       {% if address_subscriptions %}
-      <ul>
-        {% for address_subscription in address_subscriptions %}
-        <li>
-          <a href="{% url 'address_overview' address_subscription.coin_symbol address_subscription.b58_address %}"
-            >{{ address_subscription.coin_symbol|coin_symbol_to_display_name }} address {{ address_subscription.b58_address }}</a>
-          (<a href="{% url 'user_unsubscribe_address' address_subscription.id %}">delete</a>)
-        </li>
-        {% endfor %}
-      </ul>
+        <table class="table table-striped table-bordered table-condensed">
+          <tr>
+            <th>Network</th>
+            <th>Address</th>
+            <th>Delete</th>
+          </tr>
+          {% for address_subscription in address_subscriptions %}
+            <tr>
+              <td>{{ address_subscription.coin_symbol|coin_symbol_to_display_name }}</td>
+              <td>
+                <a href="{% url 'address_overview' address_subscription.coin_symbol address_subscription.b58_address %}">{{ address_subscription.b58_address }}</a>
+              </td>
+              <td>
+                <a href="{% url 'user_unsubscribe_address' address_subscription.id %}">X</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
       {% else %}
       <p>
         You have no subscriptions.
@@ -71,12 +93,14 @@
       {% endif %}
       <a href="{% url 'subscribe_address' 'btc' %}">+ Subscribe to Another Address</a>
     </div>
+
     <div class="row">
       <hr />
       <p>
         <a href="{% url 'change_password' %}">Change Password</a>
       </p>
     </div>
+
   </div>
 </div>
 
