@@ -100,6 +100,9 @@ class AuthUser(AbstractBaseUser):
     def get_address_subscriptions(self):
         return self.addresssubscription_set.filter(unsubscribed_at=None).order_by('-id')
 
+    def get_address_forwardings(self):
+        return self.addressforwarding_set.filter(archived_at=None).order_by('-id')
+
     def send_pwreset_email(self):
         """
         Send password reset email to user.

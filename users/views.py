@@ -311,6 +311,7 @@ def dashboard(request):
     user = request.user
     return {
             'user': user,
+            'forwarding_addresses': user.get_address_forwardings(),
             'address_subscriptions': user.get_address_subscriptions(),
             }
 

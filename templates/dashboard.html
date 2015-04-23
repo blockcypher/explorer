@@ -34,6 +34,25 @@
 <div class="container">
   <div class="section">
     <div class="row">
+      <h4>Forwarding Addresses:</h4>
+      {% if forwarding_addresses %}
+      <ul>
+        {% for forwarding_address in forwarding_addresses %}
+        <li>
+          {{ forwarding_address.coin_symbol|coin_symbol_to_display_name }} address
+          <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.initial_address %}">{{ forwarding_address.initial_address }}</a>
+          forwards to
+          <a href="{% url 'address_overview' forwarding_address.coin_symbol forwarding_address.destination_address %}">{{ forwarding_address.destination_address }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>
+        You have no forwarding addresses.
+      </p>
+      {% endif %}
+      <a href="{% url 'setup_address_forwarding' 'btc' %}">+ Create Another Forwarding Addresses</a>
+    </div>
       <h4>Subscriptions:</h4>
       {% if address_subscriptions %}
       <ul>
