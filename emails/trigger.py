@@ -110,6 +110,7 @@ def send_and_log(subject, body_template, to_user=None, to_email=None,
             auth_user=fkey_objs.get('auth_user', to_user),
             address_subscription=fkey_objs.get('address_subscription'),
             transaction_event=fkey_objs.get('transaction_event'),
+            address_forwarding=fkey_objs.get('address_forwarding'),
             )
 
     postmark_send(**send_dict)

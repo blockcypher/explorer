@@ -6,13 +6,13 @@
 {% load static %}
 
 {% block title %}
-  Subscribe to a {{ coin_symbol|coin_symbol_to_display_name }} Address
+  Create a {{ coin_symbol|coin_symbol_to_display_name }} Forwarding Address
 {% endblock title %}
 
 {% block page_header %}
   <h1>
     <i class="fa fa-send"></i> 
-    Subscribe to an Address
+    Create a Forwarding Address
   </h1>
 {% endblock page_header %}
 
@@ -20,12 +20,12 @@
 
 <div class="section">
   <div class="container">
-    <form role="form" method="post" action="{% url 'subscribe_address' coin_symbol %}">
+    <form role="form" method="post" action="{% url 'setup_address_forwarding' coin_symbol %}">
       {% load crispy_forms_tags %}
       {{ form|crispy }}
       {% csrf_token %}
       <p class="text-center">
-        <button type="submit" class="btn btn-primary btn-lg">{% trans "Subscribe" %} </button>
+        <button type="submit" class="btn btn-primary btn-lg">{% trans "Create Address" %} </button>
       </p>
     </form>
 

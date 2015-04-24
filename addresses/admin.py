@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from addresses.models import AddressSubscription
+from addresses.models import AddressSubscription, AddressForwarding
 
 from blockcypher.constants import COIN_CHOICES
 
@@ -55,9 +55,10 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'notify_on_withdrawal',
             'auth_user',
             'blockcypher_id',
+            'address_forwarding_obj',
             )
 
-    raw_id_fields = ('auth_user', )
+    raw_id_fields = ('auth_user', 'address_forwarding_obj', )
     search_fields = ('b58_address', 'auth_user__email', )
     list_filter = (
             CSFilter,
@@ -66,4 +67,29 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'notify_on_sixth_confirm',
             'notify_on_deposit',
             'notify_on_withdrawal',
+            )
+
+
+@admin.register(AddressForwarding)
+class AddressForwardingAdmin(admin.ModelAdmin):
+
+    def coin_symbol(self, instance):
+        return self.coin_symbol
+    coin_symbol.allow_tags = True
+
+    list_display = (
+            'id',
+            'created_at',
+            'archived_at',
+            'coin_symbol',
+            'initial_address',
+            'destination_address',
+            'auth_user',
+            'blockcypher_id',
+            )
+
+    raw_id_fields = ('auth_user', )
+    search_fields = ('initial_address', 'destination_address', )
+    list_filter = (
+            CSFilter,
             )

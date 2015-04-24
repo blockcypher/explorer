@@ -16,9 +16,10 @@ class SentEmailAdmin(admin.ModelAdmin):
             'auth_user',
             'address_subscription',
             'transaction_event',
+            'address_forwarding',
             )
     list_filter = ('body_template', )
-    raw_id_fields = ('auth_user', 'address_subscription', 'transaction_event', )
+    raw_id_fields = ('auth_user', 'address_subscription', 'transaction_event', 'address_forwarding', )
 
     class Meta:
         model = SentEmail

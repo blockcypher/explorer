@@ -93,6 +93,14 @@
           <table class="table">
             <tr>
               <td colspan="2" class="text-center">
+                <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
+                  <i class="fa fa-mail-forward"></i>
+                  Get Forwarding Address
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
                 <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
                   <i class="fa fa-line-chart"></i>
                   Get Embeddable Widget
@@ -268,7 +276,7 @@
 </div>
 
 {% else %}
-  <p>No transactions detected..</p>
+  <p>No transactions detected.</p>
 {% endif %}
 
 </div>

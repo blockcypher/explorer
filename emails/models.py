@@ -32,6 +32,7 @@ class SentEmail(models.Model):
     auth_user = models.ForeignKey('users.AuthUser', null=True, blank=True)
     address_subscription = models.ForeignKey('addresses.AddressSubscription', null=True, blank=True)
     transaction_event = models.ForeignKey('transactions.OnChainTransaction', null=True, blank=True)
+    address_forwarding = models.ForeignKey('addresses.AddressForwarding', null=True, blank=True)
 
     def __str__(self):
         return '%s to %s' % (self.id, self.to_email)
