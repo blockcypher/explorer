@@ -91,7 +91,11 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 initial_address=address,
                 coin_symbol=coin_symbol,
                 ):
-            msg = _('Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a> any time a payment is received. %(small_payments_msg)s' % {
+            msg = _('''
+            Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>
+            any time a payment is received.
+            <br /><br /><i>%(small_payments_msg)s</i>
+            ''' % {
                 'destination_address': af_initial.destination_address,
                 'destination_addr_uri': reverse('address_overview', kwargs={
                     'address': af_initial.destination_address,
@@ -107,7 +111,10 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 )
         if afs_destination:
             for af_destination in afs_destination:
-                msg = _('Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>. %(small_payments_msg)s' % {
+                msg = _('''
+                Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>.
+                <br /><br />%(small_payments_msg)s
+                ''' % {
                     'initial_address': af_destination.initial_address,
                     'small_payments_msg': SMALL_PAYMENTS_MSG,
                     })
@@ -682,7 +689,7 @@ def setup_address_forwarding(request, coin_symbol):
                         Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                         will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>,
                         but you must confirm your email to receive notifications.
-                        %(small_payments_msg)s
+                        <br /><br /> <i>%(small_payments_msg)s</i>
                         ''' % msg_merge_dict)
                         messages.success(request, msg, extra_tags='safe')
 
@@ -695,7 +702,8 @@ def setup_address_forwarding(request, coin_symbol):
                             Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                             will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>,
                             and you will immediately recieve an email notification at <b>%(user_email)s</b>.
-                            %(small_payments_msg)s''' % msg_merge_dict)
+                            <br /><br /> <i>%(small_payments_msg)s</i>
+                            ''' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
 
                             return HttpResponseRedirect(reverse('dashboard'))
@@ -706,7 +714,8 @@ def setup_address_forwarding(request, coin_symbol):
                             Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                             will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>,
                             but you must confirm your email to receive notifications.
-                            %(small_payments_msg)s''' % msg_merge_dict)
+                            <br /><br /> <i>%(small_payments_msg)s</i>
+                            ''' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
 
                             address_forwarding_obj.send_forwarding_welcome_email()
@@ -719,7 +728,8 @@ def setup_address_forwarding(request, coin_symbol):
                     Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                     will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>.
                     You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>).
-                    %(small_payments_msg)s''' % msg_merge_dict)
+                    <br /><br /> <i>%(small_payments_msg)s</i>
+                    ''' % msg_merge_dict)
                     messages.success(request, msg, extra_tags='safe')
 
                     return HttpResponseRedirect(reverse('dashboard'))
@@ -730,7 +740,8 @@ def setup_address_forwarding(request, coin_symbol):
                     Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                     will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>.
                     You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>).
-                    %(small_payments_msg)s''' % msg_merge_dict)
+                    <br /><br /> <i>%(small_payments_msg)s</i>
+                    ''' % msg_merge_dict)
                     messages.success(request, msg, extra_tags='safe')
 
                     return HttpResponseRedirect(destination_addr_uri)
