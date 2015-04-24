@@ -61,7 +61,7 @@ class AddressSearchForm(KnownUserAddressSubscriptionForm):
 
 class KnownUserAddressForwardingForm(KnownUserAddressSubscriptionForm):
     wants_email_notification = forms.BooleanField(
-        label=_('Recieve Email Notification for Transactions'),
+        label=_('Receive Email Notification for Transactions'),
         initial=True,
         required=False,
     )

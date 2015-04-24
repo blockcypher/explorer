@@ -709,7 +709,7 @@ def setup_address_forwarding(request, coin_symbol):
                             msg = _('''
                             Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                             will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>,
-                            and you will immediately recieve an email notification at <b>%(user_email)s</b>.
+                            and you will immediately receive an email notification at <b>%(user_email)s</b>.
                             <br /><br /> <i>%(small_payments_msg)s</i>
                             ''' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
