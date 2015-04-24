@@ -5,6 +5,18 @@ A new transaction of <b>{{ sent_in_btc }}</b> {{ currency_abbrev }} (including c
 You can see the transaction details here:<br />
 <a href="{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}">{{ BASE_URL }}{% url 'transaction_overview' coin_symbol tx_hash %}</a>
 
+{% if destination_address %}
+  <br /><br />
+  {% if satoshis_transacted > 10000 %}
+    Since you previously setup forwarding on this address, the funds should automatically be transferred to
+    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}">{{ destination_address }}</a>
+    immediately.
+  {% else %}
+    Even though you previously setup forwarding on this address, the amount sent is lower than the mining fee so these funds may not be transferred to
+    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}">{{ destination_address }}</a>.
+  {% endif %}
+{% endif %}
+
 <br /><br />
 Note that this transaction has {{ num_confs }} confirmations on the {{ currency_display_name }} blockchain, meaning that the transaction could theoretically still be reversed.
 {% endblock content %}

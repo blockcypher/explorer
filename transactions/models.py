@@ -20,7 +20,7 @@ class OnChainTransaction(models.Model):
     def __str__(self):
         return '%s to %s' % (self.id, self.tx_hash)
 
-    def send_double_spend_notification(self):
+    def send_double_spend_tx_notification(self):
         # FIXME
         pass
 
@@ -36,6 +36,9 @@ class OnChainTransaction(models.Model):
                 'tx_hash': self.tx_hash,
                 'num_confs': self.num_confs,
                 }
+        if self.address_subscription.address_forwarding_obj:
+                context_dict['destination_address'] = self.address_subscription.address_forwarding_obj.destination_address
+                context_dict['satoshis_transacted'] = self.satoshis_sent
         fkey_objs = {
                 'transaction_event': self,
                 'address_subscription': self.address_subscription,
@@ -69,21 +72,14 @@ class OnChainTransaction(models.Model):
                 fkey_objs=fkey_objs,
                 )
 
-    def send_email_notification(self):
+    def is_subscribed(self):
         if not self.address_subscription.auth_user.email_verified:
             # Don't send to unverified emails
-            return
+            return False
 
         if self.address_subscription.unsubscribed_at:
             # Don't send to unsubscribed addresses
             # Future optimization: unsub at the API level
-            return
+            return False
 
-        if self.double_spend:
-            self.send_double_spend_notification()
-
-        if self.num_confs == 0:
-            self.send_unconfirmed_tx_email()
-
-        if self.num_confs == 6:
-            self.send_confirmed_tx_email()
+        return True

@@ -392,10 +392,12 @@ def address_webhook(request, secret_key, ignored_key):
             )
 
     if tx_event:
+        tx_is_new = False
         tx_event.num_confs = num_confs
         tx_event.double_spend = double_spend
         tx_event.save()
     else:
+        tx_is_new = True
         tx_event = OnChainTransaction.objects.create(
                 tx_hash=tx_hash,
                 address_subscription=address_subscription,
@@ -405,7 +407,23 @@ def address_webhook(request, secret_key, ignored_key):
                 fee_in_satoshis=fee_in_satoshis,
                 )
 
-    tx_event.send_email_notification()
+    # email sending logic
+    # TODO: add logic for notify on deposit vs withdrawal
+    # TODO: add safety check to prevent duplicate email sending
+    if tx_event.is_subscribed():
+        if double_spend and (tx_is_new or not tx_event.double_spend):
+            # We have the first reporting of a double-spend
+            tx_event.send_double_spend_tx_notification()
+
+        elif num_confs == 0 and tx_is_new:
+            # First broadcast
+            if tx_event.notify_on_broadcast():
+                tx_event.send_unconfirmed_tx_email()
+
+        elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
+            # Sixth confirm
+            if tx_event.notify_on_sixth_confirm():
+                tx_event.send_confirmed_tx_email()
 
     # Update logging
     webhook.address_subscription = address_subscription
@@ -578,6 +596,7 @@ def setup_address_forwarding(request, coin_symbol):
                         'initial_address': initial_address,
                         'destination_address': destination_address,
                         'subscribe_uri': subscribe_uri,
+                        'small_payments_msg': '''Please note that for very small payments of 100 bits or less, the payment will not forward as the amount to forward is lower than the mining fee.'''
                         }
                 if auth_user:
                     msg_merge_dict['user_email'] = auth_user.email
@@ -613,7 +632,7 @@ def setup_address_forwarding(request, coin_symbol):
 
                     if user_email:
                         # New signup
-                        msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, but you must confirm your email to receive notifications.' % msg_merge_dict)
+                        msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, but you must confirm your email to receive notifications. %(small_payments_msg)s' % msg_merge_dict)
                         messages.success(request, msg, extra_tags='safe')
 
                         address_forwarding_obj.send_forwarding_welcome_email()
@@ -621,14 +640,14 @@ def setup_address_forwarding(request, coin_symbol):
                     else:
                         if auth_user.email_verified:
 
-                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, and you will immediately recieve an email notification at <b>%(user_email)s</b>.' % msg_merge_dict)
+                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, and you will immediately recieve an email notification at <b>%(user_email)s</b>. %(small_payments_msg)s' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
 
                             return HttpResponseRedirect(reverse('dashboard'))
 
                         else:
                             # existing unconfirmed user
-                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, but you must confirm your email to receive notifications.' % msg_merge_dict)
+                            msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically, but you must confirm your email to receive notifications. %(small_payments_msg)s' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
 
                             address_forwarding_obj.send_forwarding_welcome_email()
@@ -637,13 +656,13 @@ def setup_address_forwarding(request, coin_symbol):
 
                 elif already_authenticated:
                     # already authenticated and doesn't want subscriptions
-                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically. You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>).' % msg_merge_dict)
+                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically. You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>). %(small_payments_msg)s' % msg_merge_dict)
                     messages.success(request, msg, extra_tags='safe')
                     return HttpResponseRedirect(reverse('dashboard'))
 
                 else:
                     # New signup sans email
-                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically. You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>).' % msg_merge_dict)
+                    msg = _('Transactions sent to <b>%(initial_address)s</b> will now be forwarded to <b>%(destination_address)s</b> automatically. You will not receive email notifications (<a href="%(subscribe_uri)s">subscribe</a>). %(small_payments_msg)s' % msg_merge_dict)
                     messages.success(request, msg, extra_tags='safe')
 
                     kwargs = {
