@@ -452,7 +452,7 @@ def address_webhook(request, secret_key, ignored_key):
 
         input_addresses = set()
         for input_entry in payload['inputs']:
-            for address in input_entry['addresses']:
+            for address in input_entry.get('addresses', []):
                 input_addresses.add(address)
         if address_subscription.b58_address in input_addresses:
             is_withdrawal = True
@@ -460,7 +460,7 @@ def address_webhook(request, secret_key, ignored_key):
             is_withdrawal = False
 
         output_addresses = set()
-        for output_entry in payload['outputs']:
+        for output_entry in payload.get('outputs', []):
             for address in output_entry['addresses']:
                 output_addresses.add(address)
         if address_subscription.b58_address in output_addresses:
