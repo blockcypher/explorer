@@ -74,7 +74,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 coin_symbol=coin_symbol,
                 unsubscribed_at=None,
                 ):
-            msg = _('Private message: You are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
+            msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
                 'user_email': request.user.email,
                 'unsub_url': reverse('user_unsubscribe_address', kwargs={
                     'address_subscription_id': address_subscription.id,
@@ -86,7 +86,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 initial_address=address,
                 coin_symbol=coin_symbol,
                 ):
-            msg = _('This address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>' % {
+            msg = _('Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>' % {
                 'destination_address': af_initial.destination_address,
                 'destination_addr_uri': reverse('address_overview', kwargs={
                     'address': af_initial.destination_address,
@@ -101,7 +101,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 )
         if afs_destination:
             for af_destination in afs_destination:
-                msg = _('This address will automatically be forwarded transactions from <b>%(initial_address)s</b>' % {
+                msg = _('Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>' % {
                     'initial_address': af_destination.initial_address,
                     })
                 messages.info(request, msg, extra_tags='safe')
