@@ -460,12 +460,12 @@ def address_webhook(request, secret_key, ignored_key):
 
         elif num_confs == 0 and tx_is_new:
             # First broadcast
-            if tx_event.address_subscription.notify_on_broadcast():
+            if tx_event.address_subscription.notify_on_broadcast:
                 tx_event.send_unconfirmed_tx_email()
 
         elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
             # Sixth confirm
-            if tx_event.address_subscription.notify_on_sixth_confirm():
+            if tx_event.address_subscription.notify_on_sixth_confirm:
                 tx_event.send_confirmed_tx_email()
 
     # Update logging
