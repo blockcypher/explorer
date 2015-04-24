@@ -16,6 +16,8 @@ class OnChainTransaction(models.Model):
     double_spend = models.BooleanField(db_index=True, default=False)
     satoshis_sent = models.BigIntegerField(blank=False, null=False, db_index=True)
     fee_in_satoshis = models.BigIntegerField(blank=False, null=False, db_index=True)
+    is_deposit = models.BooleanField(db_index=True, default=False)
+    is_withdrawal = models.BooleanField(db_index=True, default=False)
 
     def __str__(self):
         return '%s to %s' % (self.id, self.tx_hash)

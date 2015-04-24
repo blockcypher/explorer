@@ -449,6 +449,25 @@ def address_webhook(request, secret_key, ignored_key):
         tx_event.save()
     else:
         tx_is_new = True
+
+        input_addresses = set()
+        for input_entry in payload['inputs']:
+            for address in input_entry['addresses']:
+                input_addresses.add(address)
+        if address_subscription.b58_address in input_addresses:
+            is_withdrawal = True
+        else:
+            is_withdrawal = False
+
+        output_addresses = set()
+        for output_entry in payload['outputs']:
+            for address in output_entry['addresses']:
+                output_addresses.add(address)
+        if address_subscription.b58_address in output_addresses:
+            is_deposit = True
+        else:
+            is_deposit = False
+
         tx_event = OnChainTransaction.objects.create(
                 tx_hash=tx_hash,
                 address_subscription=address_subscription,
@@ -456,6 +475,8 @@ def address_webhook(request, secret_key, ignored_key):
                 double_spend=double_spend,
                 satoshis_sent=satoshis_sent,
                 fee_in_satoshis=fee_in_satoshis,
+                is_deposit=is_deposit,
+                is_withdrawal=is_withdrawal,
                 )
 
     # email sending logic
@@ -469,12 +490,18 @@ def address_webhook(request, secret_key, ignored_key):
         elif num_confs == 0 and tx_is_new:
             # First broadcast
             if tx_event.address_subscription.notify_on_broadcast:
-                tx_event.send_unconfirmed_tx_email()
+                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                    tx_event.send_unconfirmed_tx_email()
+                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                    tx_event.send_unconfirmed_tx_email()
 
         elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
             # Sixth confirm
             if tx_event.address_subscription.notify_on_sixth_confirm:
-                tx_event.send_confirmed_tx_email()
+                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                    tx_event.send_confirmed_tx_email()
+                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                    tx_event.send_confirmed_tx_email()
 
     # Update logging
     webhook.address_subscription = address_subscription
