@@ -68,14 +68,17 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
 
     if request.user.is_authenticated():
         # notify user on page of any forwarding or subscriptions they may have
-        if AddressSubscription.objects.filter(
+        address_subscriptions = AddressSubscription.objects.filter(
                 auth_user=request.user,
                 b58_address=address,
                 coin_symbol=coin_symbol,
                 unsubscribed_at=None,
-                ):
-            msg = _('You are subscribed to this address and will receive email notifications at <b>%(user_email)s</b>' % {
+                )
+        if address_subscriptions:
+            unsub_url = reverse('user_unsubscribe_address', kwargs={'address_subscription_id': address_subscriptions[0].id})
+            msg = _('Private message: You are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
                 'user_email': request.user.email,
+                'unsub_url': unsub_url,
                 })
             messages.info(request, msg, extra_tags='safe')
         afs_initial = AddressForwarding.objects.filter(
@@ -280,8 +283,14 @@ def user_unsubscribe_address(request, address_subscription_id):
         address_subscription.unsubscribed_at = now()
         address_subscription.save()
 
-        msg = _("You've been unsubscribed from notifications on %(b58_address)s" % {
+        address_uri = reverse('address_overview', kwargs={
+            'coin_symbol': address_subscription.coin_symbol,
+            'address': address_subscription.b58_address,
+            })
+
+        msg = _('You have been unsubscribed from notifications on <a href="%(address_uri)s">%(b58_address)s</a>' % {
             'b58_address': address_subscription.b58_address,
+            'address_uri': address_uri,
             })
         messages.success(request, msg)
 
