@@ -43,6 +43,16 @@ class AddressSubscription(models.Model):
                 fkey_objs={'address_subscription': self},
                 )
 
+    def is_active(self):
+        if not self.auth_user.email_verified:
+            # Don't send to unverified emails
+            return False
+        if self.unsubscribed_at:
+            # Don't send to unsubscribed addresses
+            # TODO: unsub at the API level
+            return False
+        return True
+
 
 class AddressForwarding(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)

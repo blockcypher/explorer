@@ -73,13 +73,4 @@ class OnChainTransaction(models.Model):
                 )
 
     def is_subscribed(self):
-        if not self.address_subscription.auth_user.email_verified:
-            # Don't send to unverified emails
-            return False
-
-        if self.address_subscription.unsubscribed_at:
-            # Don't send to unsubscribed addresses
-            # Future optimization: unsub at the API level
-            return False
-
-        return True
+        return self.address_subscription.is_active()

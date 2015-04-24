@@ -68,27 +68,30 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
 
     if request.user.is_authenticated():
         # notify user on page of any forwarding or subscriptions they may have
-        address_subscriptions = AddressSubscription.objects.filter(
+        for address_subscription in AddressSubscription.objects.filter(
                 auth_user=request.user,
                 b58_address=address,
                 coin_symbol=coin_symbol,
                 unsubscribed_at=None,
-                )
-        if address_subscriptions:
-            unsub_url = reverse('user_unsubscribe_address', kwargs={'address_subscription_id': address_subscriptions[0].id})
+                ):
             msg = _('Private message: You are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
                 'user_email': request.user.email,
-                'unsub_url': unsub_url,
+                'unsub_url': reverse('user_unsubscribe_address', kwargs={
+                    'address_subscription_id': address_subscription.id,
+                    }),
                 })
             messages.info(request, msg, extra_tags='safe')
-        afs_initial = AddressForwarding.objects.filter(
+        for af_initial in AddressForwarding.objects.filter(
                 auth_user=request.user,
                 initial_address=address,
                 coin_symbol=coin_symbol,
-                )
-        if afs_initial:
-            msg = _('This address will automatically forward to <b>%(destination_address)s</b>' % {
-                'destination_address': afs_initial[0].destination_address,
+                ):
+            msg = _('This address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>' % {
+                'destination_address': af_initial.destination_address,
+                'destination_addr_uri': reverse('address_overview', kwargs={
+                    'address': af_initial.destination_address,
+                    'coin_symbol': coin_symbol,
+                    }),
                 })
             messages.info(request, msg, extra_tags='safe')
         afs_destination = AddressForwarding.objects.filter(
