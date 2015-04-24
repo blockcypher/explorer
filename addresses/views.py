@@ -32,6 +32,11 @@ import json
 
 from urllib.parse import urlencode
 
+SMALL_PAYMENTS_MSG = '''
+Please note that for very small payments of 100 bits or less,
+the payment will not forward as the amount to forward is lower than the mining fee.
+'''
+
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
@@ -86,12 +91,13 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 initial_address=address,
                 coin_symbol=coin_symbol,
                 ):
-            msg = _('Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>' % {
+            msg = _('Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a> any time a payment is received. %(small_payments_msg)s' % {
                 'destination_address': af_initial.destination_address,
                 'destination_addr_uri': reverse('address_overview', kwargs={
                     'address': af_initial.destination_address,
                     'coin_symbol': coin_symbol,
                     }),
+                'small_payments_msg': SMALL_PAYMENTS_MSG,
                 })
             messages.info(request, msg, extra_tags='safe')
         afs_destination = AddressForwarding.objects.filter(
@@ -101,8 +107,9 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 )
         if afs_destination:
             for af_destination in afs_destination:
-                msg = _('Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>' % {
+                msg = _('Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>. %(small_payments_msg)s' % {
                     'initial_address': af_destination.initial_address,
+                    'small_payments_msg': SMALL_PAYMENTS_MSG,
                     })
                 messages.info(request, msg, extra_tags='safe')
 
@@ -219,7 +226,7 @@ def subscribe_address(request, coin_symbol):
                     b58_address=coin_address).count()
             if existing_subscription_cnt:
                 msg = _("You're already subscribed to that address. Please choose another address.")
-                messages.warning(request, msg, extra_tags='safe')
+                messages.warning(request, msg)
             else:
                 # TODO: this is inefficiently happening before email verification
 
@@ -301,7 +308,7 @@ def user_unsubscribe_address(request, address_subscription_id):
             'b58_address': address_subscription.b58_address,
             'address_uri': address_uri,
             })
-        messages.success(request, msg)
+        messages.success(request, msg, extra_tags='safe')
 
     return HttpResponseRedirect(reverse('dashboard'))
 
@@ -343,7 +350,7 @@ def user_archive_forwarding_address(request, address_forwarding_id):
             'initial_addr_uri': initial_addr_uri,
             'destination_addr_uri': destination_addr_uri,
             })
-        messages.success(request, msg)
+        messages.success(request, msg, extra_tags='safe')
 
     return HttpResponseRedirect(reverse('dashboard'))
 
@@ -384,7 +391,7 @@ def unsubscribe_address(request, unsub_code):
             'b58_address': address_subscription.b58_address,
             'addr_uri': addr_uri,
             })
-        messages.info(request, msg)
+        messages.info(request, msg, extra_tags='safe')
 
     return HttpResponseRedirect(reverse('dashboard'))
 
@@ -635,7 +642,7 @@ def setup_address_forwarding(request, coin_symbol):
                         'destination_address': destination_address,
                         'destination_addr_uri': destination_addr_uri,
                         'subscribe_uri': subscribe_uri,
-                        'small_payments_msg': '''Please note that for very small payments of 100 bits or less, the payment will not forward as the amount to forward is lower than the mining fee.'''
+                        'small_payments_msg': SMALL_PAYMENTS_MSG,
                         }
                 if auth_user:
                     msg_merge_dict['user_email'] = auth_user.email
