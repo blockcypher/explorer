@@ -97,7 +97,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             msg = _('''
             Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>
             any time a payment is received.
-            <br /><br /><i>%(small_payments_msg)s</i>
+            <br /><br /> <i>%(small_payments_msg)s</i>
             ''' % {
                 'destination_address': af_initial.destination_address,
                 'destination_addr_uri': reverse('address_overview', kwargs={
@@ -118,7 +118,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 msg = _('''
                 Private Message: this address will automatically be forwarded transactions from
                 <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
-                <br /><br />%(small_payments_msg)s
+                <br /><br /> <i>%(small_payments_msg)s</i>
                 ''' % {
                     'initial_address': af_destination.initial_address,
                     'initial_addr_uri': reverse('address_overview', kwargs={
