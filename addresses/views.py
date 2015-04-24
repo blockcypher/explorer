@@ -107,27 +107,26 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 'small_payments_msg': SMALL_PAYMENTS_MSG,
                 })
             messages.info(request, msg, extra_tags='safe')
-        afs_destination = AddressForwarding.objects.filter(
+
+        # There could be many
+        for af_destination in AddressForwarding.objects.filter(
                 auth_user=request.user,
                 destination_address=address,
                 coin_symbol=coin_symbol,
-                )
-        if afs_destination:
-            # There could be many
-            for af_destination in afs_destination:
-                msg = _('''
-                Private Message: this address will automatically be forwarded transactions from
-                <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
-                <br /><br /> <i>%(small_payments_msg)s</i>
-                ''' % {
-                    'initial_address': af_destination.initial_address,
-                    'initial_addr_uri': reverse('address_overview', kwargs={
-                        'address': af_initial.initial_address,
-                        'coin_symbol': coin_symbol,
-                        }),
-                    'small_payments_msg': SMALL_PAYMENTS_MSG,
-                    })
-                messages.info(request, msg, extra_tags='safe')
+                ):
+            msg = _('''
+            Private Message: this address will automatically be forwarded transactions from
+            <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
+            <br /><br /> <i>%(small_payments_msg)s</i>
+            ''' % {
+                'initial_address': af_destination.initial_address,
+                'initial_addr_uri': reverse('address_overview', kwargs={
+                    'address': af_destination.initial_address,
+                    'coin_symbol': coin_symbol,
+                    }),
+                'small_payments_msg': SMALL_PAYMENTS_MSG,
+                })
+            messages.info(request, msg, extra_tags='safe')
 
     all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
 
