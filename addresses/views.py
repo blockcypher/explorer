@@ -86,11 +86,14 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                     }),
                 })
             messages.info(request, msg, extra_tags='safe')
-        for af_initial in AddressForwarding.objects.filter(
+
+        # there can be only one
+        af_initial = get_object_or_None(AddressForwarding,
                 auth_user=request.user,
                 initial_address=address,
                 coin_symbol=coin_symbol,
-                ):
+                )
+        if af_initial:
             msg = _('''
             Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>
             any time a payment is received.
@@ -110,6 +113,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 coin_symbol=coin_symbol,
                 )
         if afs_destination:
+            # There could be many
             for af_destination in afs_destination:
                 msg = _('''
                 Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>.
