@@ -116,10 +116,15 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             # There could be many
             for af_destination in afs_destination:
                 msg = _('''
-                Private Message: this address will automatically be forwarded transactions from <b>%(initial_address)s</b>.
+                Private Message: this address will automatically be forwarded transactions from
+                <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
                 <br /><br />%(small_payments_msg)s
                 ''' % {
                     'initial_address': af_destination.initial_address,
+                    'initial_addr_uri': reverse('address_overview', kwargs={
+                        'address': af_initial.initial_address,
+                        'coin_symbol': coin_symbol,
+                        }),
                     'small_payments_msg': SMALL_PAYMENTS_MSG,
                     })
                 messages.info(request, msg, extra_tags='safe')
