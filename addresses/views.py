@@ -115,7 +115,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 coin_symbol=coin_symbol,
                 ):
             msg = _('''
-            Private Message: this address will automatically be forwarded transactions from
+            Private Message: this address will automatically receive forwarded transactions from
             <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
             <br /><br /> <i>%(small_payments_msg)s</i>
             ''' % {
