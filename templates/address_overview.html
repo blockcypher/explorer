@@ -191,7 +191,7 @@
       <tr class="tx-row" id="{{ transaction.tx_hash }}">
           <td class="truncate">
             {% if transaction.tx_hash %}
-              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="hidden-xs">
+              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="hidden-xs tx-list small">
                 {{ transaction.tx_hash }}
               </a>
               <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="visible-xs">
