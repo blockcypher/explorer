@@ -40,7 +40,9 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
 
     def coin_symbol(self, instance):
         return self.coin_symbol
-    coin_symbol.allow_tags = True
+
+    def num_emails_sent(self, instance):
+        return instance.sentemail_set.count()
 
     list_display = (
             'id',
@@ -48,6 +50,8 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'unsubscribed_at',
             'coin_symbol',
             'b58_address',
+            'num_emails_sent',
+            'address_forwarding_obj',
             'notify_on_broadcast',
             'notify_on_first_confirm',
             'notify_on_sixth_confirm',
@@ -55,7 +59,6 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'notify_on_withdrawal',
             'auth_user',
             'blockcypher_id',
-            'address_forwarding_obj',
             )
 
     raw_id_fields = ('auth_user', 'address_forwarding_obj', )
