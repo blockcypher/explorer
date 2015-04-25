@@ -41,7 +41,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
     def coin_symbol(self, instance):
         return self.coin_symbol
 
-    def addresses_subscribed(self, instance):
+    def emails_sent(self, instance):
         return instance.sentemail_set.count()
 
     list_display = (
@@ -50,7 +50,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'unsubscribed_at',
             'coin_symbol',
             'b58_address',
-            'addresses_subscribed',
+            'emails_sent',
             'address_forwarding_obj',
             'notify_on_broadcast',
             'notify_on_first_confirm',
