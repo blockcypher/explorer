@@ -34,7 +34,7 @@
 <div class="container">
   <div class="section">
     <div class="row">
-      <h4>Forwarding Addresses:</h4>
+      <h3>Forwarding Addresses</h3>
       {% if forwarding_addresses %}
         <table class="table table-striped table-bordered table-condensed">
           <tr>
@@ -68,8 +68,8 @@
           You have no forwarding addresses.
         </p>
       {% endif %}
-      <a href="{% url 'setup_address_forwarding' 'btc' %}">+ Create Another Forwarding Addresses</a>
-      <h4>Email Notifications Subscriptions:</h4>
+      <a href="{% url 'setup_address_forwarding' 'btc' %}" class="btn btn-primary btn-lg">+ Create Forwarding Addresses</a>
+      <h3>Email Notifications Subscriptions</h3>
       {% if address_subscriptions %}
         <table class="table table-striped table-bordered table-condensed">
           <tr>
@@ -94,7 +94,7 @@
         You have no subscriptions.
       </p>
       {% endif %}
-      <a href="{% url 'subscribe_address' 'btc' %}">+ Subscribe to Another Address</a>
+      <a href="{% url 'subscribe_address' 'btc' %}" class="btn btn-primary btn-lg">+ Subscribe to Address</a>
     </div>
 
     <div class="row">
