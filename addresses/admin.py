@@ -50,6 +50,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'unsubscribed_at',
             'coin_symbol',
             'b58_address',
+            'auth_user',
             'emails_sent',
             'address_forwarding_obj',
             'notify_on_broadcast',
@@ -57,7 +58,6 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'notify_on_sixth_confirm',
             'notify_on_deposit',
             'notify_on_withdrawal',
-            'auth_user',
             'blockcypher_id',
             )
 
