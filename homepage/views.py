@@ -162,5 +162,10 @@ def coin_overview(request, coin_symbol):
             }
 
 
+@render_to('highlights.html')
+def highlights(request):
+    return {}
+
+
 def fail500(request):
     raise Exception('IntentionalFail: This Was On Purpose')

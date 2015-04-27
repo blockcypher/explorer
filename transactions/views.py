@@ -11,7 +11,7 @@ from transactions.forms import RawTXForm
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_transaction_details, get_transaction_url, pushtx, decodetx
+from blockcypher.api import get_transaction_details, get_transaction_url, pushtx, decodetx, get_broadcast_transactions
 
 from binascii import unhexlify
 
@@ -230,3 +230,15 @@ def decodetx_forwarding(request):
     kwargs = {'coin_symbol': 'btc'}
     redir_url = reverse('decode_tx', kwargs=kwargs)
     return HttpResponseRedirect(redir_url)
+
+
+def latest_unconfirmed_tx(request, coin_symbol):
+    recent_tx_hash = get_broadcast_transactions(
+            coin_symbol=coin_symbol,
+            api_key=BLOCKCYPHER_API_KEY,
+            limit=1)[0]['hash']
+    kwargs = {
+            'coin_symbol': coin_symbol,
+            'tx_hash': recent_tx_hash,
+            }
+    return HttpResponseRedirect(reverse('transaction_overview', kwargs=kwargs))
