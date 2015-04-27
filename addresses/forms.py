@@ -51,6 +51,10 @@ class NewUserAddressSubscriptionForm(KnownUserAddressSubscriptionForm):
         widget=forms.TextInput(attrs={'placeholder': 'me@example.com', 'class': 'input-lg'}),
     )
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        return email.lower().strip()
+
 
 class AddressSearchForm(KnownUserAddressSubscriptionForm):
 
