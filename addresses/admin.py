@@ -83,7 +83,7 @@ class AddressForwardingAdmin(admin.ModelAdmin):
     coin_symbol.allow_tags = True
 
     def emails_sent(self, instance):
-        return SentEmail.objects.filter(address_forwarding=instance).count()
+        return SentEmail.objects.filter(address_forwarding=instance, body_template='new_user_forwarding.html').count()
 
     list_display = (
             'id',
