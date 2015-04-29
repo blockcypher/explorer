@@ -78,7 +78,7 @@
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
-                  {{ recent_tx.received|naturaltime }}
+                  {{ recent_tx.received|date:'Y-m-d H:i' }} GMT
                 </time>
               </td>
               <td>
@@ -156,7 +156,7 @@
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
             $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
-            $('<td>').append($('<time>').attr('class', "timeago").attr('datetime', data.received)),
+            $('<td>').append($('<abbr>').attr('class', "timeago").attr('datetime', data.received)).text($.timeago(data.received)),
             $('<td>').text(data.preference)
           )
           $('.new-tx').first().before(to_insert);

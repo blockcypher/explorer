@@ -60,8 +60,7 @@
           </span><br>
           <i class="fa fa-clock-o"></i> 
           <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
-            {# in case they don't have JS #}
-            {{ time_to_use|naturaltime }}
+            {{ time_to_use|date:'Y-m-d H:i' }} GMT
           </time>
         </li>
         <li>

@@ -223,11 +223,11 @@
           <td>
             {% if transaction.received %}
               <time class="timeago" datetime="{{ transaction.received|date:'Y-m-d\TH:i:s' }}Z">
-                {{ transaction.received|naturaltime }}
+                {{ transaction.received|date:'Y-m-d H:i' }} GMT
               </time>
             {% else %}
               <time class="timeago" datetime="{{ transaction.confirmed|date:'Y-m-d\TH:i:s' }}Z">
-                {{ transaction.confirmed|naturaltime }}
+                {{ transaction.confirmed|date:'Y-m-d H:i' }} GMT
               </time>
             {% endif %}
           </td>

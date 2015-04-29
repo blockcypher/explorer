@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
 
 {% block title %}
   {% blocktrans with currency_name=coin_symbol|coin_symbol_to_currency_name block_hash=block_details.hash %}
@@ -42,7 +43,9 @@
         <li>
           <span class="dash-label">Received</span><br>
           <i class="fa fa-clock-o"></i> 
-          {{ block_details.received_time|naturaltime }}
+          <time class="timeago" datetime="{{ block_details.received_time|date:'Y-m-d\TH:i:s' }}Z">
+            {{ block_details.received_time|date:'Y-m-d H:i' }} GMT
+          </time>
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
@@ -196,3 +199,17 @@
 
 {% endblock content %}
 
+{% block extra_js %}
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
+  <script>
+
+    $(document).ready(function(){
+
+      $("time.timeago").timeago();
+
+    })
+
+  </script>
+
+{% endblock extra_js %}
