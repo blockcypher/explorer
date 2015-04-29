@@ -242,3 +242,9 @@ def latest_unconfirmed_tx(request, coin_symbol):
             'tx_hash': recent_tx_hash,
             }
     return HttpResponseRedirect(reverse('transaction_overview', kwargs=kwargs))
+
+
+def latest_unconfirmed_tx_forwarding(request):
+    HttpResponseRedirect(reverse('latest_unconfirmed_tx', kwargs={
+        'coin_symbol': 'btc',
+        }))

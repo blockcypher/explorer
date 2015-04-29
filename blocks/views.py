@@ -71,3 +71,9 @@ def latest_block(request, coin_symbol):
             'block_representation': latest_block_height,
             }
     return HttpResponseRedirect(reverse('block_overview', kwargs=kwargs))
+
+
+def latest_block_forwarding(request):
+    return HttpResponseRedirect(reverse('latest_block', kwargs={
+        'coin_symbol': 'btc',
+        }))
