@@ -131,23 +131,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
 
     all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
 
-    # doesn't cover pagination
-    confirmed_sent_satoshis, confirmed_received_satoshis = 0, 0
-    unconfirmed_sent_satoshis, unconfirmed_received_satoshis = 0, 0
-    for transaction in all_transactions:
-        if transaction['tx_input_n'] >= 0:
-            # It's sent
-            if transaction['confirmations'] > 6:
-                confirmed_sent_satoshis += transaction['value']
-            else:
-                unconfirmed_sent_satoshis += transaction['value']
-        else:
-            # It's received
-            if transaction['confirmations'] > 6:
-                confirmed_received_satoshis += transaction['value']
-            else:
-                unconfirmed_received_satoshis += transaction['value']
-
     # transaction pagination: 0-indexed and inclusive
     tx_start_num = (current_page - 1) * TXNS_PER_PAGE
     tx_end_num = current_page * TXNS_PER_PAGE - 1
@@ -167,12 +150,8 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'wallet_name': wallet_name,
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
-            'confirmed_sent_satoshis': confirmed_sent_satoshis,
-            'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
-            'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
-            'confirmed_received_satoshis': confirmed_received_satoshis,
-            'unconfirmed_received_satoshis': unconfirmed_received_satoshis,
-            'total_received_satoshis': unconfirmed_received_satoshis + confirmed_received_satoshis,
+            'total_sent_satoshis': address_details['total_sent'],
+            'total_received_satoshis': address_details['total_received'],
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
