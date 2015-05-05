@@ -16,7 +16,8 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_details_url, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription, AddressForwarding
@@ -154,10 +155,15 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            address)
+
     return {
             'coin_symbol': coin_symbol,
             'address': address,
-            'api_url': get_address_details_url(address=address, coin_symbol=coin_symbol),
+            'api_url': api_url,
             'wallet_name': wallet_name,
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),

@@ -8,7 +8,8 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_block_details, get_block_overview_url, get_latest_block_height
+from blockcypher.api import get_block_details, get_latest_block_height
+from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 from utils import get_max_pages
 
@@ -51,7 +52,11 @@ def block_overview(request, coin_symbol, block_representation):
         return HttpResponseRedirect(reverse('home'))
 
     # Technically this is not the only API call used on this page
-    api_url = get_block_overview_url(block_representation=block_representation, coin_symbol=coin_symbol)
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/blocks/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            block_representation,
+            )
 
     return {
             'coin_symbol': coin_symbol,

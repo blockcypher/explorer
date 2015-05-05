@@ -11,7 +11,8 @@ from transactions.forms import RawTXForm
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_transaction_details, get_transaction_url, pushtx, decodetx, get_broadcast_transactions
+from blockcypher.api import get_transaction_details, pushtx, decodetx, get_broadcast_transactions
+from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 from binascii import unhexlify
 
@@ -94,7 +95,11 @@ def transaction_overview(request, coin_symbol, tx_hash):
         fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
         coinbase_msg = str(unhexlify(inputs[0]['script']))
 
-    api_url = get_transaction_url(tx_hash=tx_hash, coin_symbol=coin_symbol)
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/txs/%s?includeHex=true' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            tx_hash,
+            )
 
     return {
             'coin_symbol': coin_symbol,
