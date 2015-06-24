@@ -80,13 +80,20 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 coin_symbol=coin_symbol,
                 unsubscribed_at=None,
                 ):
-            msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
-                'user_email': request.user.email,
-                'unsub_url': reverse('user_unsubscribe_address', kwargs={
-                    'address_subscription_id': address_subscription.id,
-                    }),
-                })
-            messages.info(request, msg, extra_tags='safe')
+            if address_subscription.auth_user.email_verified:
+                msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
+                    'user_email': request.user.email,
+                    'unsub_url': reverse('user_unsubscribe_address', kwargs={
+                        'address_subscription_id': address_subscription.id,
+                        }),
+                    })
+                messages.info(request, msg, extra_tags='safe')
+            else:
+                msg = _('Private Message: you are not subscribed to this address because you have not clicked the link sent to <b>%(user_email)s</b>' % {
+                    'user_email': request.user.email,
+                    })
+                messages.error(request, msg, extra_tags='safe')
+                print('ERROR')
 
         # there can be only one
         af_initial = get_object_or_None(AddressForwarding,
