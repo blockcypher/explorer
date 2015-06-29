@@ -88,7 +88,7 @@ def home(request):
                     kwargs['coin_symbol'] = 'ltc'
                 elif first_char in ('U', ):
                     kwargs['coin_symbol'] = 'uro'
-                elif first_char in ('B', 'C', 'D'):
+                elif first_char in ('B', 'C'):
                     kwargs['coin_symbol'] = 'bcy'
 
                 redirect_url = reverse('address_overview', kwargs=kwargs)
