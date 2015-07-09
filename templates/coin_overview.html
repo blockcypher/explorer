@@ -52,7 +52,7 @@
   </div>
 
   <div class="section">
-    <h2>Fee Estimates per Kilobyte</h2>
+    <h2>Current Fee Estimates</h2>
 
     <div class="table-responsive">
       <table class="table">
@@ -62,9 +62,66 @@
           <th>Low Priority <small>(7+ blocks)</small></th>
         </tr>
         <tr>
-          <td>{{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB</td>
-          <td>{{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB</td>
-          <td>{{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB</td>
+          <td>
+            <span>
+              {{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {{ fees.high_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  -
+                  {{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  per transaction, depending on the # inputs/outputs in the transaction
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {{ fees.medium_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  -
+                  {{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  per transaction, depending on the # inputs/outputs in the transaction
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {{ fees.low_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  -
+                  {{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  per transaction, depending on the # inputs/outputs in the transaction
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
         </tr>
       </table>
     </div>
@@ -140,6 +197,8 @@
     $(document).ready(function(){
 
       $("time.timeago").timeago();
+
+      $('[data-toggle="tooltip"]').tooltip();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;

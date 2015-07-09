@@ -136,6 +136,10 @@ def coin_overview(request, coin_symbol):
             api_key=BLOCKCYPHER_API_KEY)
     recent_blocks = sorted(recent_blocks, key=lambda k: k['height'], reverse=True)
     fees = get_blockchain_fee_estimates(coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
+
+    fees['high_fee_per_kb__smalltx'] = fees['high_fee_per_kb']/4
+    fees['medium_fee_per_kb__smalltx'] = fees['medium_fee_per_kb']/4
+    fees['low_fee_per_kb__smalltx'] = fees['low_fee_per_kb']/4
     #import pprint; pprint.pprint(recent_blocks, width=1)
 
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
