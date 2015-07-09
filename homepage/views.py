@@ -11,7 +11,7 @@ from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 
 from homepage.forms import SearchForm
 
-from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions
+from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions, get_blockchain_fee_estimates
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 from blockcypher.constants import SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
 
@@ -135,6 +135,7 @@ def coin_overview(request, coin_symbol):
             coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY)
     recent_blocks = sorted(recent_blocks, key=lambda k: k['height'], reverse=True)
+    fees = get_blockchain_fee_estimates(coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
     #import pprint; pprint.pprint(recent_blocks, width=1)
 
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
@@ -158,6 +159,7 @@ def coin_overview(request, coin_symbol):
             'form': form,
             'recent_blocks': recent_blocks,
             'recent_txs': recent_txs_filtered,
+            'fees': fees,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
 
