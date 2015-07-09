@@ -71,9 +71,9 @@
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.high_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.high_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   -
-                  {{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.high_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   {{coin_symbol|coin_symbol_to_currency_name}}
                   per transaction, depending on the # of inputs/outputs
                   "
@@ -91,9 +91,9 @@
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.medium_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.medium_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   -
-                  {{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.medium_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   {{coin_symbol|coin_symbol_to_currency_name}}
                   per transaction, depending on the # of inputs/outputs
                   "
@@ -111,9 +111,9 @@
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.low_fee_per_kb__smalltx|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.low_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   -
-                  {{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }}
+                  {{ fees.low_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
                   {{coin_symbol|coin_symbol_to_currency_name}}
                   per transaction, depending on the # of inputs/outputs
                   "
