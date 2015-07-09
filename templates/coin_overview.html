@@ -51,6 +51,28 @@
     </div>
   </div>
 
+	<div class="section">
+		<h2>Fee Estimates per Kilobyte</h2>
+
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th>High Priority</th>
+					<th>Medium Priority</th>
+					<th>Low Priority</th>
+				</tr>
+				<tr>
+					<td>{{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}</td>
+					<td>{{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}</td>
+					<td>{{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}</td>
+				</tr>
+			</table>
+		</div>
+		<p class="text-center">
+			Fee estimates are based on a rolling, weighted average. High priority transactions are typically confirmed in 1 to 2 blocks, medium priority in 3 to 6 blocks, and low priority in 7+ blocks.
+		</p>
+	</div>
+
   <div class="section{% if not recent_txs %} hidden{% endif %}">
     <div id="newtx-section">
       <h2>Latest Transactions</h2>
