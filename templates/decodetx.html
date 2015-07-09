@@ -23,9 +23,7 @@
 
     {% if tx_in_json_str %}
       <h2>Decoded Transaction</h2>
-      <pre>
-        {{ tx_in_json_str|safe }}
-      </pre>
+      <pre><small>{{ tx_in_json_str|safe }}</small></pre>
 
       <br />
       <h2>Input New Transaction Hex</h2>
