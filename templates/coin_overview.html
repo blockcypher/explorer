@@ -57,6 +57,10 @@
         <i class="fa fa-code"></i> 
         API Call
       </a>
+      <a href="http://dev.blockcypher.com/#blockchain" class="btn btn-default">
+        <i class="fa fa-external-link"></i> 
+        API Docs
+      </a>
     </h2>
 
     <div class="table-responsive">
@@ -69,7 +73,7 @@
         <tr>
           <td>
             <span>
-              {{ fees.high_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {{ fees.high_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
@@ -89,7 +93,7 @@
           </td>
           <td>
             <span>
-              {{ fees.medium_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {{ fees.medium_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
@@ -109,7 +113,7 @@
           </td>
           <td>
             <span>
-              {{ fees.low_fee_per_kb|satoshis_to_btc_rounding|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {{ fees.low_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
