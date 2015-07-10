@@ -1,7 +1,7 @@
 from django import template
 
 from blockcypher.utils import satoshis_to_btc, satoshis_to_btc_rounded
-from blockcypher.api import get_websocket_url
+from blockcypher.api import _get_websocket_url
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 
@@ -35,4 +35,4 @@ def coin_symbol_to_currency_name(coin_symbol):
 
 @register.filter(name='coin_symbol_to_wss')
 def coin_symbol_to_wss(coin_symbol):
-    return get_websocket_url(coin_symbol)
+    return _get_websocket_url(coin_symbol)
