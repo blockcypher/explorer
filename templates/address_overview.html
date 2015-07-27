@@ -14,12 +14,30 @@
 {% block page_header %}
   <h1>
     <i class="fa fa-qrcode"></i> 
-    {{ coin_symbol|coin_symbol_to_display_name }} Address
+    {{ coin_symbol|coin_symbol_to_display_name }}
+    {% if is_wallet_page %}
+      Extended Public Key
+    {% else %}
+      Address
+    {% endif %}
   </h1>
 
   <h2 class="tagline wrapit semi">
-    {{ address }}
+    {% if is_wallet_page %}
+      {{ pubkey }}
+    {% else %}
+      {{ address }}
+    {% endif %}
   </h2>
+
+  {% if is_wallet_page and subchain_indices %}
+    <h4 class="tagline wrapit semi">
+      Subchain Indices:
+      {% for subchain_index in subchain_indices %}
+        {{ subchain_index }}{% include "partials/comma.html" %}
+      {% endfor %}
+    </h4>
+  {% endif %}
 
   {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
 {% endblock page_header %}
@@ -27,16 +45,18 @@
 {% block content %}
 <div class="container">
   <div class="section">
-    <div class="col-md-4 text-center">
-      <p>
-        {# TODO: support this for other blockchains #}
-        <a href="{% if coin_symbol = 'btc' %}bitcoin:{{ address }}"{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
-          <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
-        </a>
-      </p>
-    </div>
+    {% if not is_wallet_page %}
+      <div class="col-md-4 text-center">
+        <p>
+          {# TODO: support this for other blockchains #}
+          <a href="{% if coin_symbol = 'btc' %}bitcoin:{{ address }}"{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
+            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
+          </a>
+        </p>
+      </div>
+    {% endif %}
 
-    <div class="col-md-8">
+    <div class="col-md-{% if is_wallet_page %}12{% else %}8{% endif %}">
       <div class="dash dash-3">
         <ul>
           <li>
@@ -64,65 +84,67 @@
 
       <br />
 
-      <p class="text-center">
-        {% if num_all_txns < 1000 %}
-          <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-lg btn-default">
-            <i class="fa fa-inbox"></i>
-            Subscribe
-        </a>
-        {% endif %}
+      {% if not is_wallet_page %}
+        <p class="text-center">
+          {% if num_all_txns < 1000 %}
+            <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-lg btn-default">
+              <i class="fa fa-inbox"></i>
+              Subscribe
+          </a>
+          {% endif %}
 
-        <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
-          Advanced Details 
-          <b class="caret"></b>
-        </button>
-      </p>
-      <div class="col-md-12 collapse" id="advanced-details">
-        <div class="table-responsive">
-          <table class="table">
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
-                  <i class="fa fa-mail-forward"></i>
-                  Get Forwarding Address
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
-                  <i class="fa fa-line-chart"></i>
-                  Get Embeddable Widget
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{{ api_url }}?unspentOnly=true" class="btn btn-default">
-                  <i class="fa fa-code"></i>
-                  Unspent Outputs
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{{ api_url }}" class="btn btn-default">
-                  <i class="fa fa-code"></i>
-                  API Call
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                  <i class="fa fa-external-link"></i>
-                  API Docs
-                </a>
-              </td>
-            </tr>
-          </table>
+          <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
+            Advanced Details 
+            <b class="caret"></b>
+          </button>
+        </p>
+        <div class="col-md-12 collapse" id="advanced-details">
+          <div class="table-responsive">
+            <table class="table">
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
+                    <i class="fa fa-mail-forward"></i>
+                    Get Forwarding Address
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
+                    <i class="fa fa-line-chart"></i>
+                    Get Embeddable Widget
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{{ api_url }}?unspentOnly=true" class="btn btn-default">
+                    <i class="fa fa-code"></i>
+                    Unspent Outputs
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{{ api_url }}" class="btn btn-default">
+                    <i class="fa fa-code"></i>
+                    API Call
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                    <i class="fa fa-external-link"></i>
+                    API Docs
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-      </div>
+      {% endif %}
 
     </div>
   </div>
@@ -265,7 +287,12 @@
 </div>
 
 {% else %}
-  <p>No transactions detected.</p>
+  <p>
+    No transactions detected.
+    {% if is_wallet_page and not subchain_indices %}
+      <a href="0-1">Check subchain indices 0 & 1</a>.
+    {% endif %}
+  </p>
 {% endif %}
 
 </div>
@@ -288,85 +315,89 @@
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
 
-      function create_ws() {
-        console.log('Creating new websocket...');
-        ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
-      }
+      {% if not is_wallet_page %}
 
-      create_ws();
-
-      function send_ping() {
-        // Send pings at regular interval:
-        if (total_ws_received < MAX_WS_TO_RECEIVE) {
-          console.log('Sending websocket ping...');
-          ws.send(JSON.stringify({event: "ping"}));
-          // Trigger self recursively
-          setTimeout(send_ping, 20000);
-        } else {
-          console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
-        }
-      }
-
-      ws.onmessage = function(evt) {
-
-        var data = JSON.parse(evt.data);
-        console.log('Websocket Received: ' + evt.data);
-
-        // Weak protection against too much activity
-        total_ws_received += 1;
-        if (total_ws_received > MAX_WS_TO_RECEIVE) {
-          ws.close();
+        function create_ws() {
+          console.log('Creating new websocket...');
+          ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
         }
 
-        if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
+        create_ws();
 
-          var btc_rounded = satoshis_to_btc_rounding(data.total);
-
-          if (data.tx_input_n >= 0) {
-            sign_to_use = '+';
+        function send_ping() {
+          // Send pings at regular interval:
+          if (total_ws_received < MAX_WS_TO_RECEIVE) {
+            console.log('Sending websocket ping...');
+            ws.send(JSON.stringify({event: "ping"}));
+            // Trigger self recursively
+            setTimeout(send_ping, 20000);
           } else {
-            sign_to_use = '-';
+            console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
+          }
+        }
+
+        ws.onmessage = function(evt) {
+
+          var data = JSON.parse(evt.data);
+          console.log('Websocket Received: ' + evt.data);
+
+          // Weak protection against too much activity
+          total_ws_received += 1;
+          if (total_ws_received > MAX_WS_TO_RECEIVE) {
+            ws.close();
           }
 
-          var seconds_ago = convert_time_to_seconds_ago(data.received)
-          var time_ago_formatted = format_seconds_ago(seconds_ago);
+          if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
 
-          new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
-            $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
-            $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
-            $('<td>').text('None'),
-            $('<td>').text('Pending'),
-            $('<td>').text('Pending')
-          )
+            var btc_rounded = satoshis_to_btc_rounding(data.total);
 
-          $('.tx-row').first().before(new_tx_row);
-          // New row effect:
-          $('.tx-row').first().hide().fadeIn();
+            if (data.tx_input_n >= 0) {
+              sign_to_use = '+';
+            } else {
+              sign_to_use = '-';
+            }
+
+            var seconds_ago = convert_time_to_seconds_ago(data.received)
+            var time_ago_formatted = format_seconds_ago(seconds_ago);
+
+            new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
+              $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
+              $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
+              $('<td>').text('None'),
+              $('<td>').text('Pending'),
+              $('<td>').text('Pending')
+            )
+
+            $('.tx-row').first().before(new_tx_row);
+            // New row effect:
+            $('.tx-row').first().hide().fadeIn();
+
+          }
 
         }
 
-      }
+        ws.onopen = function() {
+          console.log('Connection established.');
+          ws.send(JSON.stringify(
+            {
+              'address': "{{ address }}",
+              'event': 'unconfirmed-tx',
+              'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
+            }
+          ));
+          send_ping();
+        };
 
-      ws.onopen = function() {
-        console.log('Connection established.');
-        ws.send(JSON.stringify(
-          {
-            'address': "{{ address }}",
-            'event': 'unconfirmed-tx',
-            'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
+        ws.onclose = function() {
+          console.log('Connection closed');
+          if (total_ws_received < MAX_WS_TO_RECEIVE) {
+            console.log('Creating new websocket to replace old one...');
+            create_ws();
           }
-        ));
-        send_ping();
-      };
 
-      ws.onclose = function() {
-        console.log('Connection closed');
-        if (total_ws_received < MAX_WS_TO_RECEIVE) {
-          console.log('Creating new websocket to replace old one...');
-          create_ws();
-        }
+        };
 
-      };
+      {% endif %}
 
     })
 
