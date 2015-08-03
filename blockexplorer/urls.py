@@ -38,7 +38,6 @@ urlpatterns = patterns('',
     url(r'^(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', 'transactions.views.poll_confidence', name='poll_confidence'),
     url(r'^(?P<coin_symbol>[-\w]+)/block/(?P<block_representation>[-\w]+)/$', 'blocks.views.block_overview', name='block_overview'),
     # http://stackoverflow.com/a/20318971/1754586
-    url(r'^(?P<coin_symbol>[-\w]+)/xpub/(?P<pubkey>[-\w]+)/(?P<subchain_indices>[-\w]+)/$', 'wallets.views.wallet_overview', name='wallet_overview'),
     url(r'^(?P<coin_symbol>[-\w]+)/xpub/(?P<pubkey>[-\w]+)/$', 'wallets.views.wallet_overview', name='wallet_overview_default'),
     url(r'^(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
     url(r'^(?P<coin_symbol>[-\w]+)/decodetx/$', 'transactions.views.decode_tx', name='decode_tx'),

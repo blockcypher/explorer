@@ -6,9 +6,12 @@
 {% load static %}
 
 {% block title %}
-  {% blocktrans with currency_name=coin_symbol|coin_symbol_to_currency_name address=address %}
-    {{ currency_name }} Address {{ address }}
-  {% endblocktrans %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  {% if is_wallet_page %}
+    Extended Public Key {{ pubkey }}
+  {% else %}
+    Address {{ address }}
+  {% endif %}
 {% endblock title %}
 
 {% block page_header %}
@@ -290,7 +293,7 @@
   <p>
     No transactions detected.
     {% if is_wallet_page and not subchain_indices %}
-      <a href="0-1">Check subchain indices 0 & 1</a>.
+      <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
     {% endif %}
   </p>
 {% endif %}

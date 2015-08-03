@@ -11,13 +11,15 @@ from utils import get_max_pages
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
-def wallet_overview(request, coin_symbol, pubkey, subchain_indices=''):
+def wallet_overview(request, coin_symbol, pubkey):
 
-    subchain_indices = subchain_indices.split('-')
-    if subchain_indices == ['']:
-        subchain_indices = []
-    else:
-        subchain_indices = [int(x) for x in subchain_indices]
+    subchain_indices = request.GET.get('subchain-indices')
+    if subchain_indices:
+        subchain_indices = subchain_indices.split('-')
+        if subchain_indices == ['']:
+            subchain_indices = []
+        else:
+            subchain_indices = [int(x) for x in subchain_indices]
 
     # TODO: confirm it's a pubkey and not a privkey
 
