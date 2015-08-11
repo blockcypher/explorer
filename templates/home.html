@@ -29,8 +29,7 @@
                 <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('uro', 'URO')">URO</a></li>
-                <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">Blockcypher Testnet</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BCY Testnet')">Blockcypher Testnet</a></li>
               </ul>
             </div>
             <input autofocus class="form-control" id="id_search_string" maxlength="128" name="search_string" type="search" placeholder="Example: 16Fg2yjwrbtC6fZp61EV9mNVKmwCzGasw5">
@@ -63,7 +62,7 @@
 
     <div class="row text-center">
       <h2>Browse the Blockchain</h2>
-      <div class="col-lg-10 col-lg-offset-1">
+      <div class="col-lg-10 col-lg-offset-2">
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
           <a href="{% url 'coin_overview' 'btc' %}" class="btc coin">
             <span class="mpsb">Bitcoin</span>
@@ -82,11 +81,6 @@
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
           <a href="{% url 'coin_overview' 'doge' %}" class="doge coin">
             <span class="mpsb">Dogecoin</span>
-          </a>
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-          <a href="{% url 'coin_overview' 'uro' %}" class="uro coin">
-            <span class="mpsb">URO</span>
           </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
@@ -144,13 +138,6 @@
           'tx_hash': '28132b9676b227f16bb687f49139fbb38d185caba4533a8c36d49f0fa470d83a',
           'block_hash': '3c36f6b2abcc2e30111b997e551336db60bead9a0cd3c03fb192110bfbfe1841',
           'block_num': '460,882',
-        },
-        'uro': {
-          'address': 'Uhf1LGdgmWe33hB9VVtubyzq1GduUAtaAJ',
-          'wallet_name': '',
-          'tx_hash': 'edb1537e92acb934890baf29794b45a5f30e6e648f376b1d2c5f50509ab10d29',
-          'block_hash': '00000000005ce75d7668175a10f0d402e985b3ae0bdde50adece45c1772aba4b',
-          'block_num': '85,430',
         },
         'bcy': {
           'address': 'CFr99841LyMkyX5ZTGepY58rjXJhyNGXHf',

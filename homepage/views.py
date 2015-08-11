@@ -86,8 +86,6 @@ def home(request):
                 elif first_char in ('L', ):
                     # Do not force addresses starting with 3 to be LTC because that's also used by BTC
                     kwargs['coin_symbol'] = 'ltc'
-                elif first_char in ('U', ):
-                    kwargs['coin_symbol'] = 'uro'
                 elif first_char in ('B', 'C'):
                     kwargs['coin_symbol'] = 'bcy'
 
