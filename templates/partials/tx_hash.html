@@ -5,8 +5,7 @@
   {% for input in transaction.inputs %}
     <div class="txn-input truncate">
       <strong>
-        {{ input.output_value|satoshis_to_btc_rounding }}
-        {{ coin_symbol|coin_symbol_to_currency_name }}
+        {% satoshis_to_user_units_trimmed input.output_value tcp__user_units coin_symbol %}
       </strong>
     {% if input.prev_hash %}
       {% if input.addresses %}
@@ -43,7 +42,7 @@
 {% for output in transaction.outputs %}
   <div class="txn-output truncate">
     <strong>
-      {{ output.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+      {% satoshis_to_user_units_trimmed output.value tcp__user_units coin_symbol %}
     </strong>
     {% if output.addresses %}
       to<br>

@@ -179,6 +179,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'blockexplorer.context_processors.get_user_units',
 )
 
 BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
@@ -201,6 +202,8 @@ SENTRY_DSN = os.getenv('SENTRY_DSN')
 
 # Wallet Name
 WNS_URL_BASE = 'https://pubapi.netki.com/api/wallet_lookup'
+
+DEFAULT_USER_UNIT = 'btc'
 
 # http://scanova.io/blog/engineering/2014/05/21/error-logging-in-javascript-and-python-using-sentry/
 LOGGING = {

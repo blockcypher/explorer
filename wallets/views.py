@@ -3,7 +3,7 @@ from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from blockcypher import get_wallet_details, create_hd_wallet
+from blockcypher import get_wallet_transactions, create_hd_wallet
 from blockcypher.utils import get_blockcypher_walletname_from_mpub
 
 from utils import get_max_pages
@@ -48,13 +48,13 @@ def wallet_overview(request, coin_symbol, pubkey):
             coin_symbol=coin_symbol,
             )
 
-    wallet_details = get_wallet_details(
+    wallet_details = get_wallet_transactions(
             wallet_name=wallet_name,
+            api_key=BLOCKCYPHER_API_KEY,
             coin_symbol=coin_symbol,
             txn_limit=TXNS_PER_PAGE,
-            api_key=BLOCKCYPHER_API_KEY,
             )
-    #import pprint; pprint.pprint(wallet_details, width=1)
+    # import pprint; pprint.pprint(wallet_details, width=1)
 
     assert 'error' not in wallet_details, wallet_details
 

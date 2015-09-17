@@ -43,8 +43,8 @@
             </td>
             <td>{{ block.received_time|naturaltime }}</td>
             <td>{{ block.n_tx|intcomma }}</td>
-            <td>{{ block.total|satoshis_to_btc_full|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-            <td>{{ block.fees|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol %}</td>
+            <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol %}</td>
           </tr>
         {% endfor %}
       </table>
@@ -73,17 +73,16 @@
         <tr>
           <td>
             <span>
-              {{ fees.high_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.high_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
                   -
-                  {{ fees.high_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
-                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
                   per transaction, depending on the # of inputs/outputs
                   "
               >
@@ -93,17 +92,16 @@
           </td>
           <td>
             <span>
-              {{ fees.medium_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.medium_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
                   -
-                  {{ fees.medium_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
-                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
                   per transaction, depending on the # of inputs/outputs
                   "
               >
@@ -113,17 +111,16 @@
           </td>
           <td>
             <span>
-              {{ fees.low_fee_per_kb|satoshis_to_btc_full|floatformat:"6"|intcomma }} {{coin_symbol|coin_symbol_to_currency_name}}/KB
+              {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
               <button
                 class="btn-link"
                 data-toggle="tooltip"
                 data-placement="bottom"
                 title="
                   About
-                  {{ fees.low_fee_per_kb__smalltx|satoshis_to_btc_full|floatformat:"5"|intcomma }}
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
                   -
-                  {{ fees.low_fee_per_kb|satoshis_to_btc_full|floatformat:"5"|intcomma }}
-                  {{coin_symbol|coin_symbol_to_currency_name}}
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
                   per transaction, depending on the # of inputs/outputs
                   "
               >
@@ -163,8 +160,7 @@
                 ...
               </td>
               <td>
-                {{ recent_tx.total|satoshis_to_btc_rounding|intcomma }}
-                {{ coin_symbol|coin_symbol_to_currency_name }}
+                {% satoshis_to_user_units_trimmed recent_tx.total tcp__user_units coin_symbol %}</td>
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">

@@ -64,20 +64,19 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-            {{ total_received_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol %}
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-            {{ total_sent_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol %}
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {{ total_balance_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol %}
             {% if unconfirmed_balance_satoshis %}
               <br>
               <span class="dash-label">
-                ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounding|intcomma }} 
-                {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol %} unconfirmed)
               </span>
             {% endif %}
           </li>
@@ -215,7 +214,8 @@
           </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ transaction.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            {% satoshis_to_user_units_trimmed transaction.value tcp__user_units coin_symbol %}
+          </td>
           <td>
           {% if transaction.confirmations >= 6 %}
             <span class="confirmed">
@@ -351,6 +351,8 @@
           }
 
           if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
+
+            // FIXME: make JS work with different units
 
             var btc_rounded = satoshis_to_btc_rounding(data.total);
 
