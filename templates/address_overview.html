@@ -366,8 +366,8 @@
             var time_ago_formatted = format_seconds_ago(seconds_ago);
 
             new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
-              $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
-              $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
+              $('<td>').append($('<a>').attr('href', '/{{coin_symbol}}/tx/'+data.hash).attr('class', 'tx-list small').text(data.hash)),
+              $('<td>').text(sign_to_use + ' ' + btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name}}'),
               $('<td>').text('None'),
               $('<td>').text('Pending'),
               $('<td>').text('Pending')

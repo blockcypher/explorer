@@ -160,7 +160,8 @@
                 ...
               </td>
               <td>
-                {% satoshis_to_user_units_trimmed recent_tx.total tcp__user_units coin_symbol %}</td>
+                {# always in BTC/BCY/LTC/DOGE because JS streaming in new transactions will be and don't want to mix units #}
+                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}</td>
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
