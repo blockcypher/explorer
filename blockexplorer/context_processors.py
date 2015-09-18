@@ -1,3 +1,5 @@
+from homepage.forms import UnitChoiceForm
+
 from blockexplorer.settings import DEFAULT_USER_UNIT
 
 from blockcypher.constants import UNIT_CHOICES
@@ -21,4 +23,5 @@ def get_user_units(request):
     # tcp = template context processor, added to prevent namespace collisions
     return {
             'tcp__user_units': user_units,
+            'tcp__unit_choice_form': UnitChoiceForm(initial={'unit_choice': user_units}),
             }
