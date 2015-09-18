@@ -12,13 +12,14 @@
 
   </head>
   <body>
+
     <a target="_blank" href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}" class="btn btn-default">
 
       <i class="fa fa-qrcode"></i> 
       {{ b58_address }}
 
       <h4>
-        {{ address_overview.final_balance|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        {% satoshis_to_user_units_trimmed address_overview.final_balance 'btc' coin_symbol True 0 %}
       </h4>
 
       <i>

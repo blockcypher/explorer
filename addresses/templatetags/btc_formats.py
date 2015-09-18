@@ -1,21 +1,11 @@
 from django import template
 
-from blockcypher.utils import satoshis_to_btc, satoshis_to_btc_rounded, format_crypto_units
+from blockcypher.utils import format_crypto_units
 from blockcypher.api import _get_websocket_url
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 
 register = template.Library()
-
-
-@register.filter(name='satoshis_to_btc_rounding')
-def satoshis_to_btc_rounding(satoshis):
-    return satoshis_to_btc_rounded(satoshis=satoshis, decimals=4)
-
-
-@register.filter(name='satoshis_to_btc_full')
-def satoshis_to_btc_full(satoshis):
-    return satoshis_to_btc(satoshis=satoshis)
 
 
 @register.simple_tag(name='satoshis_to_user_units_trimmed')

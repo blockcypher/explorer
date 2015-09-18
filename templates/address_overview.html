@@ -64,19 +64,19 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol %}
+            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol True 4 %}
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol %}
+            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol True 4 %}
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol %}
+            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True 4 %}
             {% if unconfirmed_balance_satoshis %}
               <br>
               <span class="dash-label">
-                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol %} unconfirmed)
+                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol True %} unconfirmed)
               </span>
             {% endif %}
           </li>
@@ -214,7 +214,7 @@
           </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {% satoshis_to_user_units_trimmed transaction.value tcp__user_units coin_symbol %}
+            {% satoshis_to_user_units_trimmed transaction.value tcp__user_units coin_symbol True 0 %}
           </td>
           <td>
           {% if transaction.confirmations >= 6 %}

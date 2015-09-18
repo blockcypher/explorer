@@ -1,6 +1,6 @@
 from django.db import models
 
-from blockcypher.utils import satoshis_to_btc_rounded
+from blockcypher.utils import format_crypto_units
 
 from emails.trigger import send_and_log
 
@@ -28,11 +28,29 @@ class OnChainTransaction(models.Model):
 
     def send_unconfirmed_tx_email(self):
         b58_address = self.address_subscription.b58_address
+        sent_in_btc = format_crypto_units(
+                input_quantity=self.satoshis_sent,
+                input_type='satoshi',
+                output_type='btc',
+                coin_symbol=self.address_subscription.coin_symbol,
+                print_cs=False,
+                safe_trimming=False,
+                round_digits=4,
+                )
+        fee_in_btc = format_crypto_units(
+                input_quantity=self.fee_in_satoshis,
+                input_type='satoshi',
+                output_type='btc',
+                coin_symbol=self.address_subscription.coin_symbol,
+                print_cs=False,
+                safe_trimming=False,
+                round_digits=4,
+                )
         context_dict = {
                 'b58_address': b58_address,
                 'coin_symbol': self.address_subscription.coin_symbol,
-                'sent_in_btc': satoshis_to_btc_rounded(self.satoshis_sent),
-                'fee_in_btc': satoshis_to_btc_rounded(self.fee_in_satoshis),
+                'sent_in_btc': sent_in_btc,
+                'fee_in_btc': fee_in_btc,
                 'currency_display_name': self.address_subscription.get_currency_display_name(),
                 'currency_abbrev': self.address_subscription.get_currency_abbrev(),
                 'tx_hash': self.tx_hash,

@@ -49,11 +49,11 @@
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
-          {% satoshis_to_user_units_trimmed block_details.total tcp__user_units coin_symbol %}
+          {% satoshis_to_user_units_trimmed block_details.total tcp__user_units coin_symbol True 4 %}
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
-          {% satoshis_to_user_units_trimmed block_details.fees tcp__user_units coin_symbol %}
+          {% satoshis_to_user_units_trimmed block_details.fees tcp__user_units coin_symbol True 4 %}
         </li>
       </ul>
       <div class="clearfix"></div>
