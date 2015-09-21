@@ -38,20 +38,20 @@
       {% if is_coinbase_tx %}
         <li>
           <span class="dash-label">Amount Transacted</span><br>
-          {{ total_satoshis_coinbase|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed total_satoshis_coinbase tcp__user_units coin_symbol %}
         </li>
         <li>
           <span class="dash-label">Fees Collected</span><br>
-          {{ fee_in_satoshis_coinbase|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase tcp__user_units coin_symbol %}
         </li>
       {% else %}
         <li>
           <span class="dash-label">Amount Transacted</span><br>
-          {{ total_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed total_satoshis tcp__user_units coin_symbol %}
         </li>
         <li>
           <span class="dash-label">Fees</span><br>
-          {{ fee_in_satoshis|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed fee_in_satoshis tcp__user_units coin_symbol %}
         </li>
       {% endif %}
         <li>

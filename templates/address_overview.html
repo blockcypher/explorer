@@ -64,20 +64,19 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-            {{ total_received_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol True 4 %}
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-            {{ total_sent_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol True 4 %}
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {{ total_balance_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True 4 %}
             {% if unconfirmed_balance_satoshis %}
               <br>
               <span class="dash-label">
-                ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounding|intcomma }} 
-                {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol True %} unconfirmed)
               </span>
             {% endif %}
           </li>
@@ -215,7 +214,8 @@
           </td>
           <td>
             {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ transaction.value|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            {% satoshis_to_user_units_trimmed transaction.value tcp__user_units coin_symbol True 0 %}
+          </td>
           <td>
           {% if transaction.confirmations >= 6 %}
             <span class="confirmed">
@@ -352,6 +352,8 @@
 
           if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
 
+            // FIXME: make JS work with different units
+
             var btc_rounded = satoshis_to_btc_rounding(data.total);
 
             if (data.tx_input_n >= 0) {
@@ -364,8 +366,8 @@
             var time_ago_formatted = format_seconds_ago(seconds_ago);
 
             new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
-              $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
-              $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
+              $('<td>').append($('<a>').attr('href', '/{{coin_symbol}}/tx/'+data.hash).attr('class', 'tx-list small').text(data.hash)),
+              $('<td>').text(sign_to_use + ' ' + btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name}}'),
               $('<td>').text('None'),
               $('<td>').text('Pending'),
               $('<td>').text('Pending')

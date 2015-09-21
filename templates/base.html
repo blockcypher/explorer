@@ -196,6 +196,20 @@
       {% block content %}
       {% endblock content %}
 
+    {% if not is_home %}
+    <div class ="container">
+      <div class="row">
+      <div class="col-md-1 col-md-offset-10">
+        <form class="form-horizontal" action="{% url 'set_units' %}" method="post">
+          {% csrf_token %}
+          {% load crispy_forms_tags %}
+          {{ tcp__unit_choice_form|crispy }}
+        </form>
+      </div>
+      </div>
+    </div>
+    {% endif %}
+
       {% if coin_symbol == 'btc-testnet' %}
         <div class="container">
           <p>

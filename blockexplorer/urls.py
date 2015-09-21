@@ -27,6 +27,7 @@ urlpatterns = patterns('',
 
     # Admin
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^set-units/?$', 'homepage.views.set_units', name='set_units'),
 
     # App pages
     url(r'^$', 'homepage.views.home', name='home'),

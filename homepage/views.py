@@ -9,7 +9,7 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 
-from homepage.forms import SearchForm
+from homepage.forms import SearchForm, UnitChoiceForm
 
 from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions, get_blockchain_fee_estimates
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
@@ -138,7 +138,7 @@ def coin_overview(request, coin_symbol):
     fees['high_fee_per_kb__smalltx'] = fees['high_fee_per_kb']/4
     fees['medium_fee_per_kb__smalltx'] = fees['medium_fee_per_kb']/4
     fees['low_fee_per_kb__smalltx'] = fees['low_fee_per_kb']/4
-    #import pprint; pprint.pprint(recent_blocks, width=1)
+    # import pprint; pprint.pprint(recent_blocks, width=1)
 
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY,
@@ -170,6 +170,15 @@ def coin_overview(request, coin_symbol):
             'fee_api_url': fee_api_url,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
+
+
+def set_units(request):
+    if request.method == 'POST':
+        form = UnitChoiceForm(data=request.POST)
+        if form.is_valid():
+            unit_choice = form.cleaned_data['unit_choice']
+            request.session['user_units'] = unit_choice
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @render_to('highlights.html')
