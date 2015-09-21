@@ -43,8 +43,8 @@
             </td>
             <td>{{ block.received_time|naturaltime }}</td>
             <td>{{ block.n_tx|intcomma }}</td>
-            <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol %}</td>
-            <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol %}</td>
+            <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol True 5 %}</td>
+            <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol True 5 %}</td>
           </tr>
         {% endfor %}
       </table>
