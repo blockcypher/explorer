@@ -311,7 +311,7 @@
       ws.onmessage = function(evt) {
 
         var data = JSON.parse(evt.data);
-        // console.log('Websocket Received: ' + evt.data);
+        console.log('Websocket Received: ' + evt.data);
 
         // Weak protection against too much activity
         total_ws_received += 1;
@@ -321,25 +321,9 @@
 
         if ( data.hasOwnProperty('hash') ) {
 
+          {# TODO: duplicate all logic in JS #}
+          location.reload();
 
-          // Update # confirmations
-          console.log('Transaction now has ' + data.confirmations + ' confirmations');
-          if (data.confirmations == 0) {
-            confs_formatted = '0/6';
-            // This shouldn't happen
-          } else if (data.confirmations == 1) {
-            // Refresh on first confirmation
-            location.reload();
-          } else if (data.confirmations < 6) {
-            confs_formatted = data.confirmations + '/6';
-            $('#conf-section').removeClass( "unconfirmed" ).addClass( "pending" );
-          } else {
-            confs_formatted = '6+';
-            $('#conf-section').removeClass( "pending unconfirmed" ).addClass( "confirmed" );
-          }
-
-          $('#num-confs').text(confs_formatted);
-          $('#num-confs').hide().fadeIn();
 
         }
 

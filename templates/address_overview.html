@@ -151,7 +151,7 @@
     </div>
   </div>
 
-{% if all_transactions %}
+{% if flattened_txs %}
 
 <div class="col-md-12">
 
@@ -200,54 +200,55 @@
         <th>Time</th>
         <th>Block</th>
       </tr>
-      {% for transaction in all_transactions %}
+      {% for flattened_tx in flattened_txs %}
+      <h1>{{ transaction.tx_hash }}</h1>
       <tr class="tx-row" id="{{ transaction.tx_hash }}">
           <td class="truncate">
-            {% if transaction.tx_hash %}
-              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="hidden-xs tx-list small">
-                {{ transaction.tx_hash }}
+            {% if flattened_tx.tx_hash %}
+              <a href="{% url 'transaction_overview' coin_symbol flattened_tx.tx_hash %}" class="hidden-xs tx-list small">
+                {{ flattened_tx.tx_hash }}
               </a>
-              <a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}" class="visible-xs">
+              <a href="{% url 'transaction_overview' coin_symbol flattened_tx.tx_hash %}" class="visible-xs">
                 View Transaction
               </a>
             {% endif %}
           </td>
           <td>
-            {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {% satoshis_to_user_units_trimmed transaction.value tcp__user_units coin_symbol True 0 %}
+            {% if transaction.tx_input_n < 0 %}+{% endif %}
+            {% satoshis_to_user_units_trimmed flattened_tx.satoshis_net tcp__user_units coin_symbol True 0 %}
           </td>
           <td>
-          {% if transaction.confirmations >= 6 %}
+          {% if flattened_tx.confirmations >= 6 %}
             <span class="confirmed">
-              <i class="fa fa-lock"></i> 
-              <span id="num-confs" title="{{ transaction.confirmations|intcomma }} Confirmations">6+</span>
+              <i class="fa fa-lock"></i>
+              <span id="num-confs" title="{{ flattened_tx.confirmations|intcomma }} Confirmations">6+</span>
             </span>
-          {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
+          {% elif flattened_tx.confirmations > 0 and flattened_tx.confirmations < 6 %}
             <span class="pending">
-              <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ transaction.confirmations }}</span>/6
+              <i class="fa fa-unlock"></i>
+              <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6
             </span>
           {% else %}
             <span class="unconfirmed">
-              <i class="fa fa-unlock"></i> 
-              <span id="num-confs">{{ transaction.confirmations }}</span>/6
+              <i class="fa fa-unlock"></i>
+              <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6
             </span>
           {% endif %}
           </td>
           <td>
-            {% if transaction.received %}
-              <time class="timeago" datetime="{{ transaction.received|date:'Y-m-d\TH:i:s' }}Z">
-                {{ transaction.received|date:'Y-m-d H:i' }} GMT
+            {% if flattened_tx.received_at %}
+              <time class="timeago" datetime="{{ flattened_tx.received_at|date:'Y-m-d\TH:i:s' }}Z">
+                {{ flattened_tx.received_at|date:'Y-m-d H:i' }} GMT
               </time>
             {% else %}
-              <time class="timeago" datetime="{{ transaction.confirmed|date:'Y-m-d\TH:i:s' }}Z">
-                {{ transaction.confirmed|date:'Y-m-d H:i' }} GMT
+              <time class="timeago" datetime="{{ flattened_tx.confirmed_at|date:'Y-m-d\TH:i:s' }}Z">
+                {{ flattened_tx.confirmed_at|date:'Y-m-d H:i' }} GMT
               </time>
             {% endif %}
           </td>
           <td>
-            {% if transaction.block_height %}
-              <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma}}</a>
+            {% if flattened_tx.block_height %}
+              <a href="{% url 'block_overview' coin_symbol flattened_tx.block_height %}">{{ flattened_tx.block_height|intcomma}}</a>
             {% else %}
               <span class="label label-danger">Pending</span>
             {% endif %}
@@ -258,40 +259,40 @@
     </table>
   </div>
 
-{% if max_pages > 1 %}
-  <div class="section pager">
-    <div class="row">
-      <div class="col-sm-4 text-left">
-      {% if current_page > 1 %}
-        <a href="?page={{ current_page|add:-1|intcomma }}" class="btn btn-default">
-          <i class="fa fa-angle-double-left"></i> 
-          Previous Page
-        </a>
-      {% endif %}
-      </div>
+  {% if max_pages > 1 %}
+    <div class="section pager">
+      <div class="row">
+        <div class="col-sm-4 text-left">
+        {% if current_page > 1 %}
+          <a href="?page={{ current_page|add:-1|intcomma }}" class="btn btn-default">
+            <i class="fa fa-angle-double-left"></i> 
+            Previous Page
+          </a>
+        {% endif %}
+        </div>
 
-      <div class="col-sm-4 text-center">
-        Page {{ current_page|intcomma }} of {{ max_pages|intcomma }}
-      </div>
+        <div class="col-sm-4 text-center">
+          Page {{ current_page|intcomma }} of {{ max_pages|intcomma }}
+        </div>
 
-      <div class="col-sm-4 text-right">
-      {% if current_page < max_pages %}
-        <a href="?page={{ current_page|add:1|intcomma }}" class="btn btn-default">
-          Next Page
-          <i class="fa fa-angle-double-right"></i>
-        </a>
-      {% endif %}
+        <div class="col-sm-4 text-right">
+        {% if current_page < max_pages %}
+          <a href="?page={{ current_page|add:1|intcomma }}" class="btn btn-default">
+            Next Page
+            <i class="fa fa-angle-double-right"></i>
+          </a>
+        {% endif %}
+        </div>
+        <div class="clearfix"></div>
       </div>
-      <div class="clearfix"></div>
     </div>
-  </div>
-{% endif %}
+  {% endif %}
 
 </div>
 
 {% else %}
   <p>
-    No transactions detected.
+  No transactions detected.
     {% if is_wallet_page and not subchain_indices %}
       <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
     {% endif %}
@@ -350,33 +351,10 @@
             ws.close();
           }
 
-          if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
-
-            // FIXME: make JS work with different units
-
-            var btc_rounded = satoshis_to_btc_rounding(data.total);
-
-            if (data.tx_input_n >= 0) {
-              sign_to_use = '+';
-            } else {
-              sign_to_use = '-';
-            }
-
-            var seconds_ago = convert_time_to_seconds_ago(data.received)
-            var time_ago_formatted = format_seconds_ago(seconds_ago);
-
-            new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
-              $('<td>').append($('<a>').attr('href', '/{{coin_symbol}}/tx/'+data.hash).attr('class', 'tx-list small').text(data.hash)),
-              $('<td>').text(sign_to_use + ' ' + btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name}}'),
-              $('<td>').text('None'),
-              $('<td>').text('Pending'),
-              $('<td>').text('Pending')
-            )
-
-            $('.tx-row').first().before(new_tx_row);
-            // New row effect:
-            $('.tx-row').first().hide().fadeIn();
-
+          if ( data.hasOwnProperty('hash')  ) {
+            // Update data in the view
+            {# TODO: duplicate all logic in JS #}
+            location.reload();
           }
 
         }
@@ -386,7 +364,7 @@
           ws.send(JSON.stringify(
             {
               'address': "{{ address }}",
-              'event': 'unconfirmed-tx',
+              'event': 'tx-confirmation',
               'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
             }
           ));

@@ -4,7 +4,7 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
 from blockcypher import get_wallet_transactions, create_hd_wallet
-from blockcypher.utils import get_blockcypher_walletname_from_mpub
+from blockcypher.utils import get_blockcypher_walletname_from_mpub, flatten_txns_by_hash
 
 from utils import get_max_pages
 
@@ -63,6 +63,8 @@ def wallet_overview(request, coin_symbol, pubkey):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
+    flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
+
     return {
             'is_wallet_page': True,  # shared template
             'coin_symbol': coin_symbol,
@@ -75,7 +77,7 @@ def wallet_overview(request, coin_symbol, pubkey):
             'unconfirmed_balance_satoshis': wallet_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': wallet_details['balance'],
             'total_balance_satoshis': wallet_details['final_balance'],
-            'all_transactions': all_transactions,
+            'flattened_txs': flattened_txs,
             'num_confirmed_txns': wallet_details['n_tx'],
             'num_unconfirmed_txns': wallet_details['unconfirmed_n_tx'],
             'num_all_txns': wallet_details['final_n_tx'],

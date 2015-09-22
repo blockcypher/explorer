@@ -18,6 +18,7 @@ from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, 
 
 from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
+from blockcypher.utils import flatten_txns_by_hash
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription, AddressForwarding
@@ -65,7 +66,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
         return HttpResponseRedirect(redir_url)
 
-    #import pprint; pprint.pprint(address_details, width=1)
+    # import pprint; pprint.pprint(address_details, width=1)
 
     if 'error' in address_details:
         msg = _('Sorry, that address was not found')
@@ -145,6 +146,8 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
+    flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
+
     api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
@@ -162,7 +165,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
-            'all_transactions': all_transactions,
+            'flattened_txs': flattened_txs,
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
