@@ -50,7 +50,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
         redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
         return HttpResponseRedirect(redir_url)
 
-    #import pprint; pprint.pprint(transaction_details, width=1)
+    # import pprint; pprint.pprint(transaction_details, width=1)
 
     if 'error' in transaction_details:
         # Corner case, such as a validly formed tx hash with no matching transaction
@@ -132,8 +132,6 @@ def poll_confidence(request, coin_symbol, tx_hash):
             api_key=BLOCKCYPHER_API_KEY,
             )
 
-    #import pprint; pprint.pprint(transaction_details, width=1)
-
     confidence = transaction_details.get('confidence')
     if confidence:
         confidence_pct = min(round(confidence * 100, 2), 99.99)
@@ -174,7 +172,7 @@ def push_tx(request, coin_symbol):
             coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
             result = pushtx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use, api_key=BLOCKCYPHER_API_KEY)
-            #import pprint; pprint.pprint(result, width=1)
+            # import pprint; pprint.pprint(result, width=1)
 
             if result.get('error'):
                 messages.error(request, result['error'])

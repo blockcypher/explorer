@@ -9,7 +9,7 @@
           {# Don't dissappear after some number of seconds #}
           nofadeout
         {% endif %}
-        {% if 'error' in message.tags %}
+        {% if 'warning' in message.tags %}
           alert alert-danger
         {% elif 'success' in message.tags %}
           alert alert-success

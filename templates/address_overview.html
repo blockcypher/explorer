@@ -228,7 +228,11 @@
               <i class="fa fa-unlock"></i>
               <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6
             </span>
-          {% else %}
+          {% elif flattened_tx.double_spend %}
+            <span class="unconfirmed">
+              <strong>DOUBLE SPEND</strong>
+            </span>
+          {% else%}
             <span class="unconfirmed">
               <i class="fa fa-unlock"></i>
               <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6

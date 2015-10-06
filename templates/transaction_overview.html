@@ -25,13 +25,23 @@
   <div class="container">
     {% if tx_hash %}
 
-    {% if transaction.double_of_tx %}
-      <div class="alert alert-danger" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        Double-Spend Detected
-        (<a href="{% url transaction_overview coin_symbol transaction.double_of_tx %}">Details</a>)
-      </div>
-    {% endif %}
+      {% if transaction.double_spend_tx %}
+        {% if transaction.confirmations < 6 %}
+          <div class="alert alert-danger" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            WARNING: This transaction has been double-spent by
+            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>
+            and will never be confirmed!
+          </div>
+        {% else %}
+          <div class="alert" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            WARNING: This transaction has been double-spent by
+            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>
+            and may never be confirmed!
+          </div>
+        {% endif %}
+      {% endif %}
 
     <div class="dash dash-4">
       <ul>
@@ -107,7 +117,7 @@
 <div class="section">
   <div class="container">
     <div class="row">
-      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
+      <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
         <strong>Confidence</strong>
         <button id="confidence-popover" type='button' class='btn-link'>
           <i class="fa fa-info-circle"></i>
@@ -118,7 +128,7 @@
         </div>
       </div>
 
-      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
+      <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
         <strong>Miner Preference</strong>
         <div class="circle-chart">
           <div class="fill {{ transaction.preference }}"></div>
@@ -252,7 +262,7 @@
       var memoryPools = 0;
     {% endif %}
 
-    var doubleSpend = {% if transaction.double_of_tx %}"YES"{% else %}"No"{% endif %};
+    var doubleSpend = {% if transaction.double_spend %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
@@ -271,6 +281,11 @@
           $('#receive-cnt').text(data['receive_cnt']);
 
           memoryPools = data['receive_cnt'];
+
+          {# this code not invoked unless there was previously no double-spend #}
+          if (data['double_spend_detected']) {
+            location.reload();
+          }
 
           setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
 
@@ -352,7 +367,7 @@
 
       };
 
-    {% if transaction.confirmations == 0 %}
+    {% if transaction.confirmations == 0 and transaction.double_spend == False %}
       poll_confidence()
     {% endif %}
 
@@ -360,7 +375,7 @@
       var html = '';
       html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
               '<b>Double-Spend Detected:</b> ' +
-              '<span id="ds-detected">'+doubleSpend+'</span>' +
+              '<span id="ds-detected">No</span>' +
             '</span><br>' +
             '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
               '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
