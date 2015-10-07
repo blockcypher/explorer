@@ -64,15 +64,15 @@
         <ul>
           <li>
             <span class="dash-label">Received</span><br>
-            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol True 4 %}
+            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol True %}
           </li>
           <li>
             <span class="dash-label">Sent</span><br>
-            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol True 4 %}
+            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol True %}
           </li>
           <li>
             <span class="dash-label">Balance</span><br>
-            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True 4 %}
+            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True %}
             {% if unconfirmed_balance_satoshis %}
               <br>
               <span class="dash-label">
