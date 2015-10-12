@@ -177,6 +177,8 @@ def push_tx(request, coin_symbol):
             if result.get('errors'):
                 for error in result.get('errors'):
                     messages.error(request, error['error'])
+            elif result.get('error'):
+                messages.error(request, result.get('error'))
             else:
                 success_msg = _('Transaction Successfully Broadcst')
                 messages.success(request, success_msg)
