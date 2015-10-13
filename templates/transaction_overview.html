@@ -116,6 +116,31 @@
 
 <div class="section">
   <div class="container">
+
+    {% if transaction.data_protocol %}
+      <div id="dp-section" class="row">
+          <div class="alert alert-info" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>
+              {{ transaction.data_protocol }} transaction
+            </strong>
+            (<a href="http://dev.blockcypher.com/#tx">more</a>)
+            <br />
+            <p>
+            {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
+              {% if data_dict.data_hex or data_dict.data_string %}
+                {% if data_dict.data_hex %}
+                  <strong>Hex</strong>: {{ data_dict.data_hex }}
+                {% elif data_dict.data_string %}
+                  <strong>String</strong>: {{ data_dict.data_hex }}
+                {% endif %}
+              {% endif %}
+            {% endwith %}
+            </p>
+          </div>
+      </div>
+    {% endif %}
+
     <div class="row">
       <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
         <strong>Confidence</strong>

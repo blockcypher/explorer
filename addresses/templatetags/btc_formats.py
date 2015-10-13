@@ -39,3 +39,16 @@ def coin_symbol_to_currency_name(coin_symbol):
 @register.filter(name='coin_symbol_to_wss')
 def coin_symbol_to_wss(coin_symbol):
     return _get_websocket_url(coin_symbol)
+
+
+@register.filter(name='txn_outputs_to_data_dict')
+def txn_outputs_to_data_dict(txn_outputs):
+    '''
+    NOTE: Assumes each transaction can only have one null data output, which is not a strict requirement
+    https://github.com/blockcypher/explorer/issues/150#issuecomment-143899714
+    '''
+    for txn_output in txn_outputs:
+        if txn_output.get('data_hex'):
+            return {'data_hex': txn_output.get('data_hex'), 'data_string': None}
+        if txn_output.get('data_string'):
+            return {'data_hex': None, 'data_string': txn_output.get('data_string')}
