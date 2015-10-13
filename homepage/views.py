@@ -59,7 +59,10 @@ def home(request):
                                 api_key=BLOCKCYPHER_API_KEY,
                                 )
                         if 'error' in block_details:
-                            msg = _("Sorry, that's not a valid transaction or block hash for %(currency)s" % {'currency': coin_symbol})
+                            msg = _("Sorry, '%(search_string)s' is not a valid transaction or block hash for %(currency)s" % {
+                                'currency': coin_symbol,
+                                'search_string': search_string,
+                                })
                             messages.error(request, msg)
                         else:
                             kwargs['block_representation'] = search_string
@@ -106,8 +109,10 @@ def home(request):
 
         else:
             currency = COIN_SYMBOL_MAPPINGS[request.POST['coin_symbol']]['display_shortname']
-            msg = _("Sorry, that's not a valid %(currency)s address, wallet name, transaction or block" % {
-                'currency': currency})
+            msg = _("Sorry, '%(search_string)s' is not a valid %(currency)s address, wallet name, transaction or block" % {
+                'currency': currency,
+                'search_string': request.POST['search_string'],
+                })
             messages.error(request, msg)
 
     return {
