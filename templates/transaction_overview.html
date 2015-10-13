@@ -30,15 +30,15 @@
           <div class="alert alert-danger" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             WARNING: This transaction has been double-spent by
-            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>
-            be extremely careful when accepting this transaction.
+            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+            be extremely careful when accepting this transaction!
           </div>
         {% else %}
           <div class="alert alert-danger" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
-            WARNING: This transaction has been double-spent by
-            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>
-            but was still confirmed!
+            WARNING: This transaction had an attempted double-spent by
+            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+            but was still confirmed.
           </div>
         {% endif %}
       {% endif %}
