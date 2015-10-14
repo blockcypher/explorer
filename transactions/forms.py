@@ -53,6 +53,16 @@ class EmbedDataForm(forms.Form):
         required=False,
     )
 
+    coin_symbol = forms.ChoiceField(
+        label=_('Network'),
+        required=True,
+        choices=(
+            ('btc', 'Bitcoin'),
+            ('bcy', 'BlockCypher Testnet'),
+            ),
+        help_text=_('Currently only the Bitcoin Mainnet and Blockcypher Testnets are supported'),
+    )
+
     def clean_data_to_embed(self):
         data_to_embed = self.cleaned_data['data_to_embed'].strip()
         if False:
@@ -80,6 +90,7 @@ class EmbedDataForm(forms.Form):
         self.helper.layout = Layout(
                 'data_to_embed',
                 'encoding_is_hex',
+                'coin_symbol',
                 Submit(
                     'submit',
                     'Embed Data',

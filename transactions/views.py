@@ -243,9 +243,6 @@ def embed_txdata(request, coin_symbol):
     '''
     Embed data in the blockchain with blockcypher's API key
     '''
-    # TODO: perhaps one day there will be support for others
-    coin_symbol = 'btc'
-
     initial = {'coin_symbol': coin_symbol}
     form = EmbedDataForm(initial=initial)
     if request.method == 'POST':
@@ -253,12 +250,13 @@ def embed_txdata(request, coin_symbol):
         if form.is_valid():
             data_to_embed = form.cleaned_data['data_to_embed']
             encoding_is_hex = form.cleaned_data['encoding_is_hex']
+            coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
             results = embed_data(
                     to_embed=data_to_embed,
                     api_key=BLOCKCYPHER_API_KEY,
                     data_is_hex=encoding_is_hex,
-                    coin_symbol=coin_symbol,
+                    coin_symbol=coin_symbol_to_use,
                     )
             if 'error' in results:
                 messages.warning(request, results.get('error'))
@@ -269,7 +267,7 @@ def embed_txdata(request, coin_symbol):
                 # import pprint; pprint.pprint(results, width=1)
                 tx_hash = results['hash']
                 kwargs = {
-                        'coin_symbol': coin_symbol,
+                        'coin_symbol': coin_symbol_to_use,
                         'tx_hash': tx_hash,
                         }
                 msg = _('Data succesfully embedded into TX <strong>%(tx_hash)s</strong>' % {
