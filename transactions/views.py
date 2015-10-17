@@ -289,6 +289,7 @@ def embed_txdata(request, coin_symbol):
     return {
             'coin_symbol': coin_symbol,
             'form': form,
+            'is_embed_page': True,  # template hack
             }
 
 

@@ -48,6 +48,18 @@
         to be included quickly in a block.
       </li>
       <li>
+        <a href="{% url 'embed_txdata' 'btc' %}">Embed Data in the Blockchain</a>
+        -
+        Embed a hash or (short) string of text into the blockchain.
+        Here are examples of this embedded text from
+        <a href="{% url 'transaction_overview' 'btc' '7166f3aa854ebee1b1df49b3d67cf1dccd601c8f8cadac503be6f92dec3c77c5' %}">Factom</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'd82f637798d24097a1f7412414b0f0be6ddb7d756a0c7daf4b1814f73b2c4717' %}">BlockchainID</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'e2e133dbdd4ead57091b663fb96eda8eab7a383c40a0320e353d583d44c8a834' %}">Open Assets</a>,
+        <a href="{% url 'transaction_overview' 'btc' '1f9d3f2ced0d7a848f57c11effad8c66df816ce3d1ed2245739f8677a9ce029f' %}">Colu</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'c535d45f6a268e19e53a77cf00e769a0b9564f2295534b4f6925ac4b13eebf40' %}">CoinSpark</a>, &
+        <a href="{% url 'transaction_overview' 'btc' 'b43c517dc2f10317651aa6047446447da63611abf109e1b44d829cfd73bbbd9d' %}">BlockCypher</a>.
+      </li>
+      <li>
         <a href="{% url 'widgets_overview' 'btc' '1BTCorgHwCg6u2YSAWKgS17qUad6kHmtQW' %}">Embeddable Widgets</a>
         -
         Copy-paste a short HTML snippet and embed blockchain info into your website.
@@ -59,7 +71,7 @@
         Great for testing.
       </li>
       <li>
-        <a href="{% url 'latest_block' 'btc' %}">Fast Live Streaming Transactions</a>
+        <a href="{% url 'latest_unconfirmed_tx' 'btc' %}">Fastest Most Recent Transactions</a>
         -
         See transactions long before they appear in other block explorers.
       </li>
