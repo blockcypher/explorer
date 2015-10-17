@@ -230,8 +230,8 @@
             Check out our
             <a href="https://accounts.blockcypher.com/blockcypher-faucet{% if address %}?a={{ address }}{% endif %}">Blockcypher Faucet</a>
             {% if not is_embed_page %}
-            or
-            <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
+              or
+              <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
             {% endif %}
           </p>
         </div>
