@@ -48,7 +48,8 @@ def txn_outputs_to_data_dict(txn_outputs):
     https://github.com/blockcypher/explorer/issues/150#issuecomment-143899714
     '''
     for txn_output in txn_outputs:
-        if txn_output.get('data_hex'):
-            return {'data_hex': txn_output.get('data_hex'), 'data_string': None}
-        if txn_output.get('data_string'):
-            return {'data_hex': None, 'data_string': txn_output.get('data_string')}
+        if txn_output.get('data_hex') or txn_output.get('data_string'):
+            return {
+                    'data_hex': txn_output.get('data_hex'),
+                    'data_string': txn_output.get('data_string'),
+                    }

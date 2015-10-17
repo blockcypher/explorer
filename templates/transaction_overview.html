@@ -122,17 +122,33 @@
           <div class="alert alert-info" role="alert">
             <i class="fa fa-exclamation-triangle"></i>
             <strong>
-              {{ transaction.data_protocol }} transaction
+              {% if transaction.data_protocol == 'unknown' %}
+                Data Embedded in Transaction with Unknown Protocol
+              {% elif transaction.data_protocol == 'blockchainid' %}
+                BlockchainID Transaction
+              {% elif transaction.data_protocol == 'openassets' %}
+                Open Assets Transaction
+              {% elif transaction.data_protocol == 'factom' %}
+                Factom Transaction
+              {% elif transaction.data_protocol == 'colu' %}
+                Colu Transaction
+              {% elif transaction.data_protocol == 'coinspark' %}
+                CoinSpark Transaction
+              {% else %}
+                {# Catch all in case more are added #}
+                {{ transaction.data_protocol }} transaction
+              {% endif %}
             </strong>
             (<a href="http://dev.blockcypher.com/#tx">more</a>)
             <br />
             <p>
             {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
               {% if data_dict.data_hex or data_dict.data_string %}
+                {% if data_dict.data_string %}
+                  <strong>String</strong>: {{ data_dict.data_string }} <br />
+                {% endif %}
                 {% if data_dict.data_hex %}
                   <strong>Hex</strong>: {{ data_dict.data_hex }}
-                {% elif data_dict.data_string %}
-                  <strong>String</strong>: {{ data_dict.data_hex }}
                 {% endif %}
               {% endif %}
             {% endwith %}
