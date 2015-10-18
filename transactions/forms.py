@@ -65,17 +65,17 @@ class EmbedDataForm(forms.Form):
 
     def clean_data_to_embed(self):
         data_to_embed = self.cleaned_data['data_to_embed'].strip()
-        if False:
-            # FIXME
-            err_msg = _('Please enter a valid transaction hex')
+        if not data_to_embed:
+            err_msg = _('Data to embed cannot be blank')
             raise forms.ValidationError(err_msg)
         return data_to_embed
 
     def clean(self):
         encoding_is_hex = self.cleaned_data.get('encoding_is_hex')
-        if encoding_is_hex is None:
-            return None
         data_to_embed = self.cleaned_data.get('data_to_embed')
+
+        if not data_to_embed:
+            return self.cleaned_data
 
         if encoding_is_hex:
             if not uses_only_hash_chars(data_to_embed):
