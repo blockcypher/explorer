@@ -8,7 +8,7 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_block_details, get_latest_block_height
+from blockcypher.api import get_block_details, get_latest_block_height, get_block_overview
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
 from utils import get_max_pages
@@ -65,6 +65,50 @@ def block_overview(request, coin_symbol, block_representation):
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=block_details['n_tx'], items_per_page=TXNS_PER_PAGE),
             }
+
+
+def block_ordered_tx(request, coin_symbol, block_num, tx_num):
+
+    block_overview = get_block_overview(
+            block_representation=block_num,
+            coin_symbol=coin_symbol,
+            txn_limit=1,
+            txn_offset=int(tx_num)-1,
+            api_key=BLOCKCYPHER_API_KEY,
+            )
+    txids = block_overview.get('txids')
+
+    if txids:
+        tx_hash = txids[0]
+        msg = _('This is transaction <strong>%(tx_num)s</strong> in block <strong>%(block_num)s</strong> (<a href="%(permalink)s">permalink</a>).' % {
+            'tx_num': tx_num,
+            'block_num': block_num,
+            'permalink': reverse('block_ordered_tx', kwargs={
+                'coin_symbol': coin_symbol,
+                'block_num': block_num,
+                'tx_num': tx_num,
+                }),
+            })
+        messages.info(request, msg, extra_tags='safe')
+
+        kwargs = {
+                'coin_symbol': coin_symbol,
+                'tx_hash': tx_hash,
+                }
+        return HttpResponseRedirect(reverse('transaction_overview', kwargs=kwargs))
+
+    else:
+        msg = _('Sorry, block <strong>%(block_num)s</strong> only has <strong>%(n_tx)s</strong> transactions' % {
+            'block_num': block_num,
+            'n_tx': block_overview['n_tx'],
+            })
+        messages.warning(request, msg, extra_tags='safe')
+
+        kwargs = {
+                'coin_symbol': coin_symbol,
+                'block_representation': block_num,
+                }
+        return HttpResponseRedirect(reverse('block_overview', kwargs=kwargs))
 
 
 @assert_valid_coin_symbol

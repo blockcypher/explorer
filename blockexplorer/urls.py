@@ -62,6 +62,7 @@ urlpatterns = patterns('',
     url(r'^(?P<coin_symbol>[-\w]+)/latest-block/$', 'blocks.views.latest_block', name='latest_block'),
     url(r'^latest-unconfirmed-tx/$', 'transactions.views.latest_unconfirmed_tx_forwarding', name='latest_unconfirmed_tx_forwarding'),
     url(r'^(?P<coin_symbol>[-\w]+)/latest-unconfirmed-tx/$', 'transactions.views.latest_unconfirmed_tx', name='latest_unconfirmed_tx'),
+    url(r'^(?P<coin_symbol>[-\w]+)/block/(?P<block_num>[\d]+)/(?P<tx_num>[\d]+)/$', 'blocks.views.block_ordered_tx', name='block_ordered_tx'),
 
     # So broad it must be last
     url(r'^(?P<coin_symbol>[-\w]+)/$', 'homepage.views.coin_overview', name='coin_overview'),
