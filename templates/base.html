@@ -79,7 +79,7 @@
                       <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                     </ul>
                   </div>
-                  <input name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
+                  <input autofocus name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
                   <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
                   </span>
@@ -192,52 +192,51 @@
         {% include "partials/messages.html" %}
     {% endif %}
 
-      {# Begin page content #}
-      {% block content %}
-      {% endblock content %}
+    {# page content here #}
+    {% block content %}{% endblock content %}
 
     {% if not is_home %}
-    <div class ="container">
-      <div class="row">
-      <div class="col-md-1 col-md-offset-10">
-        <form class="form-horizontal" action="{% url 'set_units' %}" method="post">
-          {% csrf_token %}
-          {% load crispy_forms_tags %}
-          {{ tcp__unit_choice_form|crispy }}
-        </form>
+      <div class ="container">
+        <div class="row">
+          <div class="col-md-1 col-md-offset-10">
+            <form class="form-horizontal" action="{% url 'set_units' %}" method="post">
+              {% csrf_token %}
+              {% load crispy_forms_tags %}
+              {{ tcp__unit_choice_form|crispy }}
+            </form>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
     {% endif %}
 
-      {% if coin_symbol == 'btc' and not is_embed_page %}
-        <div class="container">
-          <p>
-            You can also
-            <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
-          </p>
-        </div>
-      {% elif coin_symbol == 'btc-testnet' %}
-        <div class="container">
-          <p>
-            Check out our
-            <a href="https://accounts.blockcypher.com/testnet-faucet{% if address %}?a={{ address }}{% endif %}">Free Bitcoin Testnet Faucet</a>.
-          </p>
-        </div>
-      {% elif coin_symbol == 'bcy' %}
-        <div class="container">
-          <p>
-            Check out our
-            <a href="https://accounts.blockcypher.com/blockcypher-faucet{% if address %}?a={{ address }}{% endif %}">Blockcypher Faucet</a>
-            {% if not is_embed_page %}
-              or
-              <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
-            {% endif %}
-          </p>
-        </div>
-      {% endif %}
-
+    {% if coin_symbol == 'btc' and not is_embed_page %}
+      <div class="container">
+        <p>
+          You can also
+          <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
+        </p>
       </div>
+    {% elif coin_symbol == 'btc-testnet' %}
+      <div class="container">
+        <p>
+          Check out our
+          <a href="https://accounts.blockcypher.com/testnet-faucet{% if address %}?a={{ address }}{% endif %}">Free Bitcoin Testnet Faucet</a>.
+        </p>
+      </div>
+    {% elif coin_symbol == 'bcy' %}
+      <div class="container">
+        <p>
+          Check out our
+          <a href="https://accounts.blockcypher.com/blockcypher-faucet{% if address %}?a={{ address }}{% endif %}">Blockcypher Faucet</a>
+          {% if not is_embed_page %}
+            or
+            <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
+
+    </div>
 
     {# Footer #}
 
