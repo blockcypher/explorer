@@ -29,7 +29,7 @@ def scale_confidence(confidence):
     assert confidence <= 1
 
     confidence_scaled = min(1, max(0, confidence-.05))
-    #confidence_scaled = confidence_scaled**2  # arbitrary fudge factor
+    # confidence_scaled = confidence_scaled**2  # arbitrary fudge factor
     return confidence_scaled * 100
 
 
@@ -208,7 +208,7 @@ def decode_tx(request, coin_symbol):
     '''
     initial = {'coin_symbol': coin_symbol}
     form = RawTXForm(initial=initial)
-    tx_in_json_str = ''
+    tx_in_json_str, tx_uri, tx_hex = '', '', ''
     if request.method == 'POST':
         form = RawTXForm(data=request.POST)
         if form.is_valid():
@@ -217,8 +217,24 @@ def decode_tx(request, coin_symbol):
             coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
             tx_in_json = decodetx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use)
-            tx_in_json_str = json.dumps(tx_in_json, indent=4)
-            # print(tx_in_json_str)
+            # import pprint; pprint.pprint(tx_in_json, width=1)
+            tx_in_json_str = json.dumps(tx_in_json, indent=4, sort_keys=True)
+
+            tx_hash = tx_in_json.get('hash')
+            if tx_hash and 'error' not in tx_in_json:
+                # check for existing TX in blockchain
+                transaction_details = get_transaction_details(
+                        tx_hash=tx_hash,
+                        coin_symbol=coin_symbol_to_use,
+                        limit=1,
+                        api_key=BLOCKCYPHER_API_KEY,
+                        )
+                if 'error' not in transaction_details:
+                    kwargs = {
+                            'coin_symbol': coin_symbol_to_use,
+                            'tx_hash': tx_hash,
+                            }
+                    tx_uri = reverse('transaction_overview', kwargs=kwargs)
 
     elif request.method == 'GET':
         # Preseed tx hex if passed through GET string
@@ -230,6 +246,8 @@ def decode_tx(request, coin_symbol):
             'coin_symbol': coin_symbol,
             'form': form,
             'tx_in_json_str': tx_in_json_str,
+            'tx_uri': tx_uri,
+            'tx_hex': tx_hex,
             }
 
 
