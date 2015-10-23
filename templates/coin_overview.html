@@ -66,7 +66,7 @@
     <div class="table-responsive">
       <table class="table">
         <tr>
-          <th>High Priority <small>(1-2 blocks)<small></th>
+          <th>High Priority <small>(1-2 blocks)</small></th>
           <th>Medium Priority <small>(3-6 blocks)</small></th>
           <th>Low Priority <small>(7+ blocks)</small></th>
         </tr>
@@ -150,7 +150,12 @@
             <th>Time</th>
             <th>Miner Preference</th>
           </tr>
-          <tr class="new-tx" style="display;none"></tr>
+          <tr class="new-tx" style="display;none">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
           {% for recent_tx in recent_txs %}
             <tr class="new-tx">
               <td>
@@ -161,7 +166,7 @@
               </td>
               <td>
                 {# always in BTC/BCY/LTC/DOGE because JS streaming in new transactions will be and don't want to mix units #}
-                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}</td>
+                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
