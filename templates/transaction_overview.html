@@ -268,6 +268,12 @@
       </div>
     </div>
 
+    <div class="col-md-12">
+      <h3>Details</h3>
+    </div>
+
+    {% include "partials/tx_hash.html" %}
+
     {% else %}
       <div class="section">
         <div class="container">
@@ -277,26 +283,6 @@
           </h3>
         </div>
       </div>
-    {% endif %}
-
-  </div>
-</div>
-
-
-<div class="section">
-  <div class="container">
-    {% if tx_hash %}
-      <div class="col-md-12">
-        <h3>Details</h3>
-      </div>
-
-    {% include "partials/tx_hash.html" %}
-
-    {% else %}
-      <p>
-        Transaction not found.
-        Are you sure that's a valid transaction hash?
-      </p>
     {% endif %}
 
   </div>
