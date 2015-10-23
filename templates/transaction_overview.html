@@ -45,41 +45,41 @@
 
       {% if transaction.data_protocol %}
         <div id="dp-section" class="row">
-            <div class="alert alert-info" role="alert">
-              <i class="fa fa-exclamation-triangle"></i>
-              <strong>
-                {% if transaction.data_protocol == 'unknown' %}
-                  Data Embedded in Transaction with Unknown Protocol
-                {% elif transaction.data_protocol == 'blockchainid' %}
-                  BlockchainID Transaction
-                {% elif transaction.data_protocol == 'openassets' %}
-                  Open Assets Transaction
-                {% elif transaction.data_protocol == 'factom' %}
-                  Factom Transaction
-                {% elif transaction.data_protocol == 'colu' %}
-                  Colu Transaction
-                {% elif transaction.data_protocol == 'coinspark' %}
-                  CoinSpark Transaction
-                {% else %}
-                  {# Catch all in case more are added #}
-                  {{ transaction.data_protocol }} transaction
+          <div class="alert alert-info" role="alert">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong>
+              {% if transaction.data_protocol == 'unknown' %}
+                Data Embedded in Transaction with Unknown Protocol
+              {% elif transaction.data_protocol == 'blockchainid' %}
+                BlockchainID Transaction
+              {% elif transaction.data_protocol == 'openassets' %}
+                Open Assets Transaction
+              {% elif transaction.data_protocol == 'factom' %}
+                Factom Transaction
+              {% elif transaction.data_protocol == 'colu' %}
+                Colu Transaction
+              {% elif transaction.data_protocol == 'coinspark' %}
+                CoinSpark Transaction
+              {% else %}
+                {# Catch all in case more are added #}
+                {{ transaction.data_protocol }} transaction
+              {% endif %}
+            </strong>
+            (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
+            <br />
+            <p>
+            {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
+              {% if data_dict.data_hex or data_dict.data_string %}
+                {% if data_dict.data_string %}
+                  <strong>String</strong>: {{ data_dict.data_string }} <br />
                 {% endif %}
-              </strong>
-              (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
-              <br />
-              <p>
-              {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
-                {% if data_dict.data_hex or data_dict.data_string %}
-                  {% if data_dict.data_string %}
-                    <strong>String</strong>: {{ data_dict.data_string }} <br />
-                  {% endif %}
-                  {% if data_dict.data_hex %}
-                    <strong>Hex</strong>: {{ data_dict.data_hex }}
-                  {% endif %}
+                {% if data_dict.data_hex %}
+                  <strong>Hex</strong>: {{ data_dict.data_hex }}
                 {% endif %}
-              {% endwith %}
-              </p>
-            </div>
+              {% endif %}
+            {% endwith %}
+            </p>
+          </div>
         </div>
       {% endif %}
 
@@ -150,14 +150,13 @@
           </li>
         </ul>
         <div class="clearfix"></div>
-        </div>
       </div>
-    </div>
 
     <div class="section">
       <div class="container">
 
         <div class="row">
+
           <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
             <strong>Confidence</strong>
             <button id="confidence-popover" type='button' class='btn-link'>
@@ -188,75 +187,84 @@
         {% else %}
           <div class="col-md-6">
         {% endif %}
-            <div class="table-responsive">
-              <table class="table">
-                {% if transaction.block_hash %}
-                  <tr>
-                    <th>Block Height</th>
-                    <td>
-                      <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Block Hash</th>
-                    <td>
-                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
-                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
-                    </td>
-                  </tr>
-                {% endif %}
-
+        <div class="table-responsive">
+          <table class="table">
+            {% if transaction.block_hash %}
+              <tr>
+                <th>Block Hash</th>
+                <td>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
+                </td>
+              </tr>
+              <tr>
+                <th>Block Height</th>
+                <td>
+                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
+                </td>
+              </tr>
+              {% if transaction.block_index %}
+              {# hack, this should always exist but doesn't appear to at least in the case of coinbase transactions #}
                 <tr>
-                  <th>TX Hex</th>
+                  <th>Transaction Index</th>
                   <td>
-                    <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
+                    {{ transaction.block_index|intcomma }}
+                    (<a href="{% url 'block_ordered_tx' coin_symbol transaction.block_height transaction.block_index %}">permalink</a>)
                   </td>
                 </tr>
+              {% endif %}
+            {% endif %}
 
-                {% if is_coinbase_tx and coinbase_msg %}
-                  <tr>
-                    <th>Coinbase Message:</th>
-                    <td class="wrapit">{{ coinbase_msg }}</td>
-                  </tr>
-                {% endif %}
+            <tr>
+              <th>TX Hex</th>
+              <td>
+                <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
+              </td>
+            </tr>
 
-                <tr>
-                  <th>Size</th>
-                  <td>{{ transaction.size }} bytes</td>
-                </tr>
+            {% if is_coinbase_tx and coinbase_msg %}
+              <tr>
+                <th>Coinbase Message:</th>
+                <td class="wrapit">{{ coinbase_msg }}</td>
+              </tr>
+            {% endif %}
 
-                <tr>
-                  <th>Lock Time</th>
-                  <td>{{ transaction.lock_time }}</td>
-                </tr>
+            <tr>
+              <th>Size</th>
+              <td>{{ transaction.size }} bytes</td>
+            </tr>
 
-                <tr>
-                  <th>Version</th>
-                  <td>{{ transaction.ver }}</td>
-                </tr>
+            <tr>
+              <th>Lock Time</th>
+              <td>{{ transaction.lock_time }}</td>
+            </tr>
 
-                {% if transaction.relayed_by %}
-                  <tr>
-                    <th>Relayed By:</th>
-                    <td>{{ transaction.relayed_by }}</td>
-                  </tr>
-                {% endif %}
-                <tr>
-                  <td colspan="2" class="text-center">
-                    <a href="{{ api_url }}" class="btn btn-default">
-                      <i class="fa fa-code"></i> 
-                      API Call
-                    </a>
-                    <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                      <i class="fa fa-external-link"></i> 
-                      API Docs
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+            <tr>
+              <th>Version</th>
+              <td>{{ transaction.ver }}</td>
+            </tr>
+
+            {% if transaction.relayed_by %}
+              <tr>
+                <th>Relayed By:</th>
+                <td>{{ transaction.relayed_by }}</td>
+              </tr>
+            {% endif %}
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{{ api_url }}" class="btn btn-default">
+                  <i class="fa fa-code"></i> 
+                  API Call
+                </a>
+                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                  <i class="fa fa-external-link"></i> 
+                  API Docs
+                </a>
+              </td>
+            </tr>
+          </table>
         </div>
+
       </div>
     </div>
 
@@ -270,6 +278,10 @@
         </div>
       </div>
     {% endif %}
+
+  </div>
+</div>
+
 
 <div class="section">
   <div class="container">
@@ -426,20 +438,24 @@
       return html;
     }
 
-      //init popover
-      $('[data-toggle="popover"]').popover({'html': true});
+    //init popover
+    $('[data-toggle="popover"]').popover({'html': true});
 
-      //init confidence popover
-      $('#confidence-popover').popover({
-        'html':true,
-        'placement':'top',
-        'trigger': 'click',
-        'content': function () {
-          return popoverContent();
-        }
-      })
-
+    //init confidence popover
+    $('#confidence-popover').popover({
+      'html':true,
+      'placement':'top',
+      'trigger': 'click',
+      'content': function () {
+        return popoverContent();
+      }
     })
+
+    if (window.location.hash == '#show-advanced') {
+      $('#advanced-details').collapse('show');
+    }
+
+  })
 
   </script>
 {% endblock extra_js %}

@@ -73,7 +73,7 @@ def block_ordered_tx(request, coin_symbol, block_num, tx_num):
             block_representation=block_num,
             coin_symbol=coin_symbol,
             txn_limit=1,
-            txn_offset=int(tx_num)-1,
+            txn_offset=int(tx_num),
             api_key=BLOCKCYPHER_API_KEY,
             )
     txids = block_overview.get('txids')
@@ -95,7 +95,10 @@ def block_ordered_tx(request, coin_symbol, block_num, tx_num):
                 'coin_symbol': coin_symbol,
                 'tx_hash': tx_hash,
                 }
-        return HttpResponseRedirect(reverse('transaction_overview', kwargs=kwargs))
+
+        redir_uri = reverse('transaction_overview', kwargs=kwargs) + '#show-advanced'
+
+        return HttpResponseRedirect(redir_uri)
 
     else:
         msg = _('Sorry, block <strong>%(block_num)s</strong> only has <strong>%(n_tx)s</strong> transactions' % {
