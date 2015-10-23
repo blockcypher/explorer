@@ -28,7 +28,8 @@ def scale_confidence(confidence):
 
     assert confidence <= 1
 
-    confidence_scaled = confidence**10  # arbitrary fudge factor
+    confidence_scaled = min(1, max(0, confidence-.05))
+    #confidence_scaled = confidence_scaled**2  # arbitrary fudge factor
     return confidence_scaled * 100
 
 
