@@ -139,7 +139,6 @@
                 <a href="{% url 'user_login' %}">{% trans "Sign In" %}</a>
               </li>
             {% endif %}
-            </li>
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
                 {% get_current_language as LANGUAGE_CODE %}
@@ -236,6 +235,7 @@
       </div>
     {% endif %}
 
+    {# end main-container #}
     </div>
 
     {# Footer #}
