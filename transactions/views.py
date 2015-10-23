@@ -41,7 +41,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
         transaction_details = get_transaction_details(
                 tx_hash=tx_hash,
                 coin_symbol=coin_symbol,
-                limit=500,
+                limit=1000,
                 api_key=BLOCKCYPHER_API_KEY,
                 include_hex=True,
                 )
