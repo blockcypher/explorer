@@ -187,89 +187,91 @@
         {% else %}
           <div class="col-md-6">
         {% endif %}
-        <div class="table-responsive">
-          <table class="table">
-            {% if transaction.block_hash %}
-              <tr>
-                <th>Block Hash</th>
-                <td>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
-                </td>
-              </tr>
-              <tr>
-                <th>Block Height</th>
-                <td>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
-                </td>
-              </tr>
-              {% if transaction.block_index %}
-              {# hack, this should always exist but doesn't appear to at least in the case of coinbase transactions #}
+
+            <div class="table-responsive">
+              <table class="table">
+                {% if transaction.block_hash %}
+                  <tr>
+                    <th>Block Hash</th>
+                    <td>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Block Height</th>
+                    <td>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
+                    </td>
+                  </tr>
+                  {% if transaction.block_index %}
+                  {# hack, this should always exist but doesn't appear to at least in the case of coinbase transactions #}
+                    <tr>
+                      <th>Transaction Index</th>
+                      <td>
+                        {{ transaction.block_index|intcomma }}
+                        (<a href="{% url 'block_ordered_tx' coin_symbol transaction.block_height transaction.block_index %}">permalink</a>)
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endif %}
+
                 <tr>
-                  <th>Transaction Index</th>
+                  <th>TX Hex</th>
                   <td>
-                    {{ transaction.block_index|intcomma }}
-                    (<a href="{% url 'block_ordered_tx' coin_symbol transaction.block_height transaction.block_index %}">permalink</a>)
+                    <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
                   </td>
                 </tr>
-              {% endif %}
-            {% endif %}
 
-            <tr>
-              <th>TX Hex</th>
-              <td>
-                <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
-              </td>
-            </tr>
+                {% if is_coinbase_tx and coinbase_msg %}
+                  <tr>
+                    <th>Coinbase Message:</th>
+                    <td class="wrapit">{{ coinbase_msg }}</td>
+                  </tr>
+                {% endif %}
 
-            {% if is_coinbase_tx and coinbase_msg %}
-              <tr>
-                <th>Coinbase Message:</th>
-                <td class="wrapit">{{ coinbase_msg }}</td>
-              </tr>
-            {% endif %}
+                <tr>
+                  <th>Size</th>
+                  <td>{{ transaction.size }} bytes</td>
+                </tr>
 
-            <tr>
-              <th>Size</th>
-              <td>{{ transaction.size }} bytes</td>
-            </tr>
+                <tr>
+                  <th>Lock Time</th>
+                  <td>{{ transaction.lock_time }}</td>
+                </tr>
 
-            <tr>
-              <th>Lock Time</th>
-              <td>{{ transaction.lock_time }}</td>
-            </tr>
+                <tr>
+                  <th>Version</th>
+                  <td>{{ transaction.ver }}</td>
+                </tr>
 
-            <tr>
-              <th>Version</th>
-              <td>{{ transaction.ver }}</td>
-            </tr>
+                {% if transaction.relayed_by %}
+                  <tr>
+                    <th>Relayed By:</th>
+                    <td>{{ transaction.relayed_by }}</td>
+                  </tr>
+                {% endif %}
+                <tr>
+                  <td colspan="2" class="text-center">
+                    <a href="{{ api_url }}" class="btn btn-default">
+                      <i class="fa fa-code"></i> 
+                      API Call
+                    </a>
+                    <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                      <i class="fa fa-external-link"></i> 
+                      API Docs
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
 
-            {% if transaction.relayed_by %}
-              <tr>
-                <th>Relayed By:</th>
-                <td>{{ transaction.relayed_by }}</td>
-              </tr>
-            {% endif %}
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{{ api_url }}" class="btn btn-default">
-                  <i class="fa fa-code"></i> 
-                  API Call
-                </a>
-                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                  <i class="fa fa-external-link"></i> 
-                  API Docs
-                </a>
-              </td>
-            </tr>
-          </table>
-        {# transaction.block_hash starting div in if statement above#}
+          {# if statement div: #}
           </div>
-        {# end div #}
-        </div>
 
-      </div>
-    </div>
+        </div> {# row #}
+      </div> {# section #}
+    </div> {# container #}
 
     <div class="col-md-12">
       <h3>Details</h3>
@@ -288,8 +290,8 @@
       </div>
     {% endif %}
 
-  </div>
-</div>
+  </div> {# opening section #}
+</div> {# opening container #}
 
 {% endblock content %}
 
