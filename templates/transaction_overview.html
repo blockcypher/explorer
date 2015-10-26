@@ -415,41 +415,49 @@
 
       };
 
-    {% if transaction.confirmations == 0 and transaction.double_spend == False %}
-      poll_confidence()
-    {% endif %}
+      {% if transaction.confirmations == 0 and transaction.double_spend == False %}
+        poll_confidence()
+      {% endif %}
 
-    function popoverContent(){
-      var html = '';
-      html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
-              '<b>Double-Spend Detected:</b> ' +
-              '<span id="ds-detected">No</span>' +
-            '</span><br>' +
-            '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
-              '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
-              '</span><br />' +
-            '<span><a href="http://dev.blockcypher.com/#confidence-factor">How Calculated</a></span>';
-      return html;
-    }
-
-    //init popover
-    $('[data-toggle="popover"]').popover({'html': true});
-
-    //init confidence popover
-    $('#confidence-popover').popover({
-      'html':true,
-      'placement':'top',
-      'trigger': 'click',
-      'content': function () {
-        return popoverContent();
+      function popoverContent(){
+        var html = '';
+        html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
+                '<b>Double-Spend Detected:</b> ' +
+                '<span id="ds-detected">No</span>' +
+              '</span><br>' +
+              '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
+                '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
+                '</span><br />' +
+              '<span><a href="http://dev.blockcypher.com/#confidence-factor">How Calculated</a></span>';
+        return html;
       }
+
+      //init popover
+      $('[data-toggle="popover"]').popover({'html': true});
+
+      //init confidence popover
+      $('#confidence-popover').popover({
+        'html':true,
+        'placement':'top',
+        'trigger': 'click',
+        'content': function () {
+          return popoverContent();
+        }
+      })
+
+      if (window.location.hash == '#show-advanced') {
+        $('#advanced-details').collapse('show');
+      }
+
+      // Highlight an input or output by index num
+      if (window.location.hash.slice(1,13) == 'output-index') {
+        $(window.location.hash).attr('style', "background-color:#eee;")
+      }
+      if (window.location.hash.slice(1,8) == 'spentby') {
+        $(window.location.hash).attr('style', "background-color:#eee;")
+      }
+
     })
-
-    if (window.location.hash == '#show-advanced') {
-      $('#advanced-details').collapse('show');
-    }
-
-  })
 
   </script>
 {% endblock extra_js %}
