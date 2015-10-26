@@ -35,6 +35,7 @@ def block_overview(request, coin_symbol, block_representation):
                 block_representation=block_representation,
                 coin_symbol=coin_symbol,
                 txn_limit=TXNS_PER_PAGE,
+                in_out_limit=25,
                 txn_offset=(current_page-1)*TXNS_PER_PAGE,
                 api_key=BLOCKCYPHER_API_KEY,
                 )

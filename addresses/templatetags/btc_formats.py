@@ -1,6 +1,6 @@
 from django import template
 
-from blockcypher.utils import format_crypto_units
+from blockcypher.utils import format_crypto_units, estimate_satoshis_transacted
 from blockcypher.api import _get_websocket_url
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 
@@ -19,6 +19,11 @@ def satoshis_to_user_units_trimmed(input_satoshis, user_unit='btc', coin_symbol=
             safe_trimming=True,
             round_digits=round_digits,
             )
+
+
+@register.assignment_tag
+def estimate_satoshis_from_tx(txn_inputs, txn_outputs):
+    return estimate_satoshis_transacted(inputs=txn_inputs, outputs=txn_outputs)
 
 
 @register.filter(name='coin_symbol_to_display_name')

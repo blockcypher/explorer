@@ -1,5 +1,5 @@
 bitcoin==1.1.29
-blockcypher==1.0.40
+blockcypher==1.0.41
 dj-database-url==0.3.0
 dj-static==0.0.6
 Django==1.7.1

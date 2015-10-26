@@ -117,6 +117,7 @@
             <span class="dash-label">
               Confirmations
                 <button
+                  id='confs-hover'
                   type='button'
                   class='btn-link'
                   data-container='body'
@@ -124,7 +125,7 @@
                   data-placement='top'
                   data-html='true'
                   data-content='
-                        <span id="confs-popover">{{ transaction.confirmations|intcomma }}</span> confirmations.
+                        <strong>{{ transaction.confirmations|intcomma }}</strong> confirmations.
                         <br />
                         Anything over 6 confirmations is considered completed and irreversible.
                   '>
@@ -277,7 +278,9 @@
       <h3>Details</h3>
     </div>
 
-    {% include "partials/tx_hash.html" %}
+    {% with force_include_tx_amount=False %}
+      {% include "partials/tx_hash.html" %}
+    {% endwith %}
 
     {% else %}
       <div class="section">

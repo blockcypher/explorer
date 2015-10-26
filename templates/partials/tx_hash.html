@@ -70,3 +70,37 @@
 </div>
 
 <div class="clearfix"></div>
+
+{% estimate_satoshis_from_tx txn_inputs=transaction.inputs txn_outputs=transaction.outputs as estimated_satoshis_transacted %}
+{# https://docs.djangoproject.com/en/1.8/ref/templates/builtins/#boolean-operators #}
+{% if estimated_satoshis_transacted != transaction.total and transaction.inputs|length == transaction.vin_sz and transaction.outputs|length == transaction.vout_sz %}
+  <div>
+    <h4 class="text-center">
+      <strong>
+        Estimated Value Sent
+      </strong>:
+      {% satoshis_to_user_units_trimmed estimated_satoshis_transacted tcp__user_units coin_symbol %}
+
+      (<a data-toggle="collapse" href="#estimateReadMe" aria-expanded="false" aria-controls="collapseExample">more</a>)
+    </h4>
+
+    <div class="collapse" id="estimateReadMe">
+      <div class="{% if force_include_tx_amount %}container{% else %}well{% endif %}">
+          "Estimated Value Sent" excludes known change addresses.
+          If in a transaction address A sends 1 BTC to address B and also 1 BTC back to address A as change, then only 1 BTC is estimated to have been sent.
+          Proper use of a new change address for each transaction (like all HD wallet implementations) obfuscate this feature, which is great for privacy.
+          The best practice is to never re-use a change address.
+      </div>
+    </div>
+
+  </div>
+{% elif force_include_tx_amount %}
+  <div>
+    <h4 class="text-center">
+      <strong>
+        Value Transacted
+      </strong>:
+      {% satoshis_to_user_units_trimmed transaction.total tcp__user_units coin_symbol %}
+    </h4>
+  </div>
+{% endif %}

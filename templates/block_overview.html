@@ -167,7 +167,9 @@
         {% endif %}
       </h4>
 
-      {% include "partials/tx_hash.html" %}
+      {% with force_include_tx_amount=True %}
+        {% include "partials/tx_hash.html" %}
+      {% endwith %}
 
     </div>
   {% endfor %}

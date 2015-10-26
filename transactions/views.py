@@ -38,10 +38,11 @@ def scale_confidence(confidence):
 def transaction_overview(request, coin_symbol, tx_hash):
 
     try:
+        TX_LIMIT = 10000
         transaction_details = get_transaction_details(
                 tx_hash=tx_hash,
                 coin_symbol=coin_symbol,
-                limit=1000,
+                limit=TX_LIMIT,
                 api_key=BLOCKCYPHER_API_KEY,
                 include_hex=True,
                 )
@@ -96,10 +97,11 @@ def transaction_overview(request, coin_symbol, tx_hash):
         fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
         coinbase_msg = str(unhexlify(inputs[0]['script']))
 
-    api_url = 'https://api.blockcypher.com/v1/%s/%s/txs/%s?includeHex=true' % (
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/txs/%s?limit=%s&includeHex=true' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             tx_hash,
+            TX_LIMIT,
             )
 
     return {
