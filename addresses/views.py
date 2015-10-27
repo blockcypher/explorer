@@ -292,6 +292,7 @@ def subscribe_address(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 
@@ -554,6 +555,7 @@ def search_widgets(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 
@@ -792,6 +794,7 @@ def setup_address_forwarding(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 

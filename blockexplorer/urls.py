@@ -36,28 +36,31 @@ urlpatterns = patterns('',
     url(r'^(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/$', 'addresses.views.address_overview', name='address_overview'),
     url(r'^(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/(?P<wallet_name>[-\w\.]+)/$', 'addresses.views.address_overview', name='address_overview'),
     url(r'^(?P<coin_symbol>[-\w]+)/tx/(?P<tx_hash>[-\w]+)/$', 'transactions.views.transaction_overview', name='transaction_overview'),
-    url(r'^(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', 'transactions.views.poll_confidence', name='poll_confidence'),
     url(r'^(?P<coin_symbol>[-\w]+)/block/(?P<block_representation>[-\w]+)/$', 'blocks.views.block_overview', name='block_overview'),
-    # http://stackoverflow.com/a/20318971/1754586
     url(r'^(?P<coin_symbol>[-\w]+)/xpub/(?P<pubkey>[-\w]+)/$', 'wallets.views.wallet_overview', name='wallet_overview_default'),
     url(r'^(?P<coin_symbol>[-\w]+)/pushtx/$', 'transactions.views.push_tx', name='push_tx'),
     url(r'^(?P<coin_symbol>[-\w]+)/decodetx/$', 'transactions.views.decode_tx', name='decode_tx'),
     url(r'^(?P<coin_symbol>[-\w]+)/embed-data/$', 'transactions.views.embed_txdata', name='embed_txdata'),
+    url(r'^(?P<coin_symbol>[-\w]+)/metadata/$', 'metadata.views.add_metadata', name='add_metadata'),
     url(r'^highlights/$', 'homepage.views.highlights', name='highlights'),
+    # AJAX calls
+    url(r'^(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', 'transactions.views.poll_confidence', name='poll_confidence'),
+    url(r'^metadata/(?P<coin_symbol>[-\w]+)/(?P<identifier_type>[\w]+)/(?P<identifier>[-\w]+)/$', 'metadata.views.poll_metadata', name='poll_metadata'),
 
     # Widget
     url(r'^widgets/(?P<coin_symbol>[-\w]+)/?$', 'addresses.views.search_widgets', name='search_widgets'),
     url(r'^show-widgets/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/$', 'addresses.views.widgets_overview', name='widgets_overview'),
     url(r'^widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/balance/$', 'addresses.views.render_balance_widget', name='render_balance_widget'),
     url(r'^widget/(?P<coin_symbol>[-\w]+)/(?P<address>[-\w]+)/received/$', 'addresses.views.render_received_widget', name='render_received_widget'),
-    url(r'^widgets/$', 'addresses.views.widget_forwarding', name='widget_forwarding'),
 
     # Forwarding Pages (URL hacks)
+    url(r'^widgets/$', 'addresses.views.widget_forwarding', name='widget_forwarding'),
     url(r'^forwarding/$', 'addresses.views.forward_forwarding', name='forward_forwarding'),  # awesome name
     url(r'^subscribe/$', 'addresses.views.subscribe_forwarding', name='subscribe_forwarding'),
     url(r'^pushtx/$', 'transactions.views.pushtx_forwarding', name='pushtx_forwarding'),
     url(r'^decodetx/$', 'transactions.views.decodetx_forwarding', name='decodetx_forwarding'),
     url(r'^embed-data/$', 'transactions.views.embed_txdata_forwarding', name='embed_txdata_forwarding'),
+    url(r'^metadata/$', 'metadata.views.metadata_forwarding', name='metadata_forwarding'),
     url(r'^latest-block/$', 'blocks.views.latest_block_forwarding', name='latest_block_forwarding'),
     url(r'^(?P<coin_symbol>[-\w]+)/latest-block/$', 'blocks.views.latest_block', name='latest_block'),
     url(r'^latest-unconfirmed-tx/$', 'transactions.views.latest_unconfirmed_tx_forwarding', name='latest_unconfirmed_tx_forwarding'),

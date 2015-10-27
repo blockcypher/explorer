@@ -79,7 +79,7 @@
                       <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                     </ul>
                   </div>
-                  <input autofocus name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
+                  <input {% if not is_input_page %}autofocus="autofocus"{% endif %} name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
                   <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary" title="Search"><i class="fa fa-search"></i></button>
                   </span>

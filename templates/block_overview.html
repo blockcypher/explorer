@@ -205,6 +205,10 @@
   <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
 {% endif %}
 
+{% with upload_string=block_details.hash us_type='block' %}
+  {% include "partials/metadata.html" %}
+{% endwith %}
+
 </div>
 
 {% endblock content %}
@@ -217,6 +221,8 @@
     $(document).ready(function(){
 
       $("time.timeago").timeago();
+
+      fetch_metadata('{{ coin_symbol }}', 'block', '{{ block_details.hash }}');
 
     })
 

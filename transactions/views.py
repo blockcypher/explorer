@@ -200,6 +200,7 @@ def push_tx(request, coin_symbol):
     return {
             'coin_symbol': coin_symbol,
             'form': form,
+            'is_input_page': True,
             }
 
 
@@ -250,6 +251,7 @@ def decode_tx(request, coin_symbol):
             'tx_in_json_str': tx_in_json_str,
             'tx_uri': tx_uri,
             'tx_hex': tx_hex,
+            'is_input_page': True,
             }
 
 
@@ -311,6 +313,7 @@ def embed_txdata(request, coin_symbol):
             'coin_symbol': coin_symbol,
             'form': form,
             'is_embed_page': True,  # template hack
+            'is_input_page': True,
             }
 
 
