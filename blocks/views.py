@@ -8,8 +8,9 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from blockcypher.api import get_block_details, get_latest_block_height, get_block_overview
+from blockcypher.api import get_block_details, get_latest_block_height, get_block_overview, get_block_hash
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
+from blockcypher.utils import is_valid_hash
 
 from utils import get_max_pages
 
@@ -31,6 +32,20 @@ def block_overview(request, coin_symbol, block_representation):
     # Waiting on @matthieu's change to API first (currently throws 502)
 
     try:
+        if not is_valid_hash(block_representation):
+            # it's a block num, we want this as a hash
+            block_hash = get_block_hash(
+                    block_height=block_representation,
+                    coin_symbol=coin_symbol,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    )
+            kwargs = {
+                    'coin_symbol': coin_symbol,
+                    'block_representation': block_hash,
+                    }
+            redir_url = reverse('block_overview', kwargs=kwargs)
+            return HttpResponseRedirect(redir_url)
+
         block_details = get_block_details(
                 block_representation=block_representation,
                 coin_symbol=coin_symbol,
@@ -50,6 +65,7 @@ def block_overview(request, coin_symbol, block_representation):
     if 'error' in block_details:
         msg = _('Sorry, that block was not found')
         messages.warning(request, msg)
+        messages.warning(request, block_details['error'])
         return HttpResponseRedirect(reverse('home'))
 
     # Technically this is not the only API call used on this page
