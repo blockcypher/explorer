@@ -202,7 +202,13 @@
   </div>
 
 {% else %}
-  <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
+  <p>
+    {% if block_details.height == 1 %}
+      The genesis block has no transactions.
+    {% else %}
+      No transactions. Something seems off, that doesn't make any sense!
+    {% endif %}
+  </p>
 {% endif %}
 
 {% with upload_string=block_details.hash us_type='block' %}
