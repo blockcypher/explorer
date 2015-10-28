@@ -48,8 +48,8 @@ function fetch_metadata(coin_symbol, identifier_type, identifier) {
     url: '/metadata/' + coin_symbol + '/' + identifier_type + '/' + identifier + '/',
     success: function (data) {
       console.log('fetch_metadata API Call Success');
-      console.log('data:');
-      console.log(data);
+      // console.log('data:');
+      // console.log(data);
 
       var is_empty = true;
       for (var key in data.metadata) {
@@ -65,6 +65,10 @@ function fetch_metadata(coin_symbol, identifier_type, identifier) {
       }
 
       $('#metadata-section').fadeIn()
+
+      if (window.location.hash == '#metadata') {
+        $('html,body').animate({scrollTop: $("#metadata").offset().top},'slow');
+      }
 
     },
     error: function(data) {
