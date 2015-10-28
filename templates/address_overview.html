@@ -391,6 +391,10 @@
 
       {% endif %}
 
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
+      }
+
       fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
 
     })

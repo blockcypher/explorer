@@ -113,7 +113,7 @@ def block_ordered_tx(request, coin_symbol, block_num, tx_num):
                 'tx_hash': tx_hash,
                 }
 
-        redir_uri = reverse('transaction_overview', kwargs=kwargs) + '#show-advanced'
+        redir_uri = reverse('transaction_overview', kwargs=kwargs) + '#advanced-details'
 
         return HttpResponseRedirect(redir_uri)
 

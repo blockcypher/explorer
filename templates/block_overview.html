@@ -222,6 +222,10 @@
 
       $("time.timeago").timeago();
 
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
+      }
+
       fetch_metadata('{{ coin_symbol }}', 'block', '{{ block_details.hash }}');
 
     })
