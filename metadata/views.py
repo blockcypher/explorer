@@ -110,7 +110,7 @@ def add_metadata(request, coin_symbol):
             # import pprint; pprint.pprint(results, width=1)
 
             if results is True:
-                msg = _('<strong>%(key)s</strong> -> <strong>%(value)s</strong> succesfully uploaded to %(upload_string)s' % {
+                msg = _('<pre>%(key)s</pre>-><pre>%(value)s</pre> succesfully uploaded to %(upload_string)s (<a href="#metadata">scroll down</a>)' % {
                     'key': metadata_key,
                     'value': metadata_value,
                     'upload_string': upload_string,
