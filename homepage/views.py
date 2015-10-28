@@ -117,7 +117,8 @@ def home(request):
 
     return {
         'is_home': True,
-        'form': form
+        'form': form,
+        'is_input_page': True,
     }
 
 

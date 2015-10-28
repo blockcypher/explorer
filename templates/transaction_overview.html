@@ -23,135 +23,134 @@
 
 <div class="section">
   <div class="container">
-    {% if tx_hash %}
 
-      {% if transaction.double_spend_tx %}
-        {% if transaction.confirmations < 6 %}
-          <div class="alert alert-danger" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            WARNING: This transaction has been double-spent by
-            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
-            be extremely careful when accepting this transaction!
-          </div>
-        {% else %}
-          <div class="alert alert-danger" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            WARNING: This transaction had an attempted double-spent by
-            <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
-            but was still confirmed.
-          </div>
-        {% endif %}
-      {% endif %}
-
-      {% if transaction.data_protocol %}
-        <div id="dp-section" class="row">
-          <div class="alert alert-info" role="alert">
-            <i class="fa fa-exclamation-triangle"></i>
-            <strong>
-              {% if transaction.data_protocol == 'unknown' %}
-                Data Embedded in Transaction with Unknown Protocol
-              {% elif transaction.data_protocol == 'blockchainid' %}
-                BlockchainID Transaction
-              {% elif transaction.data_protocol == 'openassets' %}
-                Open Assets Transaction
-              {% elif transaction.data_protocol == 'factom' %}
-                Factom Transaction
-              {% elif transaction.data_protocol == 'colu' %}
-                Colu Transaction
-              {% elif transaction.data_protocol == 'coinspark' %}
-                CoinSpark Transaction
-              {% else %}
-                {# Catch all in case more are added #}
-                {{ transaction.data_protocol }} transaction
-              {% endif %}
-            </strong>
-            (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
-            <br />
-            <p>
-            {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
-              {% if data_dict.data_hex or data_dict.data_string %}
-                {% if data_dict.data_string %}
-                  <strong>String</strong>: {{ data_dict.data_string }} <br />
-                {% endif %}
-                {% if data_dict.data_hex %}
-                  <strong>Hex</strong>: {{ data_dict.data_hex }}
-                {% endif %}
-              {% endif %}
-            {% endwith %}
-            </p>
-          </div>
+    {% if transaction.double_spend_tx %}
+      {% if transaction.confirmations < 6 %}
+        <div class="alert alert-danger" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          WARNING: This transaction has been double-spent by
+          <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+          be extremely careful when accepting this transaction!
+        </div>
+      {% else %}
+        <div class="alert alert-danger" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          WARNING: This transaction had an attempted double-spent by
+          <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+          but was still confirmed.
         </div>
       {% endif %}
+    {% endif %}
 
-      <div class="dash dash-4">
-        <ul>
-        {% if is_coinbase_tx %}
-          <li>
-            <span class="dash-label">Amount Transacted</span><br>
-            {% satoshis_to_user_units_trimmed total_satoshis_coinbase tcp__user_units coin_symbol %}
-          </li>
-          <li>
-            <span class="dash-label">Fees Collected</span><br>
-            {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase tcp__user_units coin_symbol %}
-          </li>
-        {% else %}
-          <li>
-            <span class="dash-label">Amount Transacted</span><br>
-            {% satoshis_to_user_units_trimmed total_satoshis tcp__user_units coin_symbol %}
-          </li>
-          <li>
-            <span class="dash-label">Fees</span><br>
-            {% satoshis_to_user_units_trimmed fee_in_satoshis tcp__user_units coin_symbol %}
-          </li>
-        {% endif %}
-          <li>
-            <span class="dash-label" title="{{ time_to_use|date:"r" }}">
-              Received
-            </span><br>
-            <i class="fa fa-clock-o"></i> 
-            <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
-              {{ time_to_use|date:'Y-m-d H:i' }} GMT
-            </time>
-          </li>
-          <li>
-            <span class="dash-label">
-              Confirmations
-                <button
-                  id='confs-hover'
-                  type='button'
-                  class='btn-link'
-                  data-container='body'
-                  data-toggle='popover'
-                  data-placement='top'
-                  data-html='true'
-                  data-content='
-                        <strong>{{ transaction.confirmations|intcomma }}</strong> confirmations.
-                        <br />
-                        Anything over 6 confirmations is considered completed and irreversible.
-                  '>
-                  <i class="fa fa-info-circle"></i>
-                </button>
-            </span><br>
-            {% if transaction.confirmations >= 6 %}
-              <span id="conf-section" class="confirmed">
-                <i class="fa fa-lock"></i> 
-                <span id="num-confs">6+</span>
-              </span>
-            {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
-              <span id="conf-section" class="pending">
-                <i class="fa fa-unlock"></i> 
-                <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
-              </span>
+    {% if transaction.data_protocol %}
+      <div id="dp-section" class="row">
+        <div class="alert alert-info" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          <strong>
+            {% if transaction.data_protocol == 'unknown' %}
+              Data Embedded in Transaction with Unknown Protocol
+            {% elif transaction.data_protocol == 'blockchainid' %}
+              BlockchainID Transaction
+            {% elif transaction.data_protocol == 'openassets' %}
+              Open Assets Transaction
+            {% elif transaction.data_protocol == 'factom' %}
+              Factom Transaction
+            {% elif transaction.data_protocol == 'colu' %}
+              Colu Transaction
+            {% elif transaction.data_protocol == 'coinspark' %}
+              CoinSpark Transaction
             {% else %}
-              <span id="conf-section" class="unconfirmed">
-                <i class="fa fa-unlock"></i> 
-                <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
-              </span>
+              {# Catch all in case more are added #}
+              {{ transaction.data_protocol }} transaction
             {% endif %}
-          </li>
-        </ul>
-        <div class="clearfix"></div>
+          </strong>
+          (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
+          <br />
+          <p>
+          {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
+            {% if data_dict.data_hex or data_dict.data_string %}
+              {% if data_dict.data_string %}
+                <strong>String</strong>: {{ data_dict.data_string }} <br />
+              {% endif %}
+              {% if data_dict.data_hex %}
+                <strong>Hex</strong>: {{ data_dict.data_hex }}
+              {% endif %}
+            {% endif %}
+          {% endwith %}
+          </p>
+        </div>
       </div>
+    {% endif %}
+
+    <div class="dash dash-4">
+      <ul>
+      {% if is_coinbase_tx %}
+        <li>
+          <span class="dash-label">Amount Transacted</span><br>
+          {% satoshis_to_user_units_trimmed total_satoshis_coinbase tcp__user_units coin_symbol %}
+        </li>
+        <li>
+          <span class="dash-label">Fees Collected</span><br>
+          {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase tcp__user_units coin_symbol %}
+        </li>
+      {% else %}
+        <li>
+          <span class="dash-label">Amount Transacted</span><br>
+          {% satoshis_to_user_units_trimmed total_satoshis tcp__user_units coin_symbol %}
+        </li>
+        <li>
+          <span class="dash-label">Fees</span><br>
+          {% satoshis_to_user_units_trimmed fee_in_satoshis tcp__user_units coin_symbol %}
+        </li>
+      {% endif %}
+        <li>
+          <span class="dash-label" title="{{ time_to_use|date:"r" }}">
+            Received
+          </span><br>
+          <i class="fa fa-clock-o"></i> 
+          <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
+            {{ time_to_use|date:'Y-m-d H:i' }} GMT
+          </time>
+        </li>
+        <li>
+          <span class="dash-label">
+            Confirmations
+              <button
+                id='confs-hover'
+                type='button'
+                class='btn-link'
+                data-container='body'
+                data-toggle='popover'
+                data-placement='top'
+                data-html='true'
+                data-content='
+                      <strong>{{ transaction.confirmations|intcomma }}</strong> confirmations.
+                      <br />
+                      Anything over 6 confirmations is considered completed and irreversible.
+                '>
+                <i class="fa fa-info-circle"></i>
+              </button>
+          </span><br>
+          {% if transaction.confirmations >= 6 %}
+            <span id="conf-section" class="confirmed">
+              <i class="fa fa-lock"></i> 
+              <span id="num-confs">6+</span>
+            </span>
+          {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
+            <span id="conf-section" class="pending">
+              <i class="fa fa-unlock"></i> 
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
+            </span>
+          {% else %}
+            <span id="conf-section" class="unconfirmed">
+              <i class="fa fa-unlock"></i> 
+              <span id="num-confs">{{ transaction.confirmations|intcomma }}/6</span>
+            </span>
+          {% endif %}
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
 
     <div class="section">
       <div class="container">
@@ -282,16 +281,9 @@
       {% include "partials/tx_hash.html" %}
     {% endwith %}
 
-    {% else %}
-      <div class="section">
-        <div class="container">
-          <h3 class="text-center">
-            Transaction not found.
-            Are you sure that's a valid transaction hash?
-          </h3>
-        </div>
-      </div>
-    {% endif %}
+    {% with upload_string=tx_hash us_type='transaction' %}
+      {% include "partials/metadata.html" %}
+    {% endwith %}
 
   </div> {# opening section #}
 </div> {# opening container #}
@@ -456,6 +448,8 @@
       if (window.location.hash.slice(1,8) == 'spentby') {
         $(window.location.hash).attr('style', "background-color:#eee;")
       }
+
+      fetch_metadata('{{ coin_symbol }}', 'tx', '{{ tx_hash }}');
 
     })
 

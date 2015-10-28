@@ -48,6 +48,7 @@
 {% block content %}
 <div class="container">
   <div class="section">
+
     {% if not is_wallet_page %}
       <div class="col-md-4 text-center">
         <p>
@@ -305,6 +306,10 @@
 
 </div>
 
+{% with upload_string=address us_type='address' %}
+  {% include "partials/metadata.html" %}
+{% endwith %}
+
 {% endblock content %}
 
 
@@ -385,6 +390,8 @@
         };
 
       {% endif %}
+
+      fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
 
     })
 

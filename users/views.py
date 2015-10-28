@@ -73,7 +73,10 @@ def user_login(request):
         if email:
             form = LoginForm(initial={'email': email})
 
-    return {'form': form}
+    return {
+            'form': form,
+            'is_input_page': True,
+            }
 
 
 @render_to('signup.html')
@@ -127,6 +130,7 @@ def signup(request):
 
     return {
             'form': form,
+            'is_input_page': True,
             }
 
 
@@ -147,7 +151,10 @@ def change_password(request):
 
             return HttpResponseRedirect(reverse_lazy('home'))
 
-    return {'form': form}
+    return {
+            'form': form,
+            'is_input_page': True,
+            }
 
 
 @login_required
@@ -178,7 +185,10 @@ def password_upsell(request):
 
             return HttpResponseRedirect(reverse_lazy('dashboard'))
 
-    return {'form': form}
+    return {
+            'form': form,
+            'is_input_page': True,
+            }
 
 
 @render_to('reset_pw.html')
@@ -228,6 +238,7 @@ def reset_pw(request, verif_code):
             # 'user': sent_email.auth_user,
             'form': form,
             'verif_code': verif_code,
+            'is_input_page': True,
             }
 
 
@@ -261,7 +272,10 @@ def forgot_password(request):
         if email:
             form = PWResetForm(initial={'email': email})
 
-    return {'form': form}
+    return {
+            'form': form,
+            'is_input_page': True,
+            }
 
 
 def confirm_subscription(request, verif_code):
