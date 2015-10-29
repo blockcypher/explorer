@@ -281,9 +281,8 @@
       {% include "partials/tx_hash.html" %}
     {% endwith %}
 
-    {% with upload_string=tx_hash us_type='transaction' %}
-      {% include "partials/metadata.html" %}
-    {% endwith %}
+    {% url 'add_metadata_to_tx' coin_symbol tx_hash as add_metadata_uri %}
+    {% include "partials/metadata.html" %}
 
   </div> {# opening section #}
 </div> {# opening container #}

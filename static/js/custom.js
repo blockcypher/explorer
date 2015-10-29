@@ -60,11 +60,11 @@ function fetch_metadata(coin_symbol, identifier_type, identifier) {
       }
 
       if (is_empty === true) {
-        $('#metadata-table').hide()
-        $('#metadata-empty-notice').show()
+        $('#metadata-empty-notice').fadeIn()
       }
-
-      $('#metadata-section').fadeIn()
+      else {
+        $('#metadata-table').fadeIn()
+      }
 
       if (window.location.hash == '#metadata') {
         $('html,body').animate({scrollTop: $("#metadata").offset().top},'slow');

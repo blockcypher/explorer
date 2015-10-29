@@ -306,9 +306,8 @@
 
 <div class="clearfix"></div>
 
-{% with upload_string=address us_type='address' %}
-  {% include "partials/metadata.html" %}
-{% endwith %}
+{% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
+{% include "partials/metadata.html" %}
 
 </div>
 

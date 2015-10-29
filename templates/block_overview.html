@@ -211,9 +211,8 @@
   </p>
 {% endif %}
 
-{% with upload_string=block_details.hash us_type='block' %}
-  {% include "partials/metadata.html" %}
-{% endwith %}
+{% url 'add_metadata_to_block' coin_symbol block_details.hash as add_metadata_uri %}
+{% include "partials/metadata.html" %}
 
 </div>
 
