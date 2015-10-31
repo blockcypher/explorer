@@ -304,10 +304,13 @@
   </p>
 {% endif %}
 
-<div class="clearfix"></div>
+{% if not is_wallet_page %}
+  <div class="clearfix"></div>
 
-{% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
-{% include "partials/metadata.html" %}
+  {% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
+  {% include "partials/metadata.html" %}
+
+{% endif %}
 
 </div>
 
@@ -396,7 +399,9 @@
         $('#advanced-details').collapse('show');
       }
 
-      fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
+      {% if not is_wallet_page %}
+        fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
+      {% endif %}
 
     })
 
