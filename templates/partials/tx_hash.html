@@ -91,7 +91,7 @@
     <div class="collapse" id="estimateReadMe">
       <div class={% if force_include_tx_amount %}"container"{% else %}"well"{% endif %}>
           "Estimated Value Sent" excludes known change addresses.
-          If in a transaction address A sends 1 BTC to address B and also 1 BTC back to address A as change, then only 1 BTC is estimated to have been sent.
+          If in a single transaction address A sends 1 BTC to address B and also 1 BTC back to address A as change, then only 1 BTC is estimated to have been sent.
           Proper use of a new change address for each transaction (like all HD wallet implementations) obfuscate this feature, which is great for privacy.
           The best practice is to never re-use a change address.
       </div>
