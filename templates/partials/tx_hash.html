@@ -1,7 +1,7 @@
 {% load btc_formats %}
 
 <div class="col-md-5">
-  <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
+  <h4 class="text-center">{{ transaction.vin_sz }} Input{{ transaction.vin_sz|pluralize }} Consumed</h4>
   {% for input in transaction.inputs %}
     <div class="txn-input truncate"
       {% if input.prev_hash %}
@@ -42,7 +42,7 @@
 </div>
 
 <div class="col-md-5">
-  <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
+  <h4 class="text-center">{{ transaction.vout_sz }} Output{{ transaction.vout_sz|pluralize }} Created</h4>
 {% for output in transaction.outputs %}
   <div class="txn-output truncate" id="output-index-{{ forloop.counter0 }}">
     <strong>

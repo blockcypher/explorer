@@ -14,6 +14,33 @@
   {% endif %}
 {% endblock title %}
 
+{% block meta_description %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  {% if is_wallet_page %}
+    Extended Public Key {{ pubkey }}
+  {% else %}
+    Address {{ address }}
+  {% endif %}
+  has had
+  {% if num_all_txns %}
+    {{ num_all_txns|intcomma }} transaction{{ num_all_txns|pluralize }}
+    and has a balance of
+    {% satoshis_to_user_units_trimmed total_balance_satoshis 'btc' coin_symbol True %}
+    {% if total_balance_satoshis %}
+      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+      received and
+      {% satoshis_to_user_units_trimmed total_sent_satoshis 'btc' coin_symbol True %}
+      sent).
+    {% else %}
+      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+      sent and received)
+    {% endif %}
+  {% else %}
+    no transactions.
+  {% endif %}
+{% endblock meta_description %}
+
+
 {% block page_header %}
   <h1>
     <i class="fa fa-qrcode"></i> 
@@ -157,7 +184,7 @@
 <div class="col-md-12">
 
   <h2>
-    {{ num_all_txns|intcomma }} Transactions 
+    {{ num_all_txns|intcomma }} Transaction{{ num_all_txns|pluralize }}
   {% if num_unconfirmed_txns %}
     ({{ num_unconfirmed_txns|intcomma }} unconfirmed)
   {% endif %}

@@ -11,6 +11,28 @@
   {% endblocktrans %}
 {% endblock title %}
 
+{% block meta_description %}
+
+  {% satoshis_to_user_units_trimmed transaction.total 'btc' coin_symbol %}
+  transacted in TX {{ tx_hash }}
+
+  {% if is_coinbase_tx %}
+      (fees were {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase 'btc' coin_symbol %}).
+  {% else %}
+      (fees were {% satoshis_to_user_units_trimmed fee_in_satoshis 'btc' coin_symbol %}).
+  {% endif %}
+
+  {% if transaction.block_hash %}
+    This transaction was mined in {{ coin_symbol|coin_symbol_to_currency_name }} block {{ transaction.block_hash }}.
+  {% endif %}
+
+  {{ transaction.vin_sz }} input{{ transaction.vin_sz|pluralize }}
+  consumed,
+  {{ transaction.vout_sz }} output{{ transaction.vout_sz|pluralize }}
+  created.
+
+{% endblock meta_description %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-exchange"></i> 

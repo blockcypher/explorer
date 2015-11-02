@@ -11,6 +11,20 @@
   {% endblocktrans %}
 {% endblock title %}
 
+{% block meta_description %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  block {{ block_details.hash }}
+  was confirmed as the {{ block_details.height|ordinal }} block on
+  {{ block_details.received_time|date:'Y-m-d H:i' }} GMT.
+  It had
+  {{ block_details.n_tx|intcomma }} transaction{{ block_details.n_tx|pluralize}},
+  which totaled
+  {% satoshis_to_user_units_trimmed block_details.total 'btc' coin_symbol True 4 %}
+  with
+  {% satoshis_to_user_units_trimmed block_details.fees 'btc' coin_symbol True 4 %}
+  in fees.
+{% endblock meta_description %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-cube"></i> 
@@ -73,7 +87,7 @@
         <tr>
           <th>Current Depth</th>
           <td>
-            {{ block_details.depth }}
+            {{ block_details.depth|intcomma }}
           </td>
         </tr>
         <tr>
@@ -91,7 +105,7 @@
         <tr>
           <th>Bits (difficulty target)</th>
           <td>
-            {{ block_details.bits }}
+            {{ block_details.bits|intcomma }}
           </td>
         </tr>
         <tr>
@@ -124,7 +138,7 @@
     </div>
   </div>
 
-  <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
+  <h2>{{ block_details.n_tx|intcomma }} Transaction{{ block_details.n_tx|pluralize}}</h2>
 
   <div class="section pager">
     <div class="row">
