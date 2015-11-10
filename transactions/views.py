@@ -44,7 +44,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
                 coin_symbol=coin_symbol,
                 limit=TX_LIMIT,
                 api_key=BLOCKCYPHER_API_KEY,
-                include_hex=True,
+                include_hex=False,
                 )
     except AssertionError:
         msg = _('Invalid Transaction Hash')

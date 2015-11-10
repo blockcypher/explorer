@@ -238,13 +238,6 @@
                   {% endif %}
                 {% endif %}
 
-                <tr>
-                  <th>TX Hex</th>
-                  <td>
-                    <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
-                  </td>
-                </tr>
-
                 {% if is_coinbase_tx and coinbase_msg %}
                   <tr>
                     <th>Coinbase Message:</th>
