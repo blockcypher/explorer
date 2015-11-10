@@ -38,7 +38,7 @@ def scale_confidence(confidence):
 def transaction_overview(request, coin_symbol, tx_hash):
 
     try:
-        TX_LIMIT = 100
+        TX_LIMIT = 50
         transaction_details = get_transaction_details(
                 tx_hash=tx_hash,
                 coin_symbol=coin_symbol,
