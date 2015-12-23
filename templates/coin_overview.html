@@ -35,6 +35,7 @@
           <th>Transactions</th>
           <th>Total Sent</th>
           <th>Total Fees</th>
+          <th>Block Size (in bytes)</th>
         </tr>
         {% for block in recent_blocks %}
           <tr>
@@ -45,6 +46,7 @@
             <td>{{ block.n_tx|intcomma }}</td>
             <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol True 5 %}</td>
             <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol True 5 %}</td>
+            <td>{{ block.size|intcomma }}</td>
           </tr>
         {% endfor %}
       </table>

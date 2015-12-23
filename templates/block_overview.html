@@ -90,6 +90,14 @@
             {{ block_details.depth|intcomma }}
           </td>
         </tr>
+        {% if block_details.size %}
+          <tr>
+            <th>Block Size (bytes)</th>
+            <td>
+              {{ block_details.size|intcomma }}
+            </td>
+          </tr>
+        {% endif %}
         <tr>
           <th>Nonce</th>
           <td>
