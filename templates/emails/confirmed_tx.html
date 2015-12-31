@@ -9,10 +9,10 @@ You can see the transaction details here:<br />
   <br /><br />
   {% if satoshis_transacted > 10000 %}
     Since you previously setup forwarding on this address, the funds should have been automatically transferred to
-    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}">{{ destination_address }}</a>.
+    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol destination_address %}">{{ destination_address }}</a>.
   {% else %}
     Even though you previously setup forwarding on this address, the amount sent is lower than the mining fee so these funds may not have been transferred to
-    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}">{{ destination_address }}</a>.
+    <a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol destination_address %}">{{ destination_address }}</a>.
   {% endif %}
 {% endif %}
 
@@ -20,7 +20,7 @@ You can see the transaction details here:<br />
 
 {% block ps %}
 P.S. You were sent this email because you subscribed to email notifications on
-<a href="{% url 'address_overview' coin_symbol b58_address %}">{{ b58_address }}</a>.
+<a href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}">{{ b58_address }}</a>.
 To unsubscribe, please
 <a href="{{ BASE_URL }}{% url 'unsubscribe_address' unsub_code %}">click here</a>.
 {% endblock ps %}

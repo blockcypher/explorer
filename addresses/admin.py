@@ -2,6 +2,8 @@ from django.contrib import admin
 
 from addresses.models import AddressSubscription, AddressForwarding
 
+from emails.models import SentEmail
+
 from blockcypher.constants import COIN_CHOICES
 
 
@@ -40,7 +42,9 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
 
     def coin_symbol(self, instance):
         return self.coin_symbol
-    coin_symbol.allow_tags = True
+
+    def emails_sent(self, instance):
+        return instance.sentemail_set.count()
 
     list_display = (
             'id',
@@ -48,14 +52,15 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'unsubscribed_at',
             'coin_symbol',
             'b58_address',
+            'auth_user',
+            'emails_sent',
+            'address_forwarding_obj',
             'notify_on_broadcast',
             'notify_on_first_confirm',
             'notify_on_sixth_confirm',
             'notify_on_deposit',
             'notify_on_withdrawal',
-            'auth_user',
             'blockcypher_id',
-            'address_forwarding_obj',
             )
 
     raw_id_fields = ('auth_user', 'address_forwarding_obj', )
@@ -77,6 +82,9 @@ class AddressForwardingAdmin(admin.ModelAdmin):
         return self.coin_symbol
     coin_symbol.allow_tags = True
 
+    def emails_sent(self, instance):
+        return SentEmail.objects.filter(address_forwarding=instance).exclude(body_template='new_user_forwarding.html').count()
+
     list_display = (
             'id',
             'created_at',
@@ -85,6 +93,7 @@ class AddressForwardingAdmin(admin.ModelAdmin):
             'initial_address',
             'destination_address',
             'auth_user',
+            'emails_sent',
             'blockcypher_id',
             )
 

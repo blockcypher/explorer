@@ -9,9 +9,9 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 
-from homepage.forms import SearchForm
+from homepage.forms import SearchForm, UnitChoiceForm
 
-from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions
+from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions, get_blockchain_fee_estimates
 from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
 from blockcypher.constants import SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
 
@@ -59,7 +59,10 @@ def home(request):
                                 api_key=BLOCKCYPHER_API_KEY,
                                 )
                         if 'error' in block_details:
-                            msg = _("Sorry, that's not a valid transaction or block hash for %(currency)s" % {'currency': coin_symbol})
+                            msg = _("Sorry, '%(search_string)s' is not a valid transaction or block hash for %(currency)s" % {
+                                'currency': coin_symbol,
+                                'search_string': search_string,
+                                })
                             messages.error(request, msg)
                         else:
                             kwargs['block_representation'] = search_string
@@ -81,14 +84,12 @@ def home(request):
                 elif first_char in ('m', 'n', '2'):
                     # Note that addresses starting in 2 can be LTC testnet, but since we don't support that it's okay to include
                     kwargs['coin_symbol'] = 'btc-testnet'
-                elif first_char in ('D', '9', 'A'):
+                elif first_char in ('9', 'A'):
                     kwargs['coin_symbol'] = 'doge'
                 elif first_char in ('L', ):
                     # Do not force addresses starting with 3 to be LTC because that's also used by BTC
                     kwargs['coin_symbol'] = 'ltc'
-                elif first_char in ('U', ):
-                    kwargs['coin_symbol'] = 'uro'
-                elif first_char in ('B', 'C', 'D'):
+                elif first_char in ('B', 'C'):
                     kwargs['coin_symbol'] = 'bcy'
 
                 redirect_url = reverse('address_overview', kwargs=kwargs)
@@ -108,13 +109,16 @@ def home(request):
 
         else:
             currency = COIN_SYMBOL_MAPPINGS[request.POST['coin_symbol']]['display_shortname']
-            msg = _("Sorry, that's not a valid %(currency)s address, wallet name, transaction or block" % {
-                'currency': currency})
+            msg = _("Sorry, '%(search_string)s' is not a valid %(currency)s address, wallet name, transaction or block" % {
+                'currency': currency,
+                'search_string': request.POST['search_string'],
+                })
             messages.error(request, msg)
 
     return {
         'is_home': True,
-        'form': form
+        'form': form,
+        'is_input_page': True,
     }
 
 
@@ -135,7 +139,12 @@ def coin_overview(request, coin_symbol):
             coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY)
     recent_blocks = sorted(recent_blocks, key=lambda k: k['height'], reverse=True)
-    #import pprint; pprint.pprint(recent_blocks, width=1)
+    fees = get_blockchain_fee_estimates(coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
+
+    fees['high_fee_per_kb__smalltx'] = fees['high_fee_per_kb']/4
+    fees['medium_fee_per_kb__smalltx'] = fees['medium_fee_per_kb']/4
+    fees['low_fee_per_kb__smalltx'] = fees['low_fee_per_kb']/4
+    # import pprint; pprint.pprint(recent_blocks, width=1)
 
     recent_txs = get_broadcast_transactions(coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY,
@@ -153,13 +162,34 @@ def coin_overview(request, coin_symbol):
     # sort recent txs by order (they're not always returning in order)
     recent_txs_filtered = sorted(recent_txs_filtered, key=itemgetter('received'), reverse=True)
 
+    fee_api_url = 'https://api.blockcypher.com/v1/%s/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            )
+
     return {
             'coin_symbol': coin_symbol,
             'form': form,
             'recent_blocks': recent_blocks,
             'recent_txs': recent_txs_filtered,
+            'fees': fees,
+            'fee_api_url': fee_api_url,
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
             }
+
+
+def set_units(request):
+    if request.method == 'POST':
+        form = UnitChoiceForm(data=request.POST)
+        if form.is_valid():
+            unit_choice = form.cleaned_data['unit_choice']
+            request.session['user_units'] = unit_choice
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@render_to('highlights.html')
+def highlights(request):
+    return {}
 
 
 def fail500(request):

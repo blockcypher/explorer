@@ -17,7 +17,7 @@
       {{ b58_address }}
 
       <h4>
-        {{ address_overview.total_received|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+        {% satoshis_to_user_units_trimmed address_overview.total_received 'btc' coin_symbol True 0 %}
         Received
       </h4>
 

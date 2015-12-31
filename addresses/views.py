@@ -16,7 +16,9 @@ from blockexplorer.decorators import assert_valid_coin_symbol
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_details_url, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.constants import COIN_SYMBOL_MAPPINGS
+from blockcypher.utils import flatten_txns_by_hash
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription, AddressForwarding
@@ -64,7 +66,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         redir_url = reverse('coin_overview', kwargs={'coin_symbol': coin_symbol})
         return HttpResponseRedirect(redir_url)
 
-    #import pprint; pprint.pprint(address_details, width=1)
+    # import pprint; pprint.pprint(address_details, width=1)
 
     if 'error' in address_details:
         msg = _('Sorry, that address was not found')
@@ -79,13 +81,20 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 coin_symbol=coin_symbol,
                 unsubscribed_at=None,
                 ):
-            msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
-                'user_email': request.user.email,
-                'unsub_url': reverse('user_unsubscribe_address', kwargs={
-                    'address_subscription_id': address_subscription.id,
-                    }),
-                })
-            messages.info(request, msg, extra_tags='safe')
+            if address_subscription.auth_user.email_verified:
+                msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
+                    'user_email': request.user.email,
+                    'unsub_url': reverse('user_unsubscribe_address', kwargs={
+                        'address_subscription_id': address_subscription.id,
+                        }),
+                    })
+                messages.info(request, msg, extra_tags='safe')
+            else:
+                msg = _('Private Message: you are not subscribed to this address because you have not clicked the link sent to <b>%(user_email)s</b>' % {
+                    'user_email': request.user.email,
+                    })
+                messages.error(request, msg, extra_tags='safe')
+                print('ERROR')
 
         # there can be only one
         af_initial = get_object_or_None(AddressForwarding,
@@ -130,23 +139,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
 
     all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
 
-    # doesn't cover pagination
-    confirmed_sent_satoshis, confirmed_received_satoshis = 0, 0
-    unconfirmed_sent_satoshis, unconfirmed_received_satoshis = 0, 0
-    for transaction in all_transactions:
-        if transaction['tx_input_n'] >= 0:
-            # It's sent
-            if transaction['confirmations'] > 6:
-                confirmed_sent_satoshis += transaction['value']
-            else:
-                unconfirmed_sent_satoshis += transaction['value']
-        else:
-            # It's received
-            if transaction['confirmations'] > 6:
-                confirmed_received_satoshis += transaction['value']
-            else:
-                unconfirmed_received_satoshis += transaction['value']
-
     # transaction pagination: 0-indexed and inclusive
     tx_start_num = (current_page - 1) * TXNS_PER_PAGE
     tx_end_num = current_page * TXNS_PER_PAGE - 1
@@ -154,23 +146,26 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     # filter address details for pagination. HACK!
     all_transactions = all_transactions[tx_start_num:tx_end_num]
 
+    flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
+
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
+            COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
+            address)
+
     return {
             'coin_symbol': coin_symbol,
             'address': address,
-            'api_url': get_address_details_url(address=address, coin_symbol=coin_symbol),
+            'api_url': api_url,
             'wallet_name': wallet_name,
             'current_page': current_page,
             'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
-            'confirmed_sent_satoshis': confirmed_sent_satoshis,
-            'unconfirmed_sent_satoshis': unconfirmed_sent_satoshis,
-            'total_sent_satoshis': unconfirmed_sent_satoshis + confirmed_sent_satoshis,
-            'confirmed_received_satoshis': confirmed_received_satoshis,
-            'unconfirmed_received_satoshis': unconfirmed_received_satoshis,
-            'total_received_satoshis': unconfirmed_received_satoshis + confirmed_received_satoshis,
+            'total_sent_satoshis': address_details['total_sent'],
+            'total_received_satoshis': address_details['total_received'],
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
-            'all_transactions': all_transactions,
+            'flattened_txs': flattened_txs,
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
@@ -297,6 +292,7 @@ def subscribe_address(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 
@@ -449,6 +445,25 @@ def address_webhook(request, secret_key, ignored_key):
         tx_event.save()
     else:
         tx_is_new = True
+
+        input_addresses = set()
+        for input_entry in payload['inputs']:
+            for address in input_entry.get('addresses', []):
+                input_addresses.add(address)
+        if address_subscription.b58_address in input_addresses:
+            is_withdrawal = True
+        else:
+            is_withdrawal = False
+
+        output_addresses = set()
+        for output_entry in payload.get('outputs', []):
+            for address in output_entry['addresses']:
+                output_addresses.add(address)
+        if address_subscription.b58_address in output_addresses:
+            is_deposit = True
+        else:
+            is_deposit = False
+
         tx_event = OnChainTransaction.objects.create(
                 tx_hash=tx_hash,
                 address_subscription=address_subscription,
@@ -456,6 +471,8 @@ def address_webhook(request, secret_key, ignored_key):
                 double_spend=double_spend,
                 satoshis_sent=satoshis_sent,
                 fee_in_satoshis=fee_in_satoshis,
+                is_deposit=is_deposit,
+                is_withdrawal=is_withdrawal,
                 )
 
     # email sending logic
@@ -469,12 +486,18 @@ def address_webhook(request, secret_key, ignored_key):
         elif num_confs == 0 and tx_is_new:
             # First broadcast
             if tx_event.address_subscription.notify_on_broadcast:
-                tx_event.send_unconfirmed_tx_email()
+                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                    tx_event.send_unconfirmed_tx_email()
+                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                    tx_event.send_unconfirmed_tx_email()
 
         elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
             # Sixth confirm
             if tx_event.address_subscription.notify_on_sixth_confirm:
-                tx_event.send_confirmed_tx_email()
+                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                    tx_event.send_confirmed_tx_email()
+                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                    tx_event.send_confirmed_tx_email()
 
     # Update logging
     webhook.address_subscription = address_subscription
@@ -532,6 +555,7 @@ def search_widgets(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 
@@ -709,7 +733,7 @@ def setup_address_forwarding(request, coin_symbol):
                             msg = _('''
                             Transactions sent to <a href="%(initial_addr_uri)s">%(initial_address)s</a>
                             will now be automatically forwarded to <a href="%(destination_addr_uri)s">%(destination_address)s</a>,
-                            and you will immediately recieve an email notification at <b>%(user_email)s</b>.
+                            and you will immediately receive an email notification at <b>%(user_email)s</b>.
                             <br /><br /> <i>%(small_payments_msg)s</i>
                             ''' % msg_merge_dict)
                             messages.success(request, msg, extra_tags='safe')
@@ -770,6 +794,7 @@ def setup_address_forwarding(request, coin_symbol):
     return {
             'form': form,
             'coin_symbol': coin_symbol,
+            'is_input_page': True,
             }
 
 

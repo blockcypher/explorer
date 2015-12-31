@@ -23,9 +23,13 @@
 
     {% if tx_in_json_str %}
       <h2>Decoded Transaction</h2>
-      <pre>
-        {{ tx_in_json_str|safe }}
-      </pre>
+
+      <pre><small>{{ tx_in_json_str|safe }}</small></pre>
+
+      {% if tx_uri %}
+      (This transaction was previously broadcast,
+      <a href="{{ tx_uri }}">see it on the blockchain</a>)
+      {% endif %}
 
       <br />
       <h2>Input New Transaction Hex</h2>
@@ -46,11 +50,13 @@
       </p>
     </form>
 
-    <p class="text-center">
-      Ready to broadcast?
-      <a href="{% url 'push_tx' coin_symbol %}">Click here</a>
-      to broadcast a raw transaction without decoding it first.
-    </p>
+    {% if not tx_uri %}
+      <p class="text-center">
+        Ready to broadcast?
+        <a href="{% url 'push_tx' coin_symbol %}?t={{ tx_hex }}">Click here</a>
+        to broadcast a raw transaction hex.
+      </p>
+    {% endif %}
 
   </div>
 </div>

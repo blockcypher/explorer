@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load btc_formats %}
+{% load static %}
+
+{% block title %}
+    Block Explorer Highlights
+{% endblock title %}
+
+{% block page_header %}
+  <div class="row">
+    <h1>Block Explorer Highlights</h1>
+  </div>
+{% endblock page_header %}
+
+{% block content %}
+
+<div class="container">
+
+  <div class="section">
+    <p>
+      Our free block explorer is different, here are some of the things you can do here that you won't find elsewhere:
+    </p>
+    <ul>
+      <li>
+        <a href="{% url 'latest_unconfirmed_tx' 'btc' %}">Confirmation Predictions</a>
+        -
+        We're the only site that can predict the probability that a transaction will confirm.
+      </li>
+      <li>
+        <a href="{% url 'subscribe_forwarding' %}">Address Notifications</a>
+        -
+        Subscribe to email notifications on your crypto addresses.
+        Great for monitoring your cold storage or incoming payments.
+      </li>
+      <li>
+        <a href="{% url 'forward_forwarding' %}">Address Forwarding</a>
+        -
+        Create unlimited new addresses that instantly forward to your existing address(es).
+        Give a new address out to every person you transact with, without having to change where or how you store your crypto.
+      </li>
+      <li>
+        <a href="{% url 'coin_overview' 'btc' %}">Fee Estimates</a>
+        -
+        Get detailed network stats on how large a transaction fee you need to pay
+        to be included quickly in a block.
+      </li>
+      <li>
+        <a href="{% url 'embed_txdata' 'btc' %}">Embed Data in the Blockchain</a>
+        -
+        Embed a hash or (short) string of text into the blockchain.
+        Here are examples of this embedded text from
+        <a href="{% url 'transaction_overview' 'btc' '7166f3aa854ebee1b1df49b3d67cf1dccd601c8f8cadac503be6f92dec3c77c5' %}">Factom</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'd82f637798d24097a1f7412414b0f0be6ddb7d756a0c7daf4b1814f73b2c4717' %}">BlockchainID</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'e2e133dbdd4ead57091b663fb96eda8eab7a383c40a0320e353d583d44c8a834' %}">Open Assets</a>,
+        <a href="{% url 'transaction_overview' 'btc' '1f9d3f2ced0d7a848f57c11effad8c66df816ce3d1ed2245739f8677a9ce029f' %}">Colu</a>,
+        <a href="{% url 'transaction_overview' 'btc' 'c535d45f6a268e19e53a77cf00e769a0b9564f2295534b4f6925ac4b13eebf40' %}">CoinSpark</a>, &
+        <a href="{% url 'transaction_overview' 'btc' 'b43c517dc2f10317651aa6047446447da63611abf109e1b44d829cfd73bbbd9d' %}">BlockCypher</a>.
+      </li>
+      <li>
+        <a href="{% url 'add_metadata' 'btc' %}">Upload Public Metadata to the Blockchain</a> (beta)
+        -
+        Upload a public key-value string of text to blockcypher's servers that will be viewable on the block explorer and via API.
+        Here are examples of this uploaded data on a bitcoin
+        <a href="{% url 'transaction_overview' 'btc' '29a3efd3ef04f9153d47a990bd7b048a4b2d213daaa5fb8ed670fb85f13bdbcf' %}#metadata">transaction</a>,
+        <a href="{% url 'address_overview' 'btc' '14rE7Jqy4a6P27qWCCsngkUfBxtevZhPHB' %}#metadata">address</a>, &
+        <a href="{% url 'block_overview' 'btc' '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f' %}#metadata">block</a>.
+      </li>
+      <li>
+        <a href="{% url 'widgets_overview' 'btc' '1BTCorgHwCg6u2YSAWKgS17qUad6kHmtQW' %}">Embeddable Widgets</a>
+        -
+        Copy-paste a short HTML snippet and embed blockchain info into your website.
+        Great for showcasing how many donations you've gotten.
+      </li>
+      <li>
+        <a href="https://accounts.blockcypher.com/testnet-faucet">Free Testnet Faucet</a>
+        -
+        Great for testing.
+      </li>
+      <li>
+        <a href="{% url 'latest_unconfirmed_tx' 'btc' %}">Fastest Most Recent Transactions</a>
+        -
+        See transactions long before they appear in other block explorers.
+      </li>
+      <li>
+        <a href="https://github.com/blockcypher/explorer">Open Source</a>
+        -
+        See how this works, run your own version of the site, and submit pull requests.
+      </li>
+    </ul>
+    <p>
+      We also have a number of cool tools like
+      <a href="{% url 'pushtx_forwarding' %}">push tx</a> &
+      <a href="{% url 'decodetx_forwarding' %}">decoderawtransaction</a>.
+    </p>
+  </div>
+
+</div>
+{% endblock content %}
+

@@ -3,12 +3,27 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
 
 {% block title %}
   {% blocktrans with currency_name=coin_symbol|coin_symbol_to_currency_name block_hash=block_details.hash %}
     {{ currency_name }} Block {{ block_hash }}
   {% endblocktrans %}
 {% endblock title %}
+
+{% block meta_description %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  block {{ block_details.hash }}
+  was confirmed as the {{ block_details.height|ordinal }} block on
+  {{ block_details.received_time|date:'Y-m-d H:i' }} GMT.
+  It had
+  {{ block_details.n_tx|intcomma }} transaction{{ block_details.n_tx|pluralize}},
+  which totaled
+  {% satoshis_to_user_units_trimmed block_details.total 'btc' coin_symbol True 4 %}
+  with
+  {% satoshis_to_user_units_trimmed block_details.fees 'btc' coin_symbol True 4 %}
+  in fees.
+{% endblock meta_description %}
 
 {% block page_header %}
   <h1>
@@ -42,15 +57,17 @@
         <li>
           <span class="dash-label">Received</span><br>
           <i class="fa fa-clock-o"></i> 
-          {{ block_details.received_time|naturaltime }}
+          <time class="timeago" datetime="{{ block_details.received_time|date:'Y-m-d\TH:i:s' }}Z">
+            {{ block_details.received_time|date:'Y-m-d H:i' }} GMT
+          </time>
         </li>
         <li>
           <span class="dash-label">Total Transacted</span><br>
-          {{ block_details.total|satoshis_to_btc_full|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed block_details.total tcp__user_units coin_symbol True 4 %}
         </li>
         <li>
           <span class="dash-label">Total Fees</span><br>
-          {{ block_details.fees|satoshis_to_btc_rounding }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed block_details.fees tcp__user_units coin_symbol True 4 %}
         </li>
       </ul>
       <div class="clearfix"></div>
@@ -70,7 +87,7 @@
         <tr>
           <th>Current Depth</th>
           <td>
-            {{ block_details.depth }}
+            {{ block_details.depth|intcomma }}
           </td>
         </tr>
         <tr>
@@ -88,7 +105,7 @@
         <tr>
           <th>Bits (difficulty target)</th>
           <td>
-            {{ block_details.bits }}
+            {{ block_details.bits|intcomma }}
           </td>
         </tr>
         <tr>
@@ -97,6 +114,14 @@
             {{ block_details.ver }}
           </td>
         </tr>
+        {% if block_details.relayed_by %}
+          <tr>
+            <th>IP Relayed By</th>
+            <td>
+              {{ block_details.relayed_by }}
+            </td>
+          </tr>
+        {% endif %}
         <tr>
           <td colspan="2" class="text-center">
             <a href="{{ api_url }}" class="btn btn-default">
@@ -113,7 +138,7 @@
     </div>
   </div>
 
-  <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
+  <h2>{{ block_details.n_tx|intcomma }} Transaction{{ block_details.n_tx|pluralize}}</h2>
 
   <div class="section pager">
     <div class="row">
@@ -156,7 +181,9 @@
         {% endif %}
       </h4>
 
-      {% include "partials/tx_hash.html" %}
+      {% with force_include_tx_amount=True %}
+        {% include "partials/tx_hash.html" %}
+      {% endwith %}
 
     </div>
   {% endfor %}
@@ -189,10 +216,39 @@
   </div>
 
 {% else %}
-  <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
+  <p>
+    {% if block_details.height == 1 %}
+      The genesis block has no transactions.
+    {% else %}
+      No transactions. Something seems off, that doesn't make any sense!
+    {% endif %}
+  </p>
 {% endif %}
+
+{% url 'add_metadata_to_block' coin_symbol block_details.hash as add_metadata_uri %}
+{% include "partials/metadata.html" %}
 
 </div>
 
 {% endblock content %}
 
+{% block extra_js %}
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
+  <script>
+
+    $(document).ready(function(){
+
+      $("time.timeago").timeago();
+
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
+      }
+
+      fetch_metadata('{{ coin_symbol }}', 'block', '{{ block_details.hash }}');
+
+    })
+
+  </script>
+
+{% endblock extra_js %}

@@ -51,6 +51,10 @@ class NewUserAddressSubscriptionForm(KnownUserAddressSubscriptionForm):
         widget=forms.TextInput(attrs={'placeholder': 'me@example.com', 'class': 'input-lg'}),
     )
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        return email.lower().strip()
+
 
 class AddressSearchForm(KnownUserAddressSubscriptionForm):
 
@@ -61,7 +65,7 @@ class AddressSearchForm(KnownUserAddressSubscriptionForm):
 
 class KnownUserAddressForwardingForm(KnownUserAddressSubscriptionForm):
     wants_email_notification = forms.BooleanField(
-        label=_('Recieve Email Notification for Transactions'),
+        label=_('Receive Email Notification for Transactions'),
         initial=True,
         required=False,
     )

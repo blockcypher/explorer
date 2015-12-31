@@ -11,6 +11,28 @@
   {% endblocktrans %}
 {% endblock title %}
 
+{% block meta_description %}
+
+  {% satoshis_to_user_units_trimmed transaction.total 'btc' coin_symbol %}
+  transacted in TX {{ tx_hash }}
+
+  {% if is_coinbase_tx %}
+      (fees were {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase 'btc' coin_symbol %}).
+  {% else %}
+      (fees were {% satoshis_to_user_units_trimmed fee_in_satoshis 'btc' coin_symbol %}).
+  {% endif %}
+
+  {% if transaction.block_hash %}
+    This transaction was mined in {{ coin_symbol|coin_symbol_to_currency_name }} block {{ transaction.block_hash }}.
+  {% endif %}
+
+  {{ transaction.vin_sz }} input{{ transaction.vin_sz|pluralize }}
+  consumed,
+  {{ transaction.vout_sz }} output{{ transaction.vout_sz|pluralize }}
+  created.
+
+{% endblock meta_description %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-exchange"></i> 
@@ -23,13 +45,62 @@
 
 <div class="section">
   <div class="container">
-    {% if tx_hash %}
 
-    {% if transaction.double_of_tx %}
-      <div class="alert alert-danger" role="alert">
-        <i class="fa fa-exclamation-triangle"></i>
-        Double-Spend Detected
-        (<a href="{% url transaction_overview coin_symbol transaction.double_of_tx %}">Details</a>)
+    {% if transaction.double_spend_tx %}
+      {% if transaction.confirmations < 6 %}
+        <div class="alert alert-danger" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          WARNING: This transaction has been double-spent by
+          <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+          be extremely careful when accepting this transaction!
+        </div>
+      {% else %}
+        <div class="alert alert-danger" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          WARNING: This transaction had an attempted double-spent by
+          <a href="{% url 'transaction_overview' coin_symbol transaction.double_spend_tx %}">{{ transaction.double_spend_tx|truncatechars:"32" }}</a>,
+          but was still confirmed.
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if transaction.data_protocol %}
+      <div id="dp-section" class="row">
+        <div class="alert alert-info" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          <strong>
+            {% if transaction.data_protocol == 'unknown' %}
+              Data Embedded in Transaction with Unknown Protocol
+            {% elif transaction.data_protocol == 'blockchainid' %}
+              BlockchainID Transaction
+            {% elif transaction.data_protocol == 'openassets' %}
+              Open Assets Transaction
+            {% elif transaction.data_protocol == 'factom' %}
+              Factom Transaction
+            {% elif transaction.data_protocol == 'colu' %}
+              Colu Transaction
+            {% elif transaction.data_protocol == 'coinspark' %}
+              CoinSpark Transaction
+            {% else %}
+              {# Catch all in case more are added #}
+              {{ transaction.data_protocol }} transaction
+            {% endif %}
+          </strong>
+          (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
+          <br />
+          <p>
+          {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}
+            {% if data_dict.data_hex or data_dict.data_string %}
+              {% if data_dict.data_string %}
+                <strong>String</strong>: {{ data_dict.data_string }} <br />
+              {% endif %}
+              {% if data_dict.data_hex %}
+                <strong>Hex</strong>: {{ data_dict.data_hex }}
+              {% endif %}
+            {% endif %}
+          {% endwith %}
+          </p>
+        </div>
       </div>
     {% endif %}
 
@@ -38,20 +109,20 @@
       {% if is_coinbase_tx %}
         <li>
           <span class="dash-label">Amount Transacted</span><br>
-          {{ total_satoshis_coinbase|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed total_satoshis_coinbase tcp__user_units coin_symbol %}
         </li>
         <li>
           <span class="dash-label">Fees Collected</span><br>
-          {{ fee_in_satoshis_coinbase|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed fee_in_satoshis_coinbase tcp__user_units coin_symbol %}
         </li>
       {% else %}
         <li>
           <span class="dash-label">Amount Transacted</span><br>
-          {{ total_satoshis|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed total_satoshis tcp__user_units coin_symbol %}
         </li>
         <li>
           <span class="dash-label">Fees</span><br>
-          {{ fee_in_satoshis|satoshis_to_btc_full|floatformat:8|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}
+          {% satoshis_to_user_units_trimmed fee_in_satoshis tcp__user_units coin_symbol %}
         </li>
       {% endif %}
         <li>
@@ -60,14 +131,14 @@
           </span><br>
           <i class="fa fa-clock-o"></i> 
           <time class="timeago" datetime="{{ time_to_use|date:'Y-m-d\TH:i:s' }}Z">
-            {# in case they don't have JS #}
-            {{ time_to_use|naturaltime }}
+            {{ time_to_use|date:'Y-m-d H:i' }} GMT
           </time>
         </li>
         <li>
           <span class="dash-label">
             Confirmations
               <button
+                id='confs-hover'
                 type='button'
                 class='btn-link'
                 data-container='body'
@@ -75,7 +146,7 @@
                 data-placement='top'
                 data-html='true'
                 data-content='
-                      <span id="confs-popover">{{ transaction.confirmations|intcomma }}</span> confirmations.
+                      <strong>{{ transaction.confirmations|intcomma }}</strong> confirmations.
                       <br />
                       Anything over 6 confirmations is considered completed and irreversible.
                 '>
@@ -102,143 +173,135 @@
       </ul>
       <div class="clearfix"></div>
     </div>
-  </div>
-</div>
 
-<div class="section">
-  <div class="container">
-    <div class="row">
-      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
-        <strong>Confidence</strong>
-        <button id="confidence-popover" type='button' class='btn-link'>
-          <i class="fa fa-info-circle"></i>
-        </button>
-        <div class="circle-chart">
-          <div id="confidence-widget" class="fill" style="height:{{ confidence_pct_scaled }}%;"></div>
-          <span id="confidence-text" class="val">{{ confidence_pct|floatformat:2 }}%</span>
-        </div>
-      </div>
+    <div class="section">
+      <div class="container">
 
-      <div {% if transaction.block_hash %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
-        <strong>Miner Preference</strong>
-        <div class="circle-chart">
-          <div class="fill {{ transaction.preference }}"></div>
-          <span class="val">{{ transaction.preference }}</span>
-        </div>
-      </div>
+        <div class="row">
 
-    {% if transaction.block_hash %}
-      <p class="text-center">
-        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
-          Advanced Details 
-          <b class="caret"></b>
-        </button>
-      </p>
-      <div class="col-md-12 collapse" id="advanced-details">
-    {% else %}
-      <div class="col-md-6">
-    {% endif %}
-        <div class="table-responsive">
-          <table class="table">
-            {% if transaction.block_hash %}
-              <tr>
-                <th>Block Height</th>
-                <td>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
-                </td>
-              </tr>
-              <tr>
-                <th>Block Hash</th>
-                <td>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
-                  <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
-                </td>
-              </tr>
-            {% endif %}
+          <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
+            <strong>Confidence</strong>
+            <button id="confidence-popover" type='button' class='btn-link'>
+              <i class="fa fa-info-circle"></i>
+            </button>
+            <div class="circle-chart">
+              <div id="confidence-widget" class="fill" style="height:{{ confidence_pct_scaled }}%;"></div>
+              <span id="confidence-text" class="val">{{ confidence_pct|floatformat:2 }}%</span>
+            </div>
+          </div>
 
-            <tr>
-              <th>TX Hex</th>
-              <td>
-                <a href="{% url 'decode_tx' coin_symbol %}?t={{ transaction.hex }}">{{ transaction.hex|truncatechars:"32" }}</a>
-              </td>
-            </tr>
+          <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="preference-section" class="col-md-3 text-center">
+            <strong>Miner Preference</strong>
+            <div class="circle-chart">
+              <div class="fill {{ transaction.preference }}"></div>
+              <span class="val">{{ transaction.preference }}</span>
+            </div>
+          </div>
 
-            {% if is_coinbase_tx and coinbase_msg %}
-              <tr>
-                <th>Coinbase Message:</th>
-                <td class="wrapit">{{ coinbase_msg }}</td>
-              </tr>
-            {% endif %}
+        {% if transaction.block_hash %}
+          <p class="text-center">
+            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#advanced-details">
+              Advanced Details 
+              <b class="caret"></b>
+            </button>
+          </p>
+          <div class="col-md-12 collapse" id="advanced-details">
+        {% else %}
+          <div class="col-md-6">
+        {% endif %}
 
-            <tr>
-              <th>Size</th>
-              <td>{{ transaction.size }} bytes</td>
-            </tr>
+            <div class="table-responsive">
+              <table class="table">
+                {% if transaction.block_hash %}
+                  <tr>
+                    <th>Block Hash</th>
+                    <td>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="hidden-xs">{{ transaction.block_hash }}</a>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_hash %}" class="visible-xs">See Block</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Block Height</th>
+                    <td>
+                      <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma }}</a>
+                    </td>
+                  </tr>
+                  {% if transaction.block_index %}
+                  {# hack, this should always exist but doesn't appear to at least in the case of coinbase transactions #}
+                    <tr>
+                      <th>Transaction Index</th>
+                      <td>
+                        {{ transaction.block_index|intcomma }}
+                        (<a href="{% url 'block_ordered_tx' coin_symbol transaction.block_height transaction.block_index %}">permalink</a>)
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endif %}
 
-            <tr>
-              <th>Lock Time</th>
-              <td>{{ transaction.lock_time }}</td>
-            </tr>
+                {% if is_coinbase_tx and coinbase_msg %}
+                  <tr>
+                    <th>Coinbase Message:</th>
+                    <td class="wrapit">{{ coinbase_msg }}</td>
+                  </tr>
+                {% endif %}
 
-            <tr>
-              <th>Version</th>
-              <td>{{ transaction.ver }}</td>
-            </tr>
+                <tr>
+                  <th>Size</th>
+                  <td>{{ transaction.size }} bytes</td>
+                </tr>
 
-            {% if transaction.relayed_by %}
-              <tr>
-                <th>Relayed By:</th>
-                <td>{{ transaction.relayed_by }}</td>
-              </tr>
-            {% endif %}
-            <tr>
-              <td colspan="2" class="text-center">
-                <a href="{{ api_url }}?includeHex=true" class="btn btn-default">
-                  <i class="fa fa-code"></i> 
-                  API Call
-                </a>
-                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                  <i class="fa fa-external-link"></i> 
-                  API Docs
-                </a>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
+                <tr>
+                  <th>Lock Time</th>
+                  <td>{{ transaction.lock_time }}</td>
+                </tr>
+
+                <tr>
+                  <th>Version</th>
+                  <td>{{ transaction.ver }}</td>
+                </tr>
+
+                {% if transaction.relayed_by %}
+                  <tr>
+                    <th>Relayed By:</th>
+                    <td>{{ transaction.relayed_by }}</td>
+                  </tr>
+                {% endif %}
+                <tr>
+                  <td colspan="2" class="text-center">
+                    <a href="{{ api_url }}" class="btn btn-default">
+                      <i class="fa fa-code"></i> 
+                      API Call
+                    </a>
+                    <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                      <i class="fa fa-external-link"></i> 
+                      API Docs
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+          {# if statement div: #}
+          </div>
+
+        </div> {# row #}
+      </div> {# section #}
+    </div> {# container #}
+
+    <div class="col-md-12">
+      <h3>Details</h3>
     </div>
-  </div>
-</tr>
 
-{% else %}
-<div class="section">
-  <div class="container">
-    <h3 class="text-center">
-      Transaction not found.
-      Are you sure that's a valid transaction hash?
-    </h3>
-  </div>
-</div>
-{% endif %}
+    {% with force_include_tx_amount=False %}
+      {% include "partials/tx_hash.html" %}
+    {% endwith %}
 
-  <div class="section">
-    <div class="container">
-    {% if tx_hash %}
-      <div class="col-md-12">
-        <h3>Details</h3>
-      </div>
+    {% url 'add_metadata_to_tx' coin_symbol tx_hash as add_metadata_uri %}
+    {% include "partials/metadata.html" %}
 
-    {% include "partials/tx_hash.html" %}
+  </div> {# opening section #}
+</div> {# opening container #}
 
-  {% else %}
-    <p>
-      Transaction not found.
-      Are you sure that's a valid transaction hash?
-    </p>
-  {% endif %}
-
-  </div>
-</div>
 {% endblock content %}
 
 {% block extra_js %}
@@ -253,7 +316,7 @@
       var memoryPools = 0;
     {% endif %}
 
-    var doubleSpend = {% if transaction.double_of_tx %}"YES"{% else %}"No"{% endif %};
+    var doubleSpend = {% if transaction.double_spend %}"YES"{% else %}"No"{% endif %};
 
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
@@ -272,6 +335,11 @@
           $('#receive-cnt').text(data['receive_cnt']);
 
           memoryPools = data['receive_cnt'];
+
+          {# this code not invoked unless there was previously no double-spend #}
+          if (data['double_spend_detected']) {
+            location.reload();
+          }
 
           setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
 
@@ -312,7 +380,7 @@
       ws.onmessage = function(evt) {
 
         var data = JSON.parse(evt.data);
-        // console.log('Websocket Received: ' + evt.data);
+        console.log('Websocket Received: ' + evt.data);
 
         // Weak protection against too much activity
         total_ws_received += 1;
@@ -322,25 +390,9 @@
 
         if ( data.hasOwnProperty('hash') ) {
 
+          {# TODO: duplicate all logic in JS #}
+          location.reload();
 
-          // Update # confirmations
-          console.log('Transaction now has ' + data.confirmations + ' confirmations');
-          if (data.confirmations == 0) {
-            confs_formatted = '0/6';
-            // This shouldn't happen
-          } else if (data.confirmations == 1) {
-            // Refresh on first confirmation
-            location.reload();
-          } else if (data.confirmations < 6) {
-            confs_formatted = data.confirmations + '/6';
-            $('#conf-section').removeClass( "unconfirmed" ).addClass( "pending" );
-          } else {
-            confs_formatted = '6+';
-            $('#conf-section').removeClass( "pending unconfirmed" ).addClass( "confirmed" );
-          }
-
-          $('#num-confs').text(confs_formatted);
-          $('#num-confs').hide().fadeIn();
 
         }
 
@@ -369,22 +421,22 @@
 
       };
 
-    {% if transaction.confirmations == 0 %}
-      poll_confidence()
-    {% endif %}
+      {% if transaction.confirmations == 0 and transaction.double_spend == False %}
+        poll_confidence()
+      {% endif %}
 
-    function popoverContent(){
-      var html = '';
-      html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
-              '<b>Double-Spend Detected:</b> ' +
-              '<span id="ds-detected">'+doubleSpend+'</span>' +
-            '</span><br>' +
-            '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
-              '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
-              '</span><br />' +
-            '<span><a href="http://www.tik.ee.ethz.ch/file/848064fa2e80f88a57aef43d7d5956c6/P2P2013_093.pdf">How Calculated</a></span>';
-      return html;
-    }
+      function popoverContent(){
+        var html = '';
+        html += '<span{% if transaction.block_hash %} style="display:none;"{% endif %}>' +
+                '<b>Double-Spend Detected:</b> ' +
+                '<span id="ds-detected">No</span>' +
+              '</span><br>' +
+              '<span{% if transaction.block_hash %} style="display:none;"{% endif %} id="pools-section">' +
+                '<b>Memory Pools With Tx:</b> <span id="receive-cnt">'+memoryPools+'</span>'+
+                '</span><br />' +
+              '<span><a href="http://dev.blockcypher.com/#confidence-factor">How Calculated</a></span>';
+        return html;
+      }
 
       //init popover
       $('[data-toggle="popover"]').popover({'html': true});
@@ -398,6 +450,20 @@
           return popoverContent();
         }
       })
+
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
+      }
+
+      // Highlight an input or output by index num
+      if (window.location.hash.slice(1,13) == 'output-index') {
+        $(window.location.hash).attr('style', "background-color:#eee;")
+      }
+      if (window.location.hash.slice(1,8) == 'spentby') {
+        $(window.location.hash).attr('style', "background-color:#eee;")
+      }
+
+      fetch_metadata('{{ coin_symbol }}', 'tx', '{{ tx_hash }}');
 
     })
 

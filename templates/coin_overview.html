@@ -7,7 +7,7 @@
 
 {% block title %}
   {% blocktrans with coin_display_name=coin_symbol|coin_symbol_to_display_name %}
-    {{ coin_display_name }} Block Exporer
+    {{ coin_display_name }} Block Explorer
   {% endblocktrans %}
 {% endblock title %}
 
@@ -43,12 +43,99 @@
             </td>
             <td>{{ block.received_time|naturaltime }}</td>
             <td>{{ block.n_tx|intcomma }}</td>
-            <td>{{ block.total|satoshis_to_btc_full|floatformat:"0"|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-            <td>{{ block.fees|satoshis_to_btc_rounding|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
+            <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol True 5 %}</td>
+            <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol True 5 %}</td>
           </tr>
         {% endfor %}
       </table>
     </div>
+  </div>
+
+  <div class="section">
+    <h2>Current Fee Estimates
+      <a href="{{ fee_api_url }}" class="btn btn-default">
+        <i class="fa fa-code"></i> 
+        API Call
+      </a>
+      <a href="http://dev.blockcypher.com/#blockchain" class="btn btn-default">
+        <i class="fa fa-external-link"></i> 
+        API Docs
+      </a>
+    </h2>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th>High Priority <small>(1-2 blocks)</small></th>
+          <th>Medium Priority <small>(3-6 blocks)</small></th>
+          <th>Low Priority <small>(7+ blocks)</small></th>
+        </tr>
+        <tr>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <p>
+      <i>
+        Fee estimates are based on a rolling, weighted average.
+      </i>
+    </p>
   </div>
 
   <div class="section{% if not recent_txs %} hidden{% endif %}">
@@ -63,7 +150,12 @@
             <th>Time</th>
             <th>Miner Preference</th>
           </tr>
-          <tr class="new-tx" style="display;none"></tr>
+          <tr class="new-tx" style="display;none">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
           {% for recent_tx in recent_txs %}
             <tr class="new-tx">
               <td>
@@ -73,12 +165,12 @@
                 ...
               </td>
               <td>
-                {{ recent_tx.total|satoshis_to_btc_rounding|intcomma }}
-                {{ coin_symbol|coin_symbol_to_currency_name }}
+                {# always in BTC/BCY/LTC/DOGE because JS streaming in new transactions will be and don't want to mix units #}
+                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
-                  {{ recent_tx.received|naturaltime }}
+                  {{ recent_tx.received|date:'Y-m-d H:i' }} GMT
                 </time>
               </td>
               <td>
@@ -90,7 +182,7 @@
       </div>
 
       <p class="text-center">
-        Note: Blockypher is faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+        Note: BlockCypher is faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
       </p>
 
     </div>
@@ -116,6 +208,8 @@
     $(document).ready(function(){
 
       $("time.timeago").timeago();
+
+      $('[data-toggle="tooltip"]').tooltip();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
@@ -156,7 +250,7 @@
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
             $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
-            $('<td>').append($('<time>').attr('class', "timeago").attr('datetime', data.received)),
+            $('<td>').append($('<abbr>').attr('class', "timeago").attr('datetime', data.received)).text($.timeago(data.received)),
             $('<td>').text(data.preference)
           )
           $('.new-tx').first().before(to_insert);

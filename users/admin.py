@@ -6,12 +6,24 @@ from users.models import AuthUser, LoggedLogin
 
 @admin.register(AuthUser)
 class AuthUserAdmin(admin.ModelAdmin):
+    def emails_sent(self, instance):
+        return instance.sentemail_set.count()
+
+    def address_subscriptions(self, instance):
+        return instance.addresssubscription_set.count()
+
+    def forwarding_addresses(self, instance):
+        return instance.addressforwarding_set.count()
+
     list_display = (
             'id',
             'date_joined',
+            'email',
+            'emails_sent',
+            'address_subscriptions',
+            'forwarding_addresses',
             'first_name',
             'last_name',
-            'email',
             'is_active',
             'is_staff',
             'is_superuser',

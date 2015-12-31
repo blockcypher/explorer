@@ -1,0 +1,32 @@
+{% load btc_formats %}
+<div id="metadata">
+  <div>
+    <h2>
+      BlockCypher Public Metadata (beta)
+      <a
+        href="{{ add_metadata_uri }}"
+        class="btn btn-default"
+        >
+        <i class="fa fa-code"></i> 
+        Add Metadata
+      </a>
+      <a href="http://dev.blockcypher.com/#metadata-api" class="btn btn-default">
+        <i class="fa fa-external-link"></i> 
+        API Docs
+      </a>
+    </h2>
+    <table id="metadata-table" class="table table-hover table-condensed" style="display:none;">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody id="metadata-tbody">
+      </tbody>
+    </table>
+    <p id="metadata-empty-notice" style="display:none;">
+      This page has no public metadata yet.
+    </p>
+  </div>
+</div>

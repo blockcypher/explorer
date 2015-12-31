@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from blockcypher.constants import COIN_CHOICES
+from blockcypher.constants import COIN_CHOICES, UNIT_CHOICES_DJANGO
 from blockcypher.utils import is_valid_address, is_valid_hash, is_valid_block_num
 
 from blockexplorer.walletname import is_valid_wallet_name
@@ -12,7 +12,7 @@ import re
 class SearchForm(forms.Form):
     search_string = forms.CharField(
         required=True,
-        min_length=2,
+        min_length=1,
         max_length=128,
     )
 
@@ -35,3 +35,12 @@ class SearchForm(forms.Form):
         else:
             err_msg = _('Not a valid address, transaction hash, or block number')
             raise forms.ValidationError(err_msg)
+
+
+class UnitChoiceForm(forms.Form):
+    unit_choice = forms.ChoiceField(
+        label='',
+        required=True,
+        choices=UNIT_CHOICES_DJANGO,
+        widget=forms.Select(attrs={'onchange': 'this.form.submit()'}),
+    )
