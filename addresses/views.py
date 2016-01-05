@@ -512,11 +512,10 @@ def address_webhook(request, secret_key, ignored_key):
             client.captureMessage(
                     'TX Event %s unsubscribed' % tx_event.id,
                     data={
-                        'request': request,
-                        'tx_event': tx_event,
+                        'tx_event': tx_event.id,
                         'address_subscription': tx_event.address_subscription,
                         'recent_emails_sent': recent_emails_sent,
-                        'webhook': webhook,
+                        'webhook': webhook.id,
                         },
                     )
             # TODO: notify user they've been unsubscribed
