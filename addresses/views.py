@@ -14,9 +14,11 @@ from annoying.functions import get_object_or_None
 
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.raven import client
+
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details, unsubscribe_from_webhook
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
 from blockcypher.utils import flatten_txns_by_hash
 
@@ -33,6 +35,8 @@ from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simp
 import json
 
 from urllib.parse import urlencode
+
+from datetime import timedelta
 
 SMALL_PAYMENTS_MSG = '''
 Please note that for very small payments of 100 bits or less,
@@ -233,7 +237,10 @@ def subscribe_address(request, coin_symbol):
 
             existing_subscription_cnt = AddressSubscription.objects.filter(
                     auth_user=auth_user,
-                    b58_address=coin_address).count()
+                    b58_address=coin_address,
+                    unsubscribed_at=None,
+                    disabled_at=None,
+                    ).count()
             if existing_subscription_cnt:
                 msg = _("You're already subscribed to that address. Please choose another address.")
                 messages.warning(request, msg)
@@ -308,8 +315,7 @@ def user_unsubscribe_address(request, address_subscription_id):
         msg = _("You've already unsubscribed from this alert")
         messages.info(request, msg)
     else:
-        address_subscription.unsubscribed_at = now()
-        address_subscription.save()
+        address_subscription.user_unsubscribe_subscription()
 
         address_uri = reverse('address_overview', kwargs={
             'coin_symbol': address_subscription.coin_symbol,
@@ -390,8 +396,7 @@ def unsubscribe_address(request, unsub_code):
         address_subscription = sent_email.address_subscription
         assert address_subscription
 
-        address_subscription.unsubscribed_at = now()
-        address_subscription.save()
+        address_subscription.user_unsubscribe_subscription()
 
         addr_uri = reverse('address_overview', kwargs={
             'coin_symbol': address_subscription.coin_symbol,
@@ -478,26 +483,71 @@ def address_webhook(request, secret_key, ignored_key):
     # email sending logic
     # TODO: add logic for notify on deposit vs withdrawal
     # TODO: add safety check to prevent duplicate email sending
-    if tx_event.is_subscribed():
-        if double_spend and (tx_is_new or not tx_event.double_spend):
-            # We have the first reporting of a double-spend
-            tx_event.send_double_spend_tx_notification()
+    if tx_event.address_subscription.unsubscribed_at or tx_event.address_subscription.disabled_at:
+        # unsubscribe from webhooks going forward
+        try:
+            unsub_result = unsubscribe_from_webhook(
+                    webhook_id=tx_event.address_subscription.blockcypher_id,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    coin_symbol=tx_event.address_subscription.coin_symbol,
+                    )
+            assert unsub_result is True, unsub_result
+        except Exception:
+            # there was a problem unsubscribing
+            # notify using sentry but still return the webhook to blockcypher
+            client.captureException()
 
-        elif num_confs == 0 and tx_is_new:
-            # First broadcast
-            if tx_event.address_subscription.notify_on_broadcast:
-                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
-                    tx_event.send_unconfirmed_tx_email()
-                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
-                    tx_event.send_unconfirmed_tx_email()
+    elif tx_event.address_subscription.auth_user.email_verified:
+        # make sure we haven't contacted too many times (and unsub if so)
 
-        elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
-            # Sixth confirm
-            if tx_event.address_subscription.notify_on_sixth_confirm:
-                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
-                    tx_event.send_confirmed_tx_email()
-                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
-                    tx_event.send_confirmed_tx_email()
+        earliest_dt = now() - timedelta(days=3)
+        recent_emails_sent = SentEmail.objects.filter(
+                address_subscription=tx_event.address_subscription,
+                sent_at__gt=earliest_dt,
+                ).count()
+
+        if recent_emails_sent > 100:
+            # too many emails, unsubscribe
+            tx_event.address_subscription.admin_unsubscribe_subscription()
+            client.captureMessage(
+                    'TX Event %s unsubscribed' % tx_event.id,
+                    data={
+                        'request': request,
+                        'tx_event': tx_event,
+                        'address_subscription': tx_event.address_subscription,
+                        'recent_emails_sent': recent_emails_sent,
+                        'webhook': webhook,
+                        },
+                    )
+            # TODO: notify user they've been unsubscribed
+
+        else:
+            # proceed with normal email sending
+
+            if double_spend and (tx_is_new or not tx_event.double_spend):
+                # We have the first reporting of a double-spend
+                tx_event.send_double_spend_tx_notification()
+
+            elif num_confs == 0 and tx_is_new:
+                # First broadcast
+                if tx_event.address_subscription.notify_on_broadcast:
+                    if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                        tx_event.send_unconfirmed_tx_email()
+                    elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                        tx_event.send_unconfirmed_tx_email()
+
+            elif num_confs == 6:
+                # Sixth confirm
+                if tx_event.address_subscription.notify_on_sixth_confirm:
+                    if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                        tx_event.send_confirmed_tx_email()
+                    elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                        tx_event.send_confirmed_tx_email()
+    else:
+        # active subscription with unverfied email (can't contact)
+        # TODO: add unsub if orig subscription is > X days old
+        # eventually these could pile up
+        pass
 
     # Update logging
     webhook.address_subscription = address_subscription

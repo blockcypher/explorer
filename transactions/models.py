@@ -91,6 +91,3 @@ class OnChainTransaction(models.Model):
                 body_context=context_dict,
                 fkey_objs=fkey_objs,
                 )
-
-    def is_subscribed(self):
-        return self.address_subscription.is_active()

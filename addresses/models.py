@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 from blockcypher.constants import COIN_CHOICES, COIN_SYMBOL_MAPPINGS
 
@@ -7,7 +8,8 @@ from emails.trigger import send_and_log
 
 class AddressSubscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    unsubscribed_at = models.DateTimeField(blank=True, null=True, db_index=True)
+    unsubscribed_at = models.DateTimeField(blank=True, null=True, db_index=True, help_text='User disabled')
+    disabled_at = models.DateTimeField(blank=True, null=True, db_index=True, help_text='Admin disabled')
     coin_symbol = models.CharField(choices=COIN_CHOICES, max_length=16, null=False, blank=False, db_index=True)
     b58_address = models.CharField(blank=False, null=False, max_length=64, db_index=True)
     notify_on_broadcast = models.BooleanField(db_index=True, default=True)
@@ -43,15 +45,15 @@ class AddressSubscription(models.Model):
                 fkey_objs={'address_subscription': self},
                 )
 
-    def is_active(self):
-        if not self.auth_user.email_verified:
-            # Don't send to unverified emails
-            return False
-        if self.unsubscribed_at:
-            # Don't send to unsubscribed addresses
-            # TODO: unsub at the API level
-            return False
-        return True
+    def user_unsubscribe_subscription(self):
+        self.unsubscribed_at = now()
+        self.save()
+        return self
+
+    def admin_unsubscribe_subscription(self):
+        self.disabled_at = now()
+        self.save()
+        return self
 
 
 class AddressForwarding(models.Model):

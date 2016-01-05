@@ -98,7 +98,10 @@ class AuthUser(AbstractBaseUser):
         return '%s?e=%s' % (reverse_lazy('user_login'), self.email)
 
     def get_address_subscriptions(self):
-        return self.addresssubscription_set.filter(unsubscribed_at=None).order_by('-id')
+        return self.addresssubscription_set.filter(
+                unsubscribed_at=None,
+                disabled_at=None,
+                ).order_by('-id')
 
     def get_address_forwardings(self):
         return self.addressforwarding_set.filter(archived_at=None).order_by('-id')

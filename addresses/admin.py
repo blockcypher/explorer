@@ -50,6 +50,7 @@ class AddressSubscriptionAdmin(admin.ModelAdmin):
             'id',
             'created_at',
             'unsubscribed_at',
+            'disabled_at',
             'coin_symbol',
             'b58_address',
             'auth_user',
