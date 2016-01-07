@@ -509,15 +509,7 @@ def address_webhook(request, secret_key, ignored_key):
         if recent_emails_sent > 100:
             # too many emails, unsubscribe
             tx_event.address_subscription.admin_unsubscribe_subscription()
-            client.captureMessage(
-                    'TX Event %s unsubscribed' % tx_event.id,
-                    data={
-                        'tx_event': tx_event.id,
-                        'address_subscription': tx_event.address_subscription,
-                        'recent_emails_sent': recent_emails_sent,
-                        'webhook': webhook.id,
-                        },
-                    )
+            client.captureMessage('TX Event %s unsubscribed' % tx_event.id)
             # TODO: notify user they've been unsubscribed
 
         else:
