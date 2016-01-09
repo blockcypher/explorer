@@ -43,6 +43,23 @@ Please note that for very small payments of 100 bits or less,
 the payment will not forward as the amount to forward is lower than the mining fee.
 '''
 
+# http://www.useragentstring.com/pages/Crawlerlist/
+BOT_LIST = (
+        'googlebot',
+        'bingbot',
+        'baiduspider',
+        'yandexbot',
+        'omniexplorer_bot',
+        )
+
+
+def is_bot(user_agent):
+    user_agent_lc = user_agent.lower()
+    for bot_string in BOT_LIST:
+        if bot_string in user_agent_lc:
+            return True
+    return False
+
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
@@ -58,10 +75,19 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         current_page = 1
 
     try:
+        user_agent = request.META.get('HTTP_USER_AGENT')
+
+        if is_bot(user_agent):
+            # very crude hack!
+            confirmations = 1
+        else:
+            confirmations = 0
+
         address_details = get_address_details(
                 address=address,
                 coin_symbol=coin_symbol,
                 txn_limit=TXNS_PER_PAGE,
+                confirmations=confirmations,
                 api_key=BLOCKCYPHER_API_KEY,
                 )
     except AssertionError:
