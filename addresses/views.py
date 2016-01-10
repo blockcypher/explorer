@@ -54,10 +54,11 @@ BOT_LIST = (
 
 
 def is_bot(user_agent):
-    user_agent_lc = user_agent.lower()
-    for bot_string in BOT_LIST:
-        if bot_string in user_agent_lc:
-            return True
+    if user_agent:
+        user_agent_lc = user_agent.lower()
+        for bot_string in BOT_LIST:
+            if bot_string in user_agent_lc:
+                return True
     return False
 
 
