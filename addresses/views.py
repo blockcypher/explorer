@@ -173,8 +173,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
     else:
         max_bh = None
 
-    print(confirmed_txrefs)
-
     api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
