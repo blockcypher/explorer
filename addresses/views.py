@@ -30,7 +30,7 @@ from emails.models import SentEmail
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm, KnownUserAddressForwardingForm, NewUserAddressForwardingForm
 
-from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
+from utils import get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
 
 import json
 
@@ -67,13 +67,6 @@ def is_bot(user_agent):
 def address_overview(request, coin_symbol, address, wallet_name=None):
 
     TXNS_PER_PAGE = 100
-
-    # 1 indexed page
-    current_page = request.GET.get('page')
-    if current_page:
-        current_page = int(current_page)
-    else:
-        current_page = 1
 
     try:
         user_agent = request.META.get('HTTP_USER_AGENT')
@@ -168,16 +161,19 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 })
             messages.info(request, msg, extra_tags='safe')
 
-    all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
+    confirmed_txrefs = address_details.get('txrefs', [])
 
-    # transaction pagination: 0-indexed and inclusive
-    tx_start_num = (current_page - 1) * TXNS_PER_PAGE
-    tx_end_num = current_page * TXNS_PER_PAGE - 1
-
-    # filter address details for pagination. HACK!
-    all_transactions = all_transactions[tx_start_num:tx_end_num]
+    all_transactions = address_details.get('unconfirmed_txrefs', []) + confirmed_txrefs
 
     flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
+    # import pprint; pprint.pprint(flattened_txs, width=1)
+
+    if confirmed_txrefs:
+        max_bh = confirmed_txrefs[-1]['block_height']
+    else:
+        max_bh = None
+
+    print(confirmed_txrefs)
 
     api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
@@ -189,14 +185,14 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'address': address,
             'api_url': api_url,
             'wallet_name': wallet_name,
-            'current_page': current_page,
-            'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
+            'has_more': address_details.get('hasMore', False),
             'total_sent_satoshis': address_details['total_sent'],
             'total_received_satoshis': address_details['total_received'],
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
             'flattened_txs': flattened_txs,
+            'max_bh': max_bh,
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],

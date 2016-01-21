@@ -190,35 +190,6 @@
   {% endif %}
   </h2>
 
-{% if max_pages > 1 %}
-  <div class="section pager">
-    <div class="row">
-      <div class="col-sm-4 text-left">
-      {% if current_page > 1 %}
-        <a href="?page={{ current_page|add:-1|intcomma }}" class="btn btn-default">
-          <i class="fa fa-angle-double-left"></i> 
-          Previous Page
-        </a>
-      {% endif %}
-      </div>
-
-      <div class="col-sm-4 text-center">
-        Page {{ current_page|intcomma }} of {{ max_pages|intcomma }}
-      </div>
-
-      <div class="col-sm-4 text-right">
-      {% if current_page < max_pages %}
-        <a href="?page={{ current_page|add:1|intcomma }}" class="btn btn-default">
-          Next Page
-          <i class="fa fa-angle-double-right"></i>
-        </a>
-      {% endif %}
-      </div>
-      <div class="clearfix"></div>
-    </div>
-  </div>
-{% endif %}
-
   <div class="table-responsive">
     <table class="table">
       <tr>
@@ -288,37 +259,25 @@
         </tr>
       {% endfor %}
 
+      {% if has_more %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            <a href="{{ api_url }}?limit=2000&before={{ max_bh }}" class="btn btn-default">
+              More
+              <i class="fa fa-angle-double-right"></i>
+            </a>
+          </td>
+        </tr>
+      {% endif %}
+
     </table>
+
   </div>
 
-  {% if max_pages > 1 %}
-    <div class="section pager">
-      <div class="row">
-        <div class="col-sm-4 text-left">
-        {% if current_page > 1 %}
-          <a href="?page={{ current_page|add:-1|intcomma }}" class="btn btn-default">
-            <i class="fa fa-angle-double-left"></i> 
-            Previous Page
-          </a>
-        {% endif %}
-        </div>
-
-        <div class="col-sm-4 text-center">
-          Page {{ current_page|intcomma }} of {{ max_pages|intcomma }}
-        </div>
-
-        <div class="col-sm-4 text-right">
-        {% if current_page < max_pages %}
-          <a href="?page={{ current_page|add:1|intcomma }}" class="btn btn-default">
-            Next Page
-            <i class="fa fa-angle-double-right"></i>
-          </a>
-        {% endif %}
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-  {% endif %}
 
 </div>
 
