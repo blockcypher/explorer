@@ -36,10 +36,12 @@
 {% block content %}
 <div class="container">
   <nav>
-    <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
-      <i class="fa fa-angle-double-left"></i> 
-      Previous Block
-    </a>
+    {% if block_details.height != 1 %}
+      <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
+        <i class="fa fa-angle-double-left"></i> 
+        Previous Block
+      </a>
+    {% endif %}
     {% if block_details.depth > 0 %}
       <a href="{% url 'block_overview' coin_symbol block_details.height|add:1 %}" class="btn btn-default pull-right">
         Next Block
