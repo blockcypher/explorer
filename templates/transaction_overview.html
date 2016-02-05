@@ -81,9 +81,11 @@
               Colu Transaction
             {% elif transaction.data_protocol == 'coinspark' %}
               CoinSpark Transaction
+            {% elif transaction.data_protocol == 'omni' %}
+              Omni Transaction
             {% else %}
               {# Catch all in case more are added #}
-              {{ transaction.data_protocol }} transaction
+              {{ transaction.data_protocol }} Transaction
             {% endif %}
           </strong>
           (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
