@@ -45,6 +45,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
                 limit=TX_LIMIT,
                 api_key=BLOCKCYPHER_API_KEY,
                 include_hex=False,
+                show_confidence=True,
                 )
     except AssertionError:
         msg = _('Invalid Transaction Hash')
@@ -132,6 +133,7 @@ def poll_confidence(request, coin_symbol, tx_hash):
             tx_hash=tx_hash,
             coin_symbol=coin_symbol,
             limit=1,
+            show_confidence=True,
             api_key=BLOCKCYPHER_API_KEY,
             )
 
