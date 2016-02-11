@@ -221,7 +221,11 @@ def decode_tx(request, coin_symbol):
             tx_hex = form.cleaned_data['tx_hex']
             coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
-            tx_in_json = decodetx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use)
+            tx_in_json = decodetx(
+                    tx_hex=tx_hex,
+                    coin_symbol=coin_symbol_to_use,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    )
             # import pprint; pprint.pprint(tx_in_json, width=1)
             tx_in_json_str = json.dumps(tx_in_json, indent=4, sort_keys=True)
 
