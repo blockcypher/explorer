@@ -66,7 +66,7 @@ def is_bot(user_agent):
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address, wallet_name=None):
 
-    TXNS_PER_PAGE = 200
+    TXNS_PER_PAGE = 100
 
     try:
         user_agent = request.META.get('HTTP_USER_AGENT')
