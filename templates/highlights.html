@@ -35,12 +35,14 @@
         Subscribe to email notifications on your crypto addresses.
         Great for monitoring your cold storage or incoming payments.
       </li>
-      <li>
-        <a href="{% url 'forward_forwarding' %}">Address Forwarding</a>
-        -
-        Create unlimited new addresses that instantly forward to your existing address(es).
-        Give a new address out to every person you transact with, without having to change where or how you store your crypto.
-      </li>
+      {% comment %}
+        <li>
+          <a href="{% url 'forward_forwarding' %}">Address Forwarding</a>
+          -
+          Create unlimited new addresses that instantly forward to your existing address(es).
+          Give a new address out to every person you transact with, without having to change where or how you store your crypto.
+        </li>
+      {% endcomment %}
       <li>
         <a href="{% url 'coin_overview' 'btc' %}">Fee Estimates</a>
         -

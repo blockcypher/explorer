@@ -148,7 +148,13 @@
     </div>
   </div>
 
-  <h2>{{ block_details.n_tx|intcomma }} Transaction{{ block_details.n_tx|pluralize}}</h2>
+  <h2>
+    {% if block_details.txids|length != block_details.n_tx %}
+      {{ block_details.txids|length }}
+      of
+    {% endif %}
+    {{ block_details.n_tx|intcomma }} Transaction{{ block_details.n_tx|pluralize}}
+  </h2>
 
   <div class="section pager">
     <div class="row">
@@ -180,22 +186,9 @@
 {% if block_details.txids %}
 
   {% for transaction in block_details.txids %}
-
-    <div class="well section">
-      <h4 class="text-center truncate">
-        <i class="fa fa-exchange"></i> 
-        {% if transaction.hash %}
-          <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
-            {{ transaction.hash }}
-          </a>
-        {% endif %}
-      </h4>
-
-      {% with force_include_tx_amount=True %}
+      {% with force_include_tx_amount=True show_tx_hash=True show_num_confirmation=False num_inouts_to_display=5 %}
         {% include "partials/tx_hash.html" %}
       {% endwith %}
-
-    </div>
   {% endfor %}
 
   <div class="section pager">

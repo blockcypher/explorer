@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import re
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -32,6 +33,12 @@ if os.getenv('TEMPLATE_DEBUG') == 'True':
     TEMPLATE_DEBUG = True
 else:
     TEMPLATE_DEBUG = False
+
+# DDT can cause extreme slowness clocking template rendering CPU times
+if os.getenv('DISABLE_DEBUG_TOOLBAR') == 'False':
+    DISABLE_DEBUG_TOOLBAR = False
+else:
+    DISABLE_DEBUG_TOOLBAR = True
 
 ALLOWED_HOSTS = [
         'live.blockcypher.com',
@@ -89,7 +96,6 @@ WSGI_APPLICATION = 'blockexplorer.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
 # http://stackoverflow.com/a/11100175
 DJ_DEFAULT_URL = os.getenv('DJ_DEFAULT_URL', 'postgres://localhost')
 DATABASES = {'default': dj_database_url.config(default=DJ_DEFAULT_URL)}
@@ -149,9 +155,10 @@ if SITE_DOMAIN in (PRODUCTION_DOMAIN, STAGING_DOMAIN):
     CSRF_COOKIE_SECURE = True
     MIDDLEWARE_CLASSES += ('blockexplorer.middleware.SSLMiddleware',)
 else:
-    # FIXME: this should work on staging too, but I can't get it to work with gunicorn
-    DEBUG_TOOLBAR_PATCH_SETTINGS = True
     BASE_URL = 'http://%s' % SITE_DOMAIN
+    if not DISABLE_DEBUG_TOOLBAR:
+        # FIXME: this should work on staging too, but I can't get it to work with gunicorn
+        DEBUG_TOOLBAR_PATCH_SETTINGS = True
 
 
 IS_PRODUCTION = (SITE_DOMAIN == PRODUCTION_DOMAIN)
@@ -160,15 +167,17 @@ if IS_PRODUCTION:
     EMAIL_DEV_PREFIX = False
 else:
     EMAIL_DEV_PREFIX = True
-    # Enable debug toolbar on local and staging
-    MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
-    INSTALLED_APPS += ('debug_toolbar', )
+    if not DISABLE_DEBUG_TOOLBAR:
+        # Enable debug toolbar on local and staging
+        MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
+        INSTALLED_APPS += ('debug_toolbar', )
 
-# Debug Toolbar
-INTERNAL_IPS = (
-        '127.0.0.1',
-        'localhost',
-        )
+if not DISABLE_DEBUG_TOOLBAR:
+    # Debug Toolbar
+    INTERNAL_IPS = (
+            '127.0.0.1',
+            'localhost',
+            )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',

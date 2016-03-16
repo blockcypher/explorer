@@ -18,9 +18,8 @@ from blockexplorer.raven import client
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details, unsubscribe_from_webhook
+from blockcypher.api import get_address_full, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details, unsubscribe_from_webhook
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
-from blockcypher.utils import flatten_txns_by_hash
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription, AddressForwarding
@@ -66,7 +65,9 @@ def is_bot(user_agent):
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address, wallet_name=None):
 
-    TXNS_PER_PAGE = 100
+    TXNS_PER_PAGE = 10
+
+    before_bh = request.GET.get('before')
 
     try:
         user_agent = request.META.get('HTTP_USER_AGENT')
@@ -77,12 +78,13 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         else:
             confirmations = 0
 
-        address_details = get_address_details(
+        address_details = get_address_full(
                 address=address,
                 coin_symbol=coin_symbol,
                 txn_limit=TXNS_PER_PAGE,
                 confirmations=confirmations,
                 api_key=BLOCKCYPHER_API_KEY,
+                before_bh=before_bh,
                 )
     except AssertionError:
         msg = _('Invalid Address')
@@ -161,19 +163,10 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 })
             messages.info(request, msg, extra_tags='safe')
 
-    confirmed_txrefs = address_details.get('txrefs', [])
+    all_transactions = address_details.get('txs', [])
+    # import pprint; pprint.pprint(all_transactions, width=1)
 
-    all_transactions = address_details.get('unconfirmed_txrefs', []) + confirmed_txrefs
-
-    flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
-    # import pprint; pprint.pprint(flattened_txs, width=1)
-
-    if confirmed_txrefs:
-        max_bh = confirmed_txrefs[-1]['block_height']
-    else:
-        max_bh = None
-
-    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s/full?limit=50' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             address)
@@ -189,8 +182,8 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
-            'flattened_txs': flattened_txs,
-            'max_bh': max_bh,
+            'flattened_txs': all_transactions,
+            'before_bh': before_bh,
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
