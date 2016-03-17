@@ -230,12 +230,16 @@
       {% endif %}
 
     {% else %}
+
       <p>
-        No transactions detected.
+        No transactions detected{% if before_bh %} before block {{ before_bh|intcomma }}{% endif %}
         {% if is_wallet_page and not subchain_indices %}
-          <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
+          . <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
+        {% elif before_bh %}
+            (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
         {% endif %}
       </p>
+
     {% endif %}
 
     {% if is_wallet_page %}

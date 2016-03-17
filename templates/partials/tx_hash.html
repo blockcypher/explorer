@@ -68,7 +68,7 @@
           {% if input.prev_hash %}
             id="spentby-{{ input.prev_hash }}-{{ input.output_index }}"
           {% endif %}
-          {% if input.addresses.0 == address %}style="background-color:#eee;"{% endif %}
+          {% if input.addresses.0 and input.addresses.0 == address %}style="background-color:#eee;"{% endif %}
           >
           <strong>
             {% satoshis_to_user_units_trimmed input.output_value tcp__user_units coin_symbol %}
@@ -110,7 +110,7 @@
       {% if forloop.counter0 < num_inouts_to_display %}
         <div
           class="txn-output truncate" id="output-index-{{ forloop.counter0 }}"
-          {% if output.addresses.0 == address %}style="background-color:#eee;"{% endif %}
+          {% if output.addresses.0 and output.addresses.0 == address %}style="background-color:#eee;"{% endif %}
           >
           <strong>
             {% satoshis_to_user_units_trimmed output.value tcp__user_units coin_symbol %}
