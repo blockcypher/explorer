@@ -40,6 +40,12 @@
   {% endif %}
 {% endblock meta_description %}
 
+{% block extra_head %}
+  {% if before_bh %}
+    {# https://moz.com/learn/seo/canonicalization #}
+    <link href="{% url 'address_overview' coin_symbol address %}" rel="canonical" />
+  {% endif %}
+{% endblock extra_head %}
 
 {% block page_header %}
   <h1>
@@ -219,7 +225,7 @@
         {% if has_more %}
 
           {% with flattened_txs|last as last_tx %}
-            <a href="?before={{ last_tx.block_height }}" class="btn btn-default pull-right">
+            <a href="?before={{ last_tx.block_height }}" class="btn btn-default pull-right" rel=“nofollow">
               More
               <i class="fa fa-angle-double-right"></i>
             </a>
