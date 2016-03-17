@@ -82,6 +82,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 address=address,
                 coin_symbol=coin_symbol,
                 txn_limit=TXNS_PER_PAGE,
+                inout_limit=5,
                 confirmations=confirmations,
                 api_key=BLOCKCYPHER_API_KEY,
                 before_bh=before_bh,
