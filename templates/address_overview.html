@@ -320,7 +320,7 @@
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
 
-      {% if not is_wallet_page %}
+      {% if not is_wallet_page and not before_bh and num_unconfirmed_txns < 10 %}
 
         function create_ws() {
           console.log('Creating new websocket...');
