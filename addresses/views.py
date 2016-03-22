@@ -67,6 +67,11 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
 
     TXNS_PER_PAGE = 10
 
+    if request.GET.get('page'):
+        # get rid of old pagination (for googlebot)
+        kwargs = {'coin_symbol': coin_symbol, 'address': address}
+        return HttpResponseRedirect(reverse('address_overview', kwargs=kwargs))
+
     before_bh = request.GET.get('before')
 
     try:
