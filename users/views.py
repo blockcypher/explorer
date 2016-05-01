@@ -21,7 +21,7 @@ from datetime import timedelta
 from utils import get_client_ip, get_user_agent
 
 
-@render_to('login.html')
+@render_to('admin/login.html')
 def user_login(request):
     user = request.user
     if user.is_authenticated():
