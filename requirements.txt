@@ -1,6 +1,8 @@
-Django==1.7.1
+bitcoin==1.1.29
+blockcypher==1.0.71
 dj-database-url==0.3.0
 dj-static==0.0.6
+Django==1.7.1
 django-annoying==0.8.0
 django-crispy-forms==1.4.0
 django-debug-toolbar==1.2.2
@@ -9,11 +11,15 @@ django-toolbelt==0.0.1
 gnureadline==6.3.3
 gunicorn==19.1.1
 ipython==2.3.0
+jsonfield==1.0.2
 newrelic==2.36.0.30
 psycopg2==2.5.4
 python-dateutil==2.2
+python-postmark==0.4.7
+pytz==2014.9
 raven==5.1.1
 requests==2.4.3
-six==1.8.0
+six==1.9.0
 sqlparse==0.1.13
 static3==0.5.1
+wheel==0.24.0

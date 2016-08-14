@@ -1,0 +1,17 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+Thank you for requesting email notifications when payments to the {{ cs_display }} address <b>{{ initial_address}}</b> are received.
+Please click this link to confirm your email address:<br />
+<a href="{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}">{{ BASE_URL }}{% url 'confirm_subscription' verif_code %}</a>
+<br />
+<br />
+As a reminder, payments sent to <b>{{ initial_address }}</b> will automatically and instantly forward to <b>{{ destination_address }}</b>.
+Please note that for very small payments of 100 bits or less, the payment will not forward as the amount to forward is lower than the mining fee.
+{% endblock content %}
+
+{% block ps %}
+P.S. You were sent this email because you recently requested email notifications from us.
+If you didn't make this request, just ignore this email and you won't hear from us again.
+Sorry for the inconvenience!
+{% endblock ps %}

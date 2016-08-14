@@ -3,218 +3,393 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
+
+{% block title %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  {% if is_wallet_page %}
+    Extended Public Key {{ pubkey }}
+  {% else %}
+    Address {{ address }}
+  {% endif %}
+{% endblock title %}
+
+{% block meta_description %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  {% if is_wallet_page %}
+    Extended Public Key {{ pubkey }}
+  {% else %}
+    Address {{ address }}
+  {% endif %}
+  has had
+  {% if num_all_txns %}
+    {{ num_all_txns|intcomma }} transaction{{ num_all_txns|pluralize }}
+    and has a balance of
+    {% satoshis_to_user_units_trimmed total_balance_satoshis 'btc' coin_symbol True %}
+    {% if total_balance_satoshis %}
+      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+      received and
+      {% satoshis_to_user_units_trimmed total_sent_satoshis 'btc' coin_symbol True %}
+      sent).
+    {% else %}
+      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+      sent and received)
+    {% endif %}
+  {% else %}
+    no transactions.
+  {% endif %}
+{% endblock meta_description %}
+
+{% block extra_head %}
+  {% if before_bh %}
+    {# https://moz.com/learn/seo/canonicalization #}
+    <link href="{% url 'address_overview' coin_symbol address %}" rel="canonical" />
+  {% endif %}
+{% endblock extra_head %}
+
+{% block page_header %}
+  <h1>
+    <i class="fa fa-qrcode"></i> 
+    {{ coin_symbol|coin_symbol_to_display_name }}
+    {% if is_wallet_page %}
+      Extended Public Key
+    {% else %}
+      Address
+    {% endif %}
+  </h1>
+
+  <h2 class="tagline wrapit semi">
+    {% if is_wallet_page %}
+      {{ pubkey }}
+    {% else %}
+      {{ address }}
+    {% endif %}
+  </h2>
+
+  {% if is_wallet_page and subchain_indices %}
+    <h4 class="tagline wrapit semi">
+      Subchain Indices:
+      {% for subchain_index in subchain_indices %}
+        {{ subchain_index }}{% include "partials/comma.html" %}
+      {% endfor %}
+    </h4>
+  {% endif %}
+
+  {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
+{% endblock page_header %}
 
 {% block content %}
-  
 <div class="container">
+  <div class="section">
 
-<h1>{{ coin_symbol|coin_symbol_to_display_name }} Address</h1>
-
-
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <th colspan="2">Summary</th>
-    <tr>
-      <td>Address</td>
-      <td>
-        <a href="{% url 'address_overview' coin_symbol address %}">{{ address }}</a>
-        {% if coin_symbol = 'btc' %}
+    {% if not is_wallet_page %}
+      <div class="col-md-4 text-center">
+        <p>
           {# TODO: support this for other blockchains #}
-          (<a href="bitcoin:{{ address }}">pay</a>)<br />
-        {% endif %}
-        <br />
-        <img src="//chart.googleapis.com/chart?cht=qr&chl=bitcoin%3A{{ address }}&choe=UTF-8&chs=300x300" />
-      </td>
-    </tr>
-    <tr>
-      <td># Transactions</td>
-      <td>
-        {{ num_all_txns|intcomma }}
-        {% if num_unconfirmed_txns %}
-          ({{ num_unconfirmed_txns|intcomma }} transactions unconfirmed)
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Received</td>
-      <td>
-        {% if not has_more %}
-          {{ total_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          {% if unconfirmed_received_satoshis %}
-            ({{ unconfirmed_received_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
+          <a href="{% if coin_symbol = 'btc' %}bitcoin:{{ address }}"{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
+            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
+          </a>
+        </p>
+      </div>
+    {% endif %}
+
+    <div class="col-md-{% if is_wallet_page %}12{% else %}8{% endif %}">
+
+      <div class="dash dash-3">
+        <ul>
+          <li>
+            <span class="dash-label">Received</span><br>
+            {% satoshis_to_user_units_trimmed total_received_satoshis tcp__user_units coin_symbol True %}
+          </li>
+          <li>
+            <span class="dash-label">Sent</span><br>
+            {% satoshis_to_user_units_trimmed total_sent_satoshis tcp__user_units coin_symbol True %}
+          </li>
+          <li>
+            <span class="dash-label">Balance</span><br>
+            {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True %}
+            {% if unconfirmed_balance_satoshis %}
+              <br>
+              <span class="dash-label">
+                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol True %} unconfirmed)
+              </span>
+            {% endif %}
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+
+      <br />
+
+      {% if not is_wallet_page %}
+        <p class="text-center">
+          {% if num_all_txns < 1000 %}
+            <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-lg btn-default">
+              <i class="fa fa-inbox"></i>
+              Subscribe
+          </a>
           {% endif %}
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Sent</td>
-      <td>
-        {% if not has_more %}
-          {{ total_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-          {% if unconfirmed_sent_satoshis %}
-            ({{ unconfirmed_sent_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
-          {% endif %}
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>Balance</td>
-      <td>
-        {{ total_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}
-        {% if unconfirmed_balance_satoshis %}
-          ({{ unconfirmed_balance_satoshis|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }} unconfirmed)
-        {% endif %}
-      </td>
-    </tr>
-  </table>
-</div>
 
-
-{% if all_transactions %}
-
-  <h2>{{ num_all_txns|intcomma }} Transactions</h2>
-
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <th>Hash</th>
-      <th>Amount</th>
-      <th>Confirmations</th>
-      <th>Time</th>
-      <th>Block</th>
-      <tr class="tx-row" style="display;none"></tr>
-      {% for transaction in all_transactions %}
-      <tr class="tx-row" id="{{ transaction.tx_hash }}">
-          <td><a href="{% url 'transaction_overview' coin_symbol transaction.tx_hash %}">{{ transaction.tx_hash }}</a></td>
-          <td>
-            {% if transaction.tx_input_n >= 0 %}-{% else %}+{% endif %}
-            {{ transaction.value|satoshis_to_btc_rounded }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-          <td>
-            {% if transaction.confirmations %}
-              {{ transaction.confirmations|intcomma }}
-            {% else %}
-              None
-            {% endif %}
-          </td>
-          <td>
-            {% if transaction.received %}
-              {{ transaction.received|naturaltime }}
-            {% else %}
-              {{ transaction.confirmed|naturaltime }}
-            {% endif %}
-          </td>
-          <td>
-            {% if transaction.block_height %}
-              <a href="{% url 'block_overview' coin_symbol transaction.block_height %}">{{ transaction.block_height|intcomma}}</a>
-            {% else %}
-              Pending
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-      {% if has_more %}
-        <tr><td colspan="3">...</td></tr>
+          <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
+            Advanced Details 
+            <b class="caret"></b>
+          </button>
+        </p>
+        <div class="col-md-12 collapse" id="advanced-details">
+          <div class="table-responsive">
+            <table class="table">
+              {% comment %}
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
+                    <i class="fa fa-mail-forward"></i>
+                    Get Forwarding Address
+                  </a>
+                </td>
+              </tr>
+              {% endcomment %}
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
+                    <i class="fa fa-line-chart"></i>
+                    Get Embeddable Widget
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{{ api_url }}?unspentOnly=true&includeScript=true" class="btn btn-default">
+                    <i class="fa fa-code"></i>
+                    Unspent Outputs
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="{{ api_url }}" class="btn btn-default">
+                    <i class="fa fa-code"></i>
+                    API Call
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-center">
+                  <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                    <i class="fa fa-external-link"></i>
+                    API Docs
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
       {% endif %}
 
-    </table>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+
+    {% if flattened_txs %}
+
+      <h2>
+        {% if flattened_txs|length != num_all_txns %}
+          {{ flattened_txs|length }}
+          of
+        {% endif %}
+        {{ num_all_txns|intcomma }} Transaction{{ num_all_txns|pluralize }}
+        {% if num_unconfirmed_txns %}
+          ({{ num_unconfirmed_txns|intcomma }} unconfirmed)
+        {% endif %}
+      </h2>
+
+      {% if is_wallet_page %}
+
+        {% include "partials/tx_list.html" %}
+
+      {% else %}
+
+        {% if before_bh %}
+          <p>
+            Showing transactions before block {{ before_bh|intcomma }}
+            (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
+          </p>
+        {% endif %}
+
+        {% for transaction in flattened_txs %}
+          {% with force_include_tx_amount=True show_tx_hash=True show_num_confirmations=True num_inouts_to_display=5 %}
+            {% include "partials/tx_hash.html" %}
+          {% endwith %}
+        {% endfor %}
+
+        {% if has_more %}
+
+          {% with flattened_txs|last as last_tx %}
+            <a href="?before={{ last_tx.block_height }}" class="btn btn-default pull-right" rel=“nofollow">
+              More
+              <i class="fa fa-angle-double-right"></i>
+            </a>
+          {% endwith %}
+
+        {% endif %}
+
+      {% endif %}
+
+    {% else %}
+
+      <p>
+        No transactions detected{% if before_bh %} before block {{ before_bh|intcomma }}{% endif %}
+        {% if is_wallet_page and not subchain_indices %}
+          . <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
+        {% elif before_bh %}
+            (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
+        {% endif %}
+      </p>
+
+    {% endif %}
+
+    {% if is_wallet_page %}
+
+      {% if wallet_addresses.chains.0.chain_addresses %}
+        <h2>Wallet Addresses</h2>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <td>
+                  Address
+                </td>
+                <td>
+                  Path
+                </td>
+                {% if 'index' in wallet_addresses.chains.0 %}
+                  <td>
+                    Subchain Index
+                  </td>
+                {% endif %}
+              </tr>
+            </thead>
+            {% for chain in wallet_addresses.chains %}
+              {% for chain_address in chain.chain_addresses %}
+                <tr>
+                  <td>
+                    <a href="{% url 'address_overview' coin_symbol chain_address.address %}">
+                      {{ chain_address.address }}
+                    </a>
+                  </td>
+                  <td>
+                    {{ chain_address.path }}
+                  </td>
+                  {% if 'index' in chain %}
+                    <td>
+                      {{ chain.index }}
+                    </td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </table>
+        </div>
+      {% endif %}
+
+    {% else %}
+
+      <div class="clearfix"></div>
+
+      {% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
+      {% include "partials/metadata.html" %}
+
+    {% endif %}
+
+  {# section div: #}
   </div>
 
-{% else %}
-  <p>No transactions detected. <a href="#">Sign up for alerts of future transactions</a>.</p>
-{% endif %}
-
-<p>API Call: <a href="{{ api_url }}">{{ api_url }}</a></p>
-
-</div>
+{# no end container div!? #}
 
 {% endblock content %}
 
-
 {% block extra_js %}
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
   <script>
 
     $(document).ready(function(){
 
+      $("time.timeago").timeago();
+
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
 
-      function create_ws() {
-        console.log('Creating new websocket...');
-        ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
-      }
+      {% if not is_wallet_page and not before_bh and num_unconfirmed_txns < 10 %}
 
-      create_ws();
-
-      function send_ping() {
-        // Send pings at regular interval:
-        if (total_ws_received < MAX_WS_TO_RECEIVE) {
-          console.log('Sending websocket ping...');
-          ws.send(JSON.stringify({event: "ping"}));
-          // Trigger self recursively
-          setTimeout(send_ping, 20000);
-        } else {
-          console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
-        }
-      }
-
-      ws.onmessage = function(evt) {
-
-        var data = JSON.parse(evt.data);
-        console.log('Websocket Received: ' + evt.data);
-
-        // Weak protection against too much activity
-        total_ws_received += 1;
-        if (total_ws_received > MAX_WS_TO_RECEIVE) {
-          ws.close();
+        function create_ws() {
+          console.log('Creating new websocket...');
+          ws = new WebSocket('{{ coin_symbol|coin_symbol_to_wss }}');
         }
 
-        if ( data.hash && $('#' + data.hash).length == 0 ) {
+        create_ws();
 
-          var btc_rounded = satoshis_to_btc(data.total);
-
-          if (data.tx_input_n >= 0) {
-            sign_to_use = '+';
+        function send_ping() {
+          // Send pings at regular interval:
+          if (total_ws_received < MAX_WS_TO_RECEIVE) {
+            console.log('Sending websocket ping...');
+            ws.send(JSON.stringify({event: "ping"}));
+            // Trigger self recursively
+            setTimeout(send_ping, 20000);
           } else {
-            sign_to_use = '-';
+            console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
           }
-
-          var seconds_ago = convert_time_to_seconds_ago(data.received)
-          var time_ago_formatted = format_seconds_ago(seconds_ago);
-
-          new_tx_row = $('<tr>').attr('class', "tx-row").attr('id', data.hash).append(
-            $('<td>').append($('<a>').attr('href', '/btc/tx/'+data.hash).text(data.hash)),
-            $('<td>').text(sign_to_use + ' ' + btc_rounded+' BTC'),
-            $('<td>').text('None'),
-            $('<td>').text('Pending'),
-            $('<td>').text('Pending')
-          )
-
-          $('.tx-row').first().before(new_tx_row);
-          // New row effect:
-          $('.tx-row').first().hide().fadeIn();
-
         }
 
+        ws.onmessage = function(evt) {
+
+          var data = JSON.parse(evt.data);
+          console.log('Websocket Received: ' + evt.data);
+
+          // Weak protection against too much activity
+          total_ws_received += 1;
+          if (total_ws_received > MAX_WS_TO_RECEIVE) {
+            ws.close();
+          }
+
+          if ( data.hasOwnProperty('hash')  ) {
+            if (data['confirmations'] <= 6 ) {
+              // Update data in the view
+              location.reload();
+              }
+            }
+        }
+
+        ws.onopen = function() {
+          console.log('Connection established.');
+          ws.send(JSON.stringify(
+            {
+            'address': "{% if is_wallet_page %}{{ bc_wallet_name }}{% else %}{{address }}{% endif %}",
+              'event': 'tx-confirmation',
+              'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
+            }
+          ));
+          send_ping();
+        };
+
+        ws.onclose = function() {
+          console.log('Connection closed');
+          if (total_ws_received < MAX_WS_TO_RECEIVE) {
+            console.log('Creating new websocket to replace old one...');
+            create_ws();
+          }
+
+        };
+
+      {% endif %}
+
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
       }
 
-      ws.onopen = function() {
-        console.log('Connection established.');
-        ws.send(JSON.stringify(
-          {
-            'address': "{{ address }}",
-            'event': 'unconfirmed-tx'
-          }
-        ));
-        send_ping();
-      };
-
-      ws.onclose = function() {
-        console.log('Connection closed');
-        if (total_ws_received < MAX_WS_TO_RECEIVE) {
-          console.log('Creating new websocket to replace old one...');
-          create_ws();
-        }
-
-      };
+      {% if not is_wallet_page %}
+        fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
+      {% endif %}
 
     })
 

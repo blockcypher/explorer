@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import re
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -33,10 +34,18 @@ if os.getenv('TEMPLATE_DEBUG') == 'True':
 else:
     TEMPLATE_DEBUG = False
 
+# DDT can cause extreme slowness clocking template rendering CPU times
+if os.getenv('DISABLE_DEBUG_TOOLBAR') == 'False':
+    DISABLE_DEBUG_TOOLBAR = False
+else:
+    DISABLE_DEBUG_TOOLBAR = True
+
 ALLOWED_HOSTS = [
-        '.blockcypher.com',
+        'live.blockcypher.com',
         'blockcypher.herokuapp.com',
         '127.0.0.1',
+        'miyagi-9570.herokussl.com',
+        'localhost'
         ]
 
 ADMINS = (
@@ -64,6 +73,9 @@ INSTALLED_APPS = (
     'storages',
     'addresses',
     'transactions',
+    'users',
+    'emails',
+    'services',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,7 +96,6 @@ WSGI_APPLICATION = 'blockexplorer.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
 # http://stackoverflow.com/a/11100175
 DJ_DEFAULT_URL = os.getenv('DJ_DEFAULT_URL', 'postgres://localhost')
 DATABASES = {'default': dj_database_url.config(default=DJ_DEFAULT_URL)}
@@ -101,6 +112,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = 'users.AuthUser'
+LOGIN_URL = '/login'
 
 # Languages
 LANGUAGE_CODE = 'en-us'
@@ -128,7 +142,7 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 TEMPLATE_DIRS = (os.path.join(PROJECT_PATH, 'templates'),)
 
-PRODUCTION_DOMAIN = 'blockcypher.herokuapp.com'
+PRODUCTION_DOMAIN = 'live.blockcypher.com'
 STAGING_DOMAIN = 'TODO'
 SITE_DOMAIN = os.getenv('SITE_DOMAIN', PRODUCTION_DOMAIN)
 
@@ -141,9 +155,10 @@ if SITE_DOMAIN in (PRODUCTION_DOMAIN, STAGING_DOMAIN):
     CSRF_COOKIE_SECURE = True
     MIDDLEWARE_CLASSES += ('blockexplorer.middleware.SSLMiddleware',)
 else:
-    # FIXME: this should work on staging too, but I can't get it to work with gunicorn
-    DEBUG_TOOLBAR_PATCH_SETTINGS = True
     BASE_URL = 'http://%s' % SITE_DOMAIN
+    if not DISABLE_DEBUG_TOOLBAR:
+        # FIXME: this should work on staging too, but I can't get it to work with gunicorn
+        DEBUG_TOOLBAR_PATCH_SETTINGS = True
 
 
 IS_PRODUCTION = (SITE_DOMAIN == PRODUCTION_DOMAIN)
@@ -152,9 +167,17 @@ if IS_PRODUCTION:
     EMAIL_DEV_PREFIX = False
 else:
     EMAIL_DEV_PREFIX = True
-    # Enable debug toolbar on local and staging
-    MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
-    INSTALLED_APPS += ('debug_toolbar', )
+    if not DISABLE_DEBUG_TOOLBAR:
+        # Enable debug toolbar on local and staging
+        MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
+        INSTALLED_APPS += ('debug_toolbar', )
+
+if not DISABLE_DEBUG_TOOLBAR:
+    # Debug Toolbar
+    INTERNAL_IPS = (
+            '127.0.0.1',
+            'localhost',
+            )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -165,11 +188,31 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'blockexplorer.context_processors.get_user_units',
 )
 
 BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
+BLOCKCYPHER_PUBLIC_KEY = '31c49f33f35c85a8f4d9845a754f7c8e'
+
+POSTMARK_SMTP_SERVER = 'smtp.postmarkapp.com'
+POSTMARK_SENDER = 'Blockcypher Notifications <notifications@blockcypher.com>'
+POSTMARK_TEST_MODE = os.getenv('POSTMARK_TEST_MODE', False)
+POSTMARK_API_KEY = os.getenv('POSTMARK_API_KEY')
+if not POSTMARK_API_KEY:
+    print('WARNING: without a POSTMARK_API_KEY you cannot send emails')
+
+WEBHOOK_SECRET_KEY = os.getenv('WEBHOOK_SECRET_KEY')
+if not WEBHOOK_SECRET_KEY:
+    print('WARNING: without a WEBHOOK_SECRET_KEY you cannot receive webhooks')
+
+EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+# Wallet Name
+WNS_URL_BASE = 'https://pubapi.netki.com/api/wallet_lookup'
+
+DEFAULT_USER_UNIT = 'btc'
 
 # http://scanova.io/blog/engineering/2014/05/21/error-logging-in-javascript-and-python-using-sentry/
 LOGGING = {

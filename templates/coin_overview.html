@@ -3,70 +3,215 @@
 {% load i18n %}
 {% load humanize %}
 {% load btc_formats %}
+{% load static %}
+
+{% block title %}
+  {% blocktrans with coin_display_name=coin_symbol|coin_symbol_to_display_name %}
+    {{ coin_display_name }} Block Explorer
+  {% endblocktrans %}
+{% endblock title %}
+
+{% block page_header %}
+  <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 text-center">
+    <div class="{{ coin_symbol }} coin"></div>
+  </div>
+  <div class="col-lg-11 col-md-10 col-sm-9 col-xs-8">
+    <h1>{{ coin_symbol|coin_symbol_to_display_name }} Explorer</h1>
+  </div>
+{% endblock page_header %}
 
 {% block content %}
 
 <div class="container">
 
-<form role="form" method="post" action="{% url "home" %}">
-  {% load crispy_forms_tags %}
-  {{ form|crispy }}
-  {% csrf_token %}
-  <p class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg">{% trans "Search" %} </button>
-  </p>
-</form>
+  <div class="section">
+    <h2>Recent Blocks</h2>
 
-<br />
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th>Height</th>
+          <th>Age</th>
+          <th>Transactions</th>
+          <th>Total Sent</th>
+          <th>Total Fees</th>
+          <th>Block Size (in bytes)</th>
+        </tr>
+        {% for block in recent_blocks %}
+          <tr>
+            <td>
+              <a href="{% url 'block_overview' coin_symbol block.height %}">{{ block.height }}</a>
+            </td>
+            <td>{{ block.received_time|naturaltime }}</td>
+            <td>{{ block.n_tx|intcomma }}</td>
+            <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol True 5 %}</td>
+            <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol True 5 %}</td>
+            <td>{{ block.size|intcomma }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
 
-<h4>Recent Blocks</h4>
+  <div class="section">
+    <h2>Current Fee Estimates
+      <a href="{{ fee_api_url }}" class="btn btn-default">
+        <i class="fa fa-code"></i> 
+        API Call
+      </a>
+      <a href="http://dev.blockcypher.com/#blockchain" class="btn btn-default">
+        <i class="fa fa-external-link"></i> 
+        API Docs
+      </a>
+    </h2>
 
-<table class="table">
-  <th>Height</th>
-  <th>Age</th>
-  <th>Transactions</th>
-  <th>Total Sent</th>
-  <th>Total Fees</th>
-  {% for block in recent_blocks %}
-    <tr>
-      <td>
-        <a href="{% url 'block_overview' coin_symbol block.height %}">{{ block.height }}</a>
-      </td>
-      <td>{{ block.received_time|naturaltime }}</td>
-      <td>{{ block.n_tx }}</td>
-      <td>{{ block.total|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-      <td>{{ block.fees|satoshis_to_btc_rounded|intcomma }} {{ coin_symbol|coin_symbol_to_currency_name }}</td>
-    </tr>
-  {% endfor %}
-</table>
-<br />
-<br />
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <th>High Priority <small>(1-2 blocks)</small></th>
+          <th>Medium Priority <small>(3-6 blocks)</small></th>
+          <th>Low Priority <small>(7+ blocks)</small></th>
+        </tr>
+        <tr>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+          <td>
+            <span>
+              {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+              <button
+                class="btn-link"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="
+                  About
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                  -
+                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                  per transaction, depending on the # of inputs/outputs
+                  "
+              >
+                <i class="fa fa-info-circle"></i>
+              </button>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <p>
+      <i>
+        Fee estimates are based on a rolling, weighted average.
+      </i>
+    </p>
+  </div>
 
-<div id="newtx-section" style="display:none">
-  <h4>Latest Transactions</h4>
+  <div class="section{% if not recent_txs %} hidden{% endif %}">
+    <div id="newtx-section">
+      <h2>Latest Transactions</h2>
 
-  <table class="table table-striped">
-    <tr id="latest-txs">
-      <th>Transaction Hash</th>
-      <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
-      <th>Time</th>
-    </tr>
-    <tr class="new-tx" style="display;none"></tr>
-  </table>
+      <div class="table-responsive">
+        <table class="table">
+          <tr id="latest-txs">
+            <th>Transaction Hash</th>
+            <th>{{ coin_symbol|coin_symbol_to_currency_name }}</th>
+            <th>Time</th>
+            <th>Miner Preference</th>
+          </tr>
+          <tr class="new-tx" style="display;none">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          {% for recent_tx in recent_txs %}
+            <tr class="new-tx">
+              <td>
+                <a href="{% url 'transaction_overview' coin_symbol recent_tx.hash %}">
+                  {{ recent_tx.hash|slice:"12" }}
+                </a>
+                ...
+              </td>
+              <td>
+                {# always in BTC/BCY/LTC/DOGE because JS streaming in new transactions will be and don't want to mix units #}
+                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}
+              </td>
+              <td>
+                <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
+                  {{ recent_tx.received|date:'Y-m-d H:i' }} GMT
+                </time>
+              </td>
+              <td>
+                {{ recent_tx.preference }}
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
 
-  <br />
-  <p>
-  Note: Blockypher is a lot faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
-  </p>
-</div>
+      <p class="text-center">
+        Note: BlockCypher is faster than other blockchain APIs, so these transactions may take a bit to appear on other sites.
+      </p>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="text-center">
+      <a class="btn btn-default" href="{% url 'push_tx' coin_symbol %}">Push Transaction</a>
+      <a class="btn btn-default" href="{% url 'decode_tx' coin_symbol %}">Decode Raw Transaction</a>
+    </p>
+  </div>
+
 
 </div>
 {% endblock content %}
 
 {% block extra_js %}
+
+  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+
   <script>
 
     $(document).ready(function(){
+
+      $("time.timeago").timeago();
+
+      $('[data-toggle="tooltip"]').tooltip();
 
       var total_ws_received = 0;
       var MAX_WS_TO_RECEIVE = 1000;
@@ -99,19 +244,20 @@
         }
 
         var data = JSON.parse(evt.data);
+        // console.log(data);
 
-        if ( data.hash && $('#' + data.hash).length == 0 ) {
-          $('#newtx-section').fadeIn(); // only matters the first time
-          var btc_rounded = satoshis_to_btc(data.total);
-          var seconds_ago = convert_time_to_seconds_ago(data.received)
-          var time_ago_formatted = format_seconds_ago(seconds_ago);
+        if ( data.hasOwnProperty('hash') && $('#' + data.hash).length == 0 ) {
+          var btc_rounded = satoshis_to_btc_rounding(data.total);
 
           to_insert = $('<tr>').attr('class', "new-tx").attr('id', data.hash).append(
           $('<td>').append($('<a>').attr('href', '/{{ coin_symbol }}/tx/'+data.hash).text(data.hash.substring(0,12))).append('...'),
             $('<td>').append(btc_rounded+' {{ coin_symbol|coin_symbol_to_currency_name }}'),
-            $('<td>').attr('class', "timing").attr('received', data.received).append(time_ago_formatted)
+            $('<td>').append($('<abbr>').attr('class', "timeago").attr('datetime', data.received)).text($.timeago(data.received)),
+            $('<td>').text(data.preference)
           )
           $('.new-tx').first().before(to_insert);
+          // Update the timing
+          $("time.timeago").timeago();
           // New row effect:
           $('.new-tx').first().hide().fadeIn();
 
@@ -126,7 +272,10 @@
 
       ws.onopen = function() {
         console.log('Connection established.');
-        ws.send(JSON.stringify({'event': 'unconfirmed-tx'}));
+        ws.send(JSON.stringify({
+          'event': 'unconfirmed-tx',
+          'token': '{{ BLOCKCYPHER_PUBLIC_KEY }}',
+        }));
         send_ping();
       };
 
@@ -139,21 +288,6 @@
 
       };
 
-    // Update timing
-    function update_timing() {
-      console.log('Updating timing...');
-
-      var times_array = $('.timing');
-      var times_length = times_array.length;
-      for (var i = 0; i < times_length; i++) {
-        times_array[i].innerHTML = format_seconds_ago(convert_time_to_seconds_ago(times_array[i].getAttribute('received')));
-      }
-      // Call self recursively
-      setTimeout(update_timing, 10000);
-    }
-
-    // Continuously update times as they become stale
-    update_timing();
 
     })
 

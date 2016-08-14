@@ -1,0 +1,39 @@
+{% load btc_formats %}
+{% load humanize %}
+
+<html>
+  <head>
+    <title></title>
+    {# Bootstrap core CSS #}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    {# FontAwesome #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <a target="_blank" href="{{ BASE_URL }}{% url 'address_overview' coin_symbol b58_address %}" class="btn btn-default">
+
+      <i class="fa fa-qrcode"></i> 
+      {{ b58_address }}
+
+      <h4>
+        {% satoshis_to_user_units_trimmed address_overview.final_balance 'btc' coin_symbol True 0 %}
+      </h4>
+
+      <i>
+        {{ address_overview.final_n_tx|intcomma }} Transaction{{ address_overview.final_n_tx|pluralize }}
+        {% if address_overview.unconfirmed_n_tx %}
+          ({{ address_overview.unconfirmed_n_tx }} Unconfirmed)
+        {% endif %}
+      </i>
+
+    </a>
+
+    <p align="center">
+      <a class="text-muted" href="http://www.blockcypher.com/">Powered by BlockCypher</a>
+    </p>
+
+  </body>
+</html>

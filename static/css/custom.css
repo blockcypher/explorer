@@ -1,110 +1,374 @@
 /* Custom CSS here */
 .bg-white {
-	background: #fff;
-	color:#222;
+  background: #fff;
+  color:#222;
 }
 .bg-primary {
-	background: #59218c;
-	color:#fff;
+  background: #59218c;
+  color:#fff;
 }
 .bg-secondary {
-	background: #0b8ed8;
-	color:#fff;
+  background: #0b8ed8;
+  color:#fff;
 }
 .bg-primary-gradient {
-	background: #6e35a5; /* Old browsers */
-	background: -moz-radial-gradient(center, ellipse cover,  #6e35a5 0%, #3f116b 100%); /* FF3.6+ */
-	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#6e35a5), color-stop(100%,#3f116b)); /* Chrome,Safari4+ */
-	background: -webkit-radial-gradient(center, ellipse cover,  #6e35a5 0%,#3f116b 100%); /* Chrome10+,Safari5.1+ */
-	background: radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
-	color:#fff;
-	padding:80px 0;
+  background: #6e35a5 url(../img/chain.svg) left center no-repeat; /* Old browsers */
+  background: url(../img/chain.svg) left center no-repeat,
+        -moz-radial-gradient(center, ellipse cover,  #6e35a5 0%, #3f116b 100%); /* FF3.6+ */
+  background: url(../img/chain.svg) left center no-repeat,
+        -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#6e35a5), color-stop(100%,#3f116b)); /* Chrome,Safari4+ */
+  background: url(../img/chain.svg) left center no-repeat,
+        -webkit-radial-gradient(center, ellipse cover,  #6e35a5 0%,#3f116b 100%); /* Chrome10+,Safari5.1+ */
+  background: url(../img/chain.svg) left center no-repeat,
+        radial-gradient(ellipse at center,  #6e35a5 0%,#3f116b 100%); /* W3C */
+  color:#fff;
 }
-
+/* Coin symbols */
+.btc {
+  background: url(../img/btc.svg) center no-repeat;
+}
+.btc-testnet {
+  background: url(../img/btc-testnet.svg) center no-repeat;
+}
+.ltc {
+  background: url(../img/ltc.svg) center no-repeat;
+}
+.bc-testnet, .bcy {
+  background: url(../img/bc-testnet.svg) center no-repeat;
+}
+.doge {
+  background: url(../img/doge.svg) center no-repeat;
+}
+.semi {
+  opacity:.7;
+}
 .btn-primary {
-	background: #0b8ed8;
-	border-color:#0b8ed8;
+  background: #0b8ed8;
+  border-color:#0b8ed8;
 }
-
+.btn-xl {
+  padding: 12px 70px;
+  margin: 20px 0 0;
+}
+.truncate {
+  min-width: 5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wrapit {
+  word-wrap: break-word;
+}
+.img-center {
+  margin:0 auto;
+}
+.reset {
+  margin:0 !important;
+  padding:0 !important;
+}
+/* Webfonts */
+@font-face {
+  font-family: 'myriad_pro_lightregular';
+  src: url('../fonts/myriadpro-light-webfont.eot');
+  src: url('../fonts/myriadpro-light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-light-webfont.woff') format('woff'), url('../fonts/myriadpro-light-webfont.ttf') format('truetype'), url('../fonts/myriadpro-light-webfont.svg#myriad_pro_lightregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MyriadProSemibold';
+  src: url('../fonts/myriadpro-semibold-webfont.eot');
+  src: url('../fonts/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/myriadpro-semibold-webfont.woff') format('woff'), url('../fonts/myriadpro-semibold-webfont.ttf') format('truetype'), url('../fonts/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.mplr {
+  font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
+}
+.mpsb {
+  font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
+.acc {
+  display: block;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
 /* Layout */
 body {
-	background: #000;
+  font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
+  background: #000;
+}
+.container {
+  min-width:310px;
 }
 .main-container {
-	margin-top:50px;
-	padding: 30px 0;
-	background: #fff;
+  margin-top:50px;
+  background: #fff;
+  font-size:1.2em;
 }
 .main-container.home {
-	margin-top:50px;
-	padding: 0;
+  margin-top:50px;
+  padding: 0;
 }
-
+.section {
+  padding:20px 0;
+}
+.page-header {
+  padding:60px 0;
+  font-size:1.2em;
+  color: #fff;
+  background: #371456 url(../img/chain.svg) left center no-repeat;
+  background: url(../img/chain.svg) left center no-repeat,
+        -moz-linear-gradient(top, #59218c 0%, #371456 100%);
+  background: url(../img/chain.svg) left center no-repeat,
+        -webkit-gradient(linear, left top, left bottom, color-stop(0%, #59218c), color-stop(100%, #371456));
+  background: url(../img/chain.svg) left center no-repeat,
+        -webkit-linear-gradient(top, #59218c 0%, #371456 100%);
+  background: url(../img/chain.svg) left center no-repeat,
+        linear-gradient(to bottom, #59218c 0%, #371456 100%);
+}
+.page-header .tagline {
+  font-size: 1.2em;
+  margin:0;
+}
+.dash, .well {
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  border-radius: 5px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.dash {
+  padding:20px 0;
+  font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
+.dash ul {
+  list-style: none;
+  padding:0;
+}
+.dash li {
+  float:left;
+  display: block;
+  padding:10px;
+  border-right: 1px solid #ddd;
+  font-size: 1.6em;
+  text-align:center;
+  line-height:1.2em;
+}
+.dash li:last-child {
+  border:0;
+}
+.dash.dash-3 li {
+  width:33%;
+}
+.dash.dash-4 li {
+  width:25%;
+}
+.dash .dash-label {
+  font-size: .7em;
+  text-transform: uppercase;
+  color:#888;
+  font-family:'myriad_pro_lightregular', 'helvetica', arial, sans-serif;
+}
+.confirmed {
+  color:green;
+}
+.pending {
+  color:#BFA01A;
+}
+.unconfirmed {
+  color:#A8184F;
+}
 /* Header */
 /* Navbar */
 .navbar {
-	border-bottom:1px solid #dad3dc;
-	background: #fff;
-	padding:6px 0;
+  border-bottom:1px solid #dad3dc;
+  background: #fff;
+  padding:6px 0;
 }
-
+.navbar-brand {
+  padding:0 15px;
+}
+.logo {
+  background:url(../img/logo.svg) center no-repeat;
+  height:50px;
+  width:313px;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #929191;
+  text-transform: uppercase;
+  font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
+}
+.header-coin {
+  width:30px;
+  height:30px;
+  display:inline-block;
+}
 /* Footer */
 .main-footer {
-	background: #000;
-	padding:30px;
-	color: #515151;
+  background: #000;
+  padding:30px;
+  color: #515151;
+  font-size:1.2em;
 }
 .main-footer a {
-	color: #515151;
-	text-decoration: underline;
+  color: #515151;
+  text-decoration: underline;
+}
+.main-footer a.social {
+  text-decoration: none;
 }
 .main-footer .fa {
-	font-size: 20px;
-	text-decoration: none;
-	padding-left: 5px;
+  font-size: 20px;
+  text-decoration: none;
+  padding-left: 5px;
+}
+.main-footer .btn {
+  background: transparent;
+  text-decoration: none;
+  color:#888;
+  border-color:#888;
+}
+.btn-gh {
+  background: #444;
+  border-color:#444;
+  color:#fff;
+}
+.btn-gh:hover {
+  background: #555;
+  border-color:#555;
+  color:#fff;
 }
 /* Homepage */
 .search-filter .active,
 .search-filter .active:hover {
-	color:#fff;
-	text-decoration: none;
-	cursor: default;
+  color:#fff;
+  text-decoration: none;
+  cursor: default;
 }
-.block-currency-logos {
-	list-style: none;
+.coin {
+  display: block;
+  padding-top: 120%;
+  margin: 30px auto 50px;
 }
-.block-currency-logos>li {
-	display: inline-block;
-	margin:1em 1%;
+a.coin:hover {
+  opacity: .9;
 }
-.block-currency-logos>li>a {
-	display: inline-block;
-	height:120px;
-	width:120px;
-	background-size:120px 120px;
-	padding-top:140px;
+.coin>span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  color:#888;
 }
-.block-currency-logos>li>a span {
-	display: block;
-	white-space: nowrap;
+.page-header .coin {
+  padding-top:0;
+  margin:0 auto;
+  width:75px;
+  height:75px;
+  display:inline-block;
 }
-.btc {
-	background: url(../img/Bitcoin.svg) center no-repeat;
+/* Transaction page */
+.circle-chart {
+  margin:10px auto;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background:#fff;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #ddd;
+  font-size:2em;
 }
-.btc-testnet {
-	background: url(../img/btc-testnet.svg) center no-repeat;
+.circle-chart .val {
+  position: absolute;
+  width:100%;
+  height:100%;
+  line-height: 160px;
+  text-align: center;
+  text-transform: uppercase;
+  display:block;
+  font-family: 'MyriadProSemibold', 'helvetica', arial, sans-serif;
 }
-.ltc {
-	background: url(../img/Litecoin.svg) center no-repeat;
+.circle-chart .fill {
+  background:#0b8ed8;
+  height:0;
+  width:100%;
+  position:absolute;
+  bottom:0;
+  -webkit-transition: height 400ms ease-in-out;
+  -moz-transition: height 400ms ease-in-out;
+  -ms-transition: height 400ms ease-in-out;
+  -o-transition: height 400ms ease-in-out;
+  transition: height 400ms ease-in-out;
 }
-.uro {
-	background: url(../img/uro.svg) center no-repeat;
+.circle-chart .fill.low {
+  height:10%;
 }
-.bc-testnet {
-	background: url(../img/bc-testnet.svg) center no-repeat;
+.circle-chart .fill.medium {
+  height:50%;
 }
-.doge {
-	background: url(../img/Dogecoin.svg) center no-repeat;
+.circle-chart .fill.high {
+  height:90%;
 }
-
-
+.txn-input, .txn-output {
+  border:1px solid #ddd;
+  padding:20px 30px;
+  margin-bottom:10px;
+  position: relative;
+  background: #fff;
+  border-radius: 40px;
+}
+.txn-arrow {
+  background: url(../img/txn_arrow.svg) center no-repeat;
+  min-height:150px;
+}
+.tx-list {
+  font-family:monospace;
+}
+/* Media queries */
+@media(min-width:1200px){
+  .navbar-form .input-group>.form-control.search-input {
+    width:360px;
+  }
+}
+@media(min-width:992px) and (max-width:1199px){
+  .navbar-form .input-group>.form-control.search-input {
+    width:160px;
+  }
+}
+@media (max-width:991px){
+  .logo {
+    width:220px;
+  }
+  .dash {
+    padding:0 20px;
+  }
+  .dash li {
+    float:none;
+    border-right:0;
+    border-bottom: 1px solid #ddd;
+  }
+  .dash.dash-3 li, .dash.dash-4 li {
+    width:100%;
+  }
+  .txn-arrow {
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+}
+@media (min-width:768px) and (max-width:991px){
+  .navbar-form .input-group>.form-control.search-input {
+    width: 120px;
+  }
+}
+@media (max-width:767px){
+  .main-footer, .main-footer .text-right {
+    text-align: center !important;
+  }
+  .pager .text-right, .pager .text-left {
+    text-align: center !important;
+  }
+}

@@ -5,8 +5,13 @@ function setCoin(coin, label) {
   $('.search-filter .active').removeClass('active');
 }
 
-function satoshis_to_btc(satoshis) {
+function satoshis_to_btc_full(satoshis) {
+  return satoshis/(Math.pow(10,8));
+}
+
+function satoshis_to_btc_rounding(satoshis) {
   // Round to 4 decimal places
+  // Strange name because of namespacing issue
   var btc = satoshis/(Math.pow(10,8));
   return Math.round(btc*10000)/10000;
 }
@@ -35,4 +40,39 @@ function format_seconds_ago(seconds_ago) {
   } else {
     return '>5 minutes ago';
   }
+}
+
+function fetch_metadata(coin_symbol, identifier_type, identifier) {
+  $.ajax({
+    type: 'get',
+    url: '/metadata/' + coin_symbol + '/' + identifier_type + '/' + identifier + '/',
+    success: function (data) {
+      console.log('fetch_metadata API Call Success');
+      // console.log('data:');
+      // console.log(data);
+
+      var is_empty = true;
+      for (var key in data.metadata) {
+        if (data.metadata.hasOwnProperty(key)) {
+          $('#metadata-tbody').append('<tr><td><pre>' + key + '</pre></td><td><pre>' + data.metadata[key] + '</pre></td></tr>');
+          is_empty = false;
+        }
+      }
+
+      if (is_empty === true) {
+        $('#metadata-empty-notice').fadeIn()
+      }
+      else {
+        $('#metadata-table').fadeIn()
+      }
+
+      if (window.location.hash == '#metadata') {
+        $('html,body').animate({scrollTop: $("#metadata").offset().top},'slow');
+      }
+
+    },
+    error: function(data) {
+      console.log('fetch_metadata API Call Failure');
+    }
+  });
 }
