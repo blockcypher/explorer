@@ -15,7 +15,7 @@
 - Optional (advanced features): Install the latest stable version of postgres 9. (http://postgresapp.com/)[Postgresapp for Mac] is quite easy to install.
 
 ### Ubuntu ###
-- `$ sudo apt-get install postgresql libpq-dev ngrok-client ngrok-server`
+- `$ sudo apt-get install postgresql libpq-dev ngrok-client ngrok-server virtualenv python3-dev libncurses5-dev libffi-dev`
 
 
 ## Configure ##
