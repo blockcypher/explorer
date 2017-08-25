@@ -321,6 +321,7 @@
 
     var doubleSpend = {% if transaction.double_spend %}"YES"{% else %}"No"{% endif %};
 
+    var confidence_checks = 0;
     function poll_confidence() {
       var CONFIDENCE_TIMEOUT_MS = 2000;
       $.ajax({
@@ -328,8 +329,9 @@
         url: '/{{ coin_symbol }}/tx-confidence/{{ tx_hash }}/',
         success: function (data) {
           console.log('Confidence API Call Success');
-          console.log(data)
+          console.log(data);
 
+          confidence_checks += 1;
           CONFIDENCE_TIMEOUT_MS += 1000;
 
           // Update #s
@@ -344,12 +346,17 @@
             location.reload();
           }
 
-          setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
+          if (confidence_checks < 5) {
+            setTimeout(poll_confidence, CONFIDENCE_TIMEOUT_MS);
+          }
 
         },
         error: function(data) {
           console.log('Confidence API Call Failure');
-          setTimeout(poll_confidence, 10000);
+          confidence_checks += 1;
+          if (confidence_checks < 5) {
+            setTimeout(poll_confidence, 10000);
+          }
         }
       });
     }
