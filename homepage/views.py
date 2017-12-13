@@ -140,6 +140,7 @@ def coin_overview(request, coin_symbol):
             block_representation_list=list(reversed(range(latest_bh-4, latest_bh+1))),
             coin_symbol=coin_symbol,
             api_key=BLOCKCYPHER_API_KEY)
+
     recent_blocks = sorted(recent_blocks, key=lambda k: k['height'], reverse=True)
     fees = get_blockchain_fee_estimates(coin_symbol=coin_symbol, api_key=BLOCKCYPHER_API_KEY)
 
