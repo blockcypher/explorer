@@ -29,6 +29,7 @@
                 <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('dash', 'DASH')">Dash</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BCY Testnet')">Blockcypher Testnet</a></li>
               </ul>
             </div>
@@ -81,6 +82,11 @@
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
           <a href="{% url 'coin_overview' 'doge' %}" class="doge coin">
             <span class="mpsb">Dogecoin</span>
+          </a>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+          <a href="{% url 'coin_overview' 'dash' %}" class="dash-logo coin">
+            <span class="mpsb">Dash</span>
           </a>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
@@ -138,6 +144,13 @@
           'tx_hash': '28132b9676b227f16bb687f49139fbb38d185caba4533a8c36d49f0fa470d83a',
           'block_hash': '3c36f6b2abcc2e30111b997e551336db60bead9a0cd3c03fb192110bfbfe1841',
           'block_num': '460,882',
+        },
+        'dash': {
+          'address': 'XdZW5Waa1i6D9za3qpFvgiwHzr8aFcXtNP ',
+          'wallet_name': 'sample.walletname.bit',
+          'tx_hash': 'a962e3b505d94d183c8eec832d56f0b7179564c91ed101b1f067d91ab34f5228',
+          'block_hash': '0000000000003cbbbe719c094fa09a645006090844f913ef9da62c04b4de04c4 ',
+          'block_num': '640,949',
         },
         'bcy': {
           'address': 'CFr99841LyMkyX5ZTGepY58rjXJhyNGXHf',

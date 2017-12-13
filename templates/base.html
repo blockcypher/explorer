@@ -76,6 +76,7 @@
                       <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('dash', 'DASH')">Dash</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                     </ul>
                   </div>
@@ -90,7 +91,11 @@
             {% if coin_symbol %}
             <li class="hidden-sm">
               <a href="{% url 'coin_overview' coin_symbol %}" style="padding:7px 0 7px 15px;" title="{{ coin_symbol|coin_symbol_to_display_name }}">
-                <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% if coin_symbol == 'dash' %}<!-- This is done in order to works with previous css class "dash" already existing -->
+                   <div class="header-coin dash-logo acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% else %}
+                   <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% endif %}
               </a>
             </li>
             {% endif %}
@@ -113,6 +118,9 @@
                 </li>
                 <li>
                   <a href="{% url 'coin_overview' 'doge' %}">Dogecoin</a>
+                </li>
+                <li>
+                  <a href="{% url 'coin_overview' 'dash' %}">Dash</a>
                 </li>
                 <li>
                   <a href="{% url 'coin_overview' 'bcy' %}">BlockCypher Testnet</a>
