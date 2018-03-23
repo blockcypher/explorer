@@ -331,7 +331,7 @@ a.coin:hover {
   font-family:monospace;
 }
 .ad {
-  display: hidden;
+  display: none;
 }
 /* Media queries */
 @media(min-width:1200px){
