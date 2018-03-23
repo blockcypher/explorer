@@ -26,8 +26,8 @@
 
   <div class="ad">
     <a id="ad-link" href="">
-      <span>Buy and Sell Instantly</span>
       <img src=""/>
+      <span>Buy and Sell Instantly</span>
     </a>
   </div>
 
@@ -304,16 +304,17 @@
         var chosen_ad = ads[chosen_idx];
         var track_url = "https://live.blockcypher.com/ads/"+chosen_ad;
 
-        $('#ad-link img').attr("src", "../img/" + chosen_ad + "_logo.png");
+        $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_logo.png");
         $('#ad-link').attr("href", sites[chosen_ad]);
         $('#ad-link').click(function() {
-          ga('send', 'event', 'outbound', 'click', url, {
+          ga('send', 'event', 'outbound', 'click', track_url, {
             'transport': 'beacon',
             'hitCallback': function() {
               document.location = sites[chosen_ad];
             }
           });
         });
+        $('div.ad').show();
       }
 
     })
