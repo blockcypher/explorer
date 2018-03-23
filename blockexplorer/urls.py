@@ -7,8 +7,8 @@ urlpatterns = patterns('',
     url(r'^fail500/$', 'homepage.views.fail500', name='fail500'),
 
     # Login
-    url(r'^signup/?$', 'users.views.signup', name='signup'),
-    url(r'^login/?$', 'users.views.user_login', name='user_login'),
+    url(r'^signuup/?$', 'users.views.signup', name='signup'),
+    url(r'^logiin/?$', 'users.views.user_login', name='user_login'),
     url(r'^logout/?$', 'users.views.logout_request', name='logout_request'),
     url(r'^confirm/(?P<verif_code>[-\w]+)/$', 'users.views.confirm_subscription', name='confirm_subscription'),
     url(r'^unconfirmed-email/?$', 'users.views.unconfirmed_email', name='unconfirmed_email'),
