@@ -52,7 +52,7 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="{% url 'home' %}" title="live.blockcypher.com">
+          <a class="navbar-brand" href="http://www.blockcypher.com" title="live.blockcypher.com">
             <strong class="logo acc"></strong>
           </a>
         </div>
@@ -142,10 +142,6 @@
                 </li>
               </ul>
             </li>
-            {% else %}
-              <li>
-                <a href="{% url 'user_login' %}">{% trans "Sign In" %}</a>
-              </li>
             {% endif %}
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
