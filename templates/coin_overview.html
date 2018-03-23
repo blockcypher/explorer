@@ -221,7 +221,7 @@
       $('[data-toggle="tooltip"]').tooltip();
 
       var total_ws_received = 0;
-      var MAX_WS_TO_RECEIVE = 1000;
+      var MAX_WS_TO_RECEIVE = 100;
 
       function create_ws() {
         console.log('Creating new websocket...');
@@ -236,7 +236,7 @@
           console.log('Sending websocket ping...');
           ws.send(JSON.stringify({event: "ping"}));
           // Trigger self recursively
-          setTimeout(send_ping, 20000);
+          setTimeout(send_ping, 60000);
         } else {
           console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
         }
