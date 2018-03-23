@@ -13,23 +13,19 @@
 
 {% block page_header %}
   <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 text-center">
-    {% if coin_symbol == 'dash' %}<!-- This is done in order to works with previous css class "dash" already existing -->
-    <div class="dash-logo coin"></div>
-    {% else %}
     <div class="{{ coin_symbol }} coin"></div>
-    {% endif %}
   </div>
   <div class="col-lg-11 col-md-10 col-sm-9 col-xs-8">
     <h1>{{ coin_symbol|coin_symbol_to_display_name }} Explorer</h1>
   </div>
-{% endblock page_header %}
 
-<div class="ad">
-  <a id="ad-link" href="">
-    <span>Buy and Sell Instantly</span>
-    <img src=""/>
-  </a>
-</div>
+  <div class="ad">
+    <a id="ad-link" href="">
+      <span>Buy and Sell Instantly</span>
+      <img src=""/>
+    </a>
+  </div>
+{% endblock page_header %}
 
 {% block content %}
 
