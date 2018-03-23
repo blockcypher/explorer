@@ -330,6 +330,9 @@ a.coin:hover {
 .tx-list {
   font-family:monospace;
 }
+.ad {
+  display: hidden;
+}
 /* Media queries */
 @media(min-width:1200px){
   .navbar-form .input-group>.form-control.search-input {
