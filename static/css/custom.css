@@ -332,6 +332,11 @@ a.coin:hover {
 }
 .ad {
   display: none;
+  text-align: center;
+}
+.ad span {
+  display: block;
+  font-weight: bold;
 }
 /* Media queries */
 @media(min-width:1200px){

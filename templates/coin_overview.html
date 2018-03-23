@@ -295,6 +295,26 @@
 
       };
 
+      if (window.location.href.match(/dash/)) {
+        var ads = ["piiko"];
+        var sites = {
+          piiko: "https://www.piiko.co"
+        };
+        var chosen_idx = Date.now() % ads.length;
+        var chosen_ad = ads[chosen_idx];
+        var track_url = "https://live.blockcypher.com/ads/"+chosen_ad;
+
+        $('#ad-link img').attr("src", "../img/" + chosen_ad + "_logo.png");
+        $('#ad-link').attr("href", sites[chosen_ad]);
+        $('#ad-link').click(function() {
+          ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function() {
+              document.location = sites[chosen_ad];
+            }
+          });
+        });
+      }
 
     })
 
