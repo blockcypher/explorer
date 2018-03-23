@@ -39,7 +39,7 @@
 .doge {
   background: url(../img/doge.svg) center no-repeat;
 }
-.dash {
+.dash.coin {
   background: url(../img/dash.svg) center no-repeat;
 }
 .dash-logo {
