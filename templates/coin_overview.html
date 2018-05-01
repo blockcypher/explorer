@@ -306,13 +306,17 @@
 
         $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_logo.png");
         $('#ad-link').attr("href", sites[chosen_ad]);
-        $('#ad-link').click(function() {
+        $('#ad-link').click(function(e) {
           ga('send', 'event', 'outbound', 'click', track_url, {
             'transport': 'beacon',
             'hitCallback': function() {
-              document.location = sites[chosen_ad];
+              setTimeout(function() {
+                document.location = sites[chosen_ad];
+              }, 200);
             }
           });
+          e.preventDefault();
+          e.stopPropagation();
         });
         $('div.ad').show();
       }
