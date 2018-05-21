@@ -60,6 +60,15 @@
 
 <div class="bg-white">
   <div class="container">
+    <div class="ad">
+      <a id="ad-link" href="">
+        <img src=""/>
+        <span>Buy and Sell Instantly</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
 
     <div class="row text-center">
       <h2>Browse the Blockchain</h2>
@@ -175,6 +184,31 @@
         $('.search-filter .active').removeClass('active');
       });
 
+      var ads = ["piiko"];
+      if (ads.length > 0) {
+        var sites = {
+          piiko: "https://www.piiko.co"
+        };
+        var chosen_idx = Date.now() % ads.length;
+        var chosen_ad = ads[chosen_idx];
+        var track_url = "https://live.blockcypher.com/ads/"+chosen_ad;
+
+        $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_logo.png");
+        $('#ad-link').attr("href", sites[chosen_ad]);
+        $('#ad-link').click(function(e) {
+          ga('send', 'event', 'outbound', 'click', track_url, {
+            'transport': 'beacon',
+            'hitCallback': function() {
+            setTimeout(function() {
+              document.location = sites[chosen_ad];
+            }, 200);
+          }
+          });
+          e.preventDefault();
+          e.stopPropagation();
+        });
+        $('div.ad').show();
+      }
     })
 
   </script>
