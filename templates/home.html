@@ -184,16 +184,17 @@
         $('.search-filter .active').removeClass('active');
       });
 
-      var ads = ["piiko"];
+      var ads = ["texcent"];
       if (ads.length > 0) {
         var sites = {
-          piiko: "https://www.piiko.co"
+          piiko: "https://www.piiko.co",
+          texcent: "http://texcent.com"
         };
         var chosen_idx = Date.now() % ads.length;
         var chosen_ad = ads[chosen_idx];
         var track_url = "https://live.blockcypher.com/ads/"+chosen_ad;
 
-        $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_logo.png");
+        $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_ad.png");
         $('#ad-link').attr("href", sites[chosen_ad]);
         $('#ad-link').click(function(e) {
           ga('send', 'event', 'outbound', 'click', track_url, {
