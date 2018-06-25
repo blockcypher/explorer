@@ -14,11 +14,12 @@ from annoying.functions import get_object_or_None
 
 from blockexplorer.decorators import assert_valid_coin_symbol
 
+from blockexplorer.raven import client
+
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
-from blockcypher.api import get_address_details, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details
+from blockcypher.api import get_address_full, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details, unsubscribe_from_webhook
 from blockcypher.constants import COIN_SYMBOL_MAPPINGS
-from blockcypher.utils import flatten_txns_by_hash
 
 from users.models import AuthUser, LoggedLogin
 from addresses.models import AddressSubscription, AddressForwarding
@@ -28,37 +29,68 @@ from emails.models import SentEmail
 
 from addresses.forms import KnownUserAddressSubscriptionForm, NewUserAddressSubscriptionForm, AddressSearchForm, KnownUserAddressForwardingForm, NewUserAddressForwardingForm
 
-from utils import get_max_pages, get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
+from utils import get_user_agent, get_client_ip, uri_to_url, simple_pw_generator
 
 import json
 
 from urllib.parse import urlencode
+
+from datetime import timedelta
 
 SMALL_PAYMENTS_MSG = '''
 Please note that for very small payments of 100 bits or less,
 the payment will not forward as the amount to forward is lower than the mining fee.
 '''
 
+# http://www.useragentstring.com/pages/Crawlerlist/
+BOT_LIST = (
+        'googlebot',
+        'bingbot',
+        'baiduspider',
+        'yandexbot',
+        'omniexplorer_bot',
+        )
+
+
+def is_bot(user_agent):
+    if user_agent:
+        user_agent_lc = user_agent.lower()
+        for bot_string in BOT_LIST:
+            if bot_string in user_agent_lc:
+                return True
+    return False
+
 
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address, wallet_name=None):
 
-    TXNS_PER_PAGE = 100
+    TXNS_PER_PAGE = 10
 
-    # 1 indexed page
-    current_page = request.GET.get('page')
-    if current_page:
-        current_page = int(current_page)
-    else:
-        current_page = 1
+    if request.GET.get('page'):
+        # get rid of old pagination (for googlebot)
+        kwargs = {'coin_symbol': coin_symbol, 'address': address}
+        return HttpResponseRedirect(reverse('address_overview', kwargs=kwargs))
+
+    before_bh = request.GET.get('before')
 
     try:
-        address_details = get_address_details(
+        user_agent = request.META.get('HTTP_USER_AGENT')
+
+        if is_bot(user_agent):
+            # very crude hack!
+            confirmations = 1
+        else:
+            confirmations = 0
+
+        address_details = get_address_full(
                 address=address,
                 coin_symbol=coin_symbol,
                 txn_limit=TXNS_PER_PAGE,
+                inout_limit=5,
+                confirmations=confirmations,
                 api_key=BLOCKCYPHER_API_KEY,
+                before_bh=before_bh,
                 )
     except AssertionError:
         msg = _('Invalid Address')
@@ -137,18 +169,10 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
                 })
             messages.info(request, msg, extra_tags='safe')
 
-    all_transactions = address_details.get('unconfirmed_txrefs', []) + address_details.get('txrefs', [])
+    all_transactions = address_details.get('txs', [])
+    # import pprint; pprint.pprint(all_transactions, width=1)
 
-    # transaction pagination: 0-indexed and inclusive
-    tx_start_num = (current_page - 1) * TXNS_PER_PAGE
-    tx_end_num = current_page * TXNS_PER_PAGE - 1
-
-    # filter address details for pagination. HACK!
-    all_transactions = all_transactions[tx_start_num:tx_end_num]
-
-    flattened_txs = flatten_txns_by_hash(all_transactions, nesting=False)
-
-    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s' % (
+    api_url = 'https://api.blockcypher.com/v1/%s/%s/addrs/%s/full?limit=50' % (
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_code'],
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             address)
@@ -158,14 +182,14 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'address': address,
             'api_url': api_url,
             'wallet_name': wallet_name,
-            'current_page': current_page,
-            'max_pages': get_max_pages(num_items=address_details['final_n_tx'], items_per_page=TXNS_PER_PAGE),
+            'has_more': address_details.get('hasMore', False),
             'total_sent_satoshis': address_details['total_sent'],
             'total_received_satoshis': address_details['total_received'],
             'unconfirmed_balance_satoshis': address_details['unconfirmed_balance'],
             'confirmed_balance_satoshis': address_details['balance'],
             'total_balance_satoshis': address_details['final_balance'],
-            'flattened_txs': flattened_txs,
+            'flattened_txs': all_transactions,
+            'before_bh': before_bh,
             'num_confirmed_txns': address_details['n_tx'],
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
@@ -233,7 +257,10 @@ def subscribe_address(request, coin_symbol):
 
             existing_subscription_cnt = AddressSubscription.objects.filter(
                     auth_user=auth_user,
-                    b58_address=coin_address).count()
+                    b58_address=coin_address,
+                    unsubscribed_at=None,
+                    disabled_at=None,
+                    ).count()
             if existing_subscription_cnt:
                 msg = _("You're already subscribed to that address. Please choose another address.")
                 messages.warning(request, msg)
@@ -308,8 +335,7 @@ def user_unsubscribe_address(request, address_subscription_id):
         msg = _("You've already unsubscribed from this alert")
         messages.info(request, msg)
     else:
-        address_subscription.unsubscribed_at = now()
-        address_subscription.save()
+        address_subscription.user_unsubscribe_subscription()
 
         address_uri = reverse('address_overview', kwargs={
             'coin_symbol': address_subscription.coin_symbol,
@@ -390,8 +416,7 @@ def unsubscribe_address(request, unsub_code):
         address_subscription = sent_email.address_subscription
         assert address_subscription
 
-        address_subscription.unsubscribed_at = now()
-        address_subscription.save()
+        address_subscription.user_unsubscribe_subscription()
 
         addr_uri = reverse('address_overview', kwargs={
             'coin_symbol': address_subscription.coin_symbol,
@@ -478,26 +503,62 @@ def address_webhook(request, secret_key, ignored_key):
     # email sending logic
     # TODO: add logic for notify on deposit vs withdrawal
     # TODO: add safety check to prevent duplicate email sending
-    if tx_event.is_subscribed():
-        if double_spend and (tx_is_new or not tx_event.double_spend):
-            # We have the first reporting of a double-spend
-            tx_event.send_double_spend_tx_notification()
+    if tx_event.address_subscription.unsubscribed_at or tx_event.address_subscription.disabled_at:
+        # unsubscribe from webhooks going forward
+        try:
+            unsub_result = unsubscribe_from_webhook(
+                    webhook_id=tx_event.address_subscription.blockcypher_id,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    coin_symbol=tx_event.address_subscription.coin_symbol,
+                    )
+            assert unsub_result is True, unsub_result
+        except Exception:
+            # there was a problem unsubscribing
+            # notify using sentry but still return the webhook to blockcypher
+            client.captureException()
 
-        elif num_confs == 0 and tx_is_new:
-            # First broadcast
-            if tx_event.address_subscription.notify_on_broadcast:
-                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
-                    tx_event.send_unconfirmed_tx_email()
-                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
-                    tx_event.send_unconfirmed_tx_email()
+    elif tx_event.address_subscription.auth_user.email_verified:
+        # make sure we haven't contacted too many times (and unsub if so)
 
-        elif num_confs == 6 and (tx_is_new or not tx_event.num_confs == num_confs):
-            # Sixth confirm
-            if tx_event.address_subscription.notify_on_sixth_confirm:
-                if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
-                    tx_event.send_confirmed_tx_email()
-                elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
-                    tx_event.send_confirmed_tx_email()
+        earliest_dt = now() - timedelta(days=3)
+        recent_emails_sent = SentEmail.objects.filter(
+                address_subscription=tx_event.address_subscription,
+                sent_at__gt=earliest_dt,
+                ).count()
+
+        if recent_emails_sent > 100:
+            # too many emails, unsubscribe
+            tx_event.address_subscription.admin_unsubscribe_subscription()
+            client.captureMessage('TX Event %s unsubscribed' % tx_event.id)
+            # TODO: notify user they've been unsubscribed
+
+        else:
+            # proceed with normal email sending
+
+            if double_spend and (tx_is_new or not tx_event.double_spend):
+                # We have the first reporting of a double-spend
+                tx_event.send_double_spend_tx_notification()
+
+            elif num_confs == 0 and tx_is_new:
+                # First broadcast
+                if tx_event.address_subscription.notify_on_broadcast:
+                    if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                        tx_event.send_unconfirmed_tx_email()
+                    elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                        tx_event.send_unconfirmed_tx_email()
+
+            elif num_confs == 6:
+                # Sixth confirm
+                if tx_event.address_subscription.notify_on_sixth_confirm:
+                    if tx_event.is_deposit and tx_event.address_subscription.notify_on_deposit:
+                        tx_event.send_confirmed_tx_email()
+                    elif tx_event.is_withdrawal and tx_event.address_subscription.notify_on_withdrawal:
+                        tx_event.send_confirmed_tx_email()
+    else:
+        # active subscription with unverfied email (can't contact)
+        # TODO: add unsub if orig subscription is > X days old
+        # eventually these could pile up
+        pass
 
     # Update logging
     webhook.address_subscription = address_subscription

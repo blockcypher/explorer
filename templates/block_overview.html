@@ -11,6 +11,20 @@
   {% endblocktrans %}
 {% endblock title %}
 
+{% block meta_description %}
+  {{ coin_symbol|coin_symbol_to_currency_name }}
+  block {{ block_details.hash }}
+  was confirmed as the {{ block_details.height|ordinal }} block on
+  {{ block_details.received_time|date:'Y-m-d H:i' }} GMT.
+  It had
+  {{ block_details.n_tx|intcomma }} transaction{{ block_details.n_tx|pluralize}},
+  which totaled
+  {% satoshis_to_user_units_trimmed block_details.total 'btc' coin_symbol True 4 %}
+  with
+  {% satoshis_to_user_units_trimmed block_details.fees 'btc' coin_symbol True 4 %}
+  in fees.
+{% endblock meta_description %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-cube"></i> 
@@ -22,10 +36,12 @@
 {% block content %}
 <div class="container">
   <nav>
-    <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
-      <i class="fa fa-angle-double-left"></i> 
-      Previous Block
-    </a>
+    {% if block_details.height != 1 %}
+      <a href="{% url 'block_overview' coin_symbol block_details.prev_block %}" class="btn btn-default pull-left">
+        <i class="fa fa-angle-double-left"></i> 
+        Previous Block
+      </a>
+    {% endif %}
     {% if block_details.depth > 0 %}
       <a href="{% url 'block_overview' coin_symbol block_details.height|add:1 %}" class="btn btn-default pull-right">
         Next Block
@@ -73,9 +89,17 @@
         <tr>
           <th>Current Depth</th>
           <td>
-            {{ block_details.depth }}
+            {{ block_details.depth|intcomma }}
           </td>
         </tr>
+        {% if block_details.size %}
+          <tr>
+            <th>Block Size (bytes)</th>
+            <td>
+              {{ block_details.size|intcomma }}
+            </td>
+          </tr>
+        {% endif %}
         <tr>
           <th>Nonce</th>
           <td>
@@ -91,7 +115,7 @@
         <tr>
           <th>Bits (difficulty target)</th>
           <td>
-            {{ block_details.bits }}
+            {{ block_details.bits|intcomma }}
           </td>
         </tr>
         <tr>
@@ -124,7 +148,13 @@
     </div>
   </div>
 
-  <h2>{{ block_details.n_tx|intcomma }} Transactions</h2>
+  <h2>
+    {% if block_details.txids|length != block_details.n_tx %}
+      {{ block_details.txids|length }}
+      of
+    {% endif %}
+    {{ block_details.n_tx|intcomma }} Transaction{{ block_details.n_tx|pluralize}}
+  </h2>
 
   <div class="section pager">
     <div class="row">
@@ -156,22 +186,9 @@
 {% if block_details.txids %}
 
   {% for transaction in block_details.txids %}
-
-    <div class="well section">
-      <h4 class="text-center truncate">
-        <i class="fa fa-exchange"></i> 
-        {% if transaction.hash %}
-          <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
-            {{ transaction.hash }}
-          </a>
-        {% endif %}
-      </h4>
-
-      {% with force_include_tx_amount=True %}
+      {% with force_include_tx_amount=True show_tx_hash=True show_num_confirmation=False num_inouts_to_display=5 %}
         {% include "partials/tx_hash.html" %}
       {% endwith %}
-
-    </div>
   {% endfor %}
 
   <div class="section pager">
@@ -202,12 +219,17 @@
   </div>
 
 {% else %}
-  <p>In rare cases it is possible for a block to be empty. <a href="#">More info</a>.</p>
+  <p>
+    {% if block_details.height == 1 %}
+      The genesis block has no transactions.
+    {% else %}
+      No transactions. Something seems off, that doesn't make any sense!
+    {% endif %}
+  </p>
 {% endif %}
 
-{% with upload_string=block_details.hash us_type='block' %}
-  {% include "partials/metadata.html" %}
-{% endwith %}
+{% url 'add_metadata_to_block' coin_symbol block_details.hash as add_metadata_uri %}
+{% include "partials/metadata.html" %}
 
 </div>
 
@@ -221,6 +243,10 @@
     $(document).ready(function(){
 
       $("time.timeago").timeago();
+
+      if (window.location.hash == '#advanced-details') {
+        $('#advanced-details').collapse('show');
+      }
 
       fetch_metadata('{{ coin_symbol }}', 'block', '{{ block_details.hash }}');
 

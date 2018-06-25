@@ -58,13 +58,13 @@ class RegistrationForm(forms.Form):
         required=True,
         label=_('Password'),
         widget=forms.PasswordInput(attrs={'class': 'input-lg'}),
-        min_length=8,
+        min_length=12,
     )
     password_confirm = forms.CharField(
         required=True,
         label=_('Confirm Password'),
         widget=forms.PasswordInput(attrs={'class': 'input-lg'}),
-        min_length=8,
+        min_length=12,
     )
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +89,7 @@ class CoinSymbolForm(forms.Form):
             required=True,
             choices=COIN_CHOICES,
             widget=forms.Select(attrs={'onchange': 'this.form.submit()', 'class': 'input-lg'}),
-        )
+            )
 
 
 class SetPWForm(forms.Form):
@@ -100,13 +100,13 @@ class SetPWForm(forms.Form):
             'class': 'input-lg',
             'autofocus': 'autofocus',
             }),
-        min_length=8,
+        min_length=12,
     )
     password_confirm = forms.CharField(
         required=True,
         label=_('Confirm Password'),
         widget=forms.PasswordInput(attrs={'class': 'input-lg'}),
-        min_length=8,
+        min_length=12,
     )
 
     def __init__(self, *args, **kwargs):
@@ -138,7 +138,7 @@ class ChangePWForm(forms.Form):
             required=True,
             label=_('New Password'),
             widget=forms.PasswordInput(attrs={'autocomplete': 'off'}),
-            min_length=8,
+            min_length=12,
             help_text=_('Please choose a new secure password'),
     )
 

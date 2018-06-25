@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="{% block meta_content %}{# FIXME: add content #}{% endblock meta_content %}">
+    <meta name="description" content="{% block meta_description %}{% endblock meta_description %}">
     <meta name="author" content="">
 
     <link rel="icon" type="image/png" href="{% static "img/favicon-192x192.png" %}" sizes="192x192">
@@ -52,7 +52,7 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="{% url 'home' %}" title="live.blockcypher.com">
+          <a class="navbar-brand" href="http://www.blockcypher.com" title="live.blockcypher.com">
             <strong class="logo acc"></strong>
           </a>
         </div>
@@ -76,6 +76,7 @@
                       <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('dash', 'DASH')">Dash</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
                     </ul>
                   </div>
@@ -90,7 +91,11 @@
             {% if coin_symbol %}
             <li class="hidden-sm">
               <a href="{% url 'coin_overview' coin_symbol %}" style="padding:7px 0 7px 15px;" title="{{ coin_symbol|coin_symbol_to_display_name }}">
-                <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% if coin_symbol == 'dash' %}<!-- This is done in order to works with previous css class "dash" already existing -->
+                   <div class="header-coin dash-logo acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% else %}
+                   <div class="header-coin {{ coin_symbol }} acc">{{ coin_symbol|coin_symbol_to_display_name }}</div>
+               {% endif %}
               </a>
             </li>
             {% endif %}
@@ -115,6 +120,9 @@
                   <a href="{% url 'coin_overview' 'doge' %}">Dogecoin</a>
                 </li>
                 <li>
+                  <a href="{% url 'coin_overview' 'dash' %}">Dash</a>
+                </li>
+                <li>
                   <a href="{% url 'coin_overview' 'bcy' %}">BlockCypher Testnet</a>
                 </li>
               </ul>
@@ -134,10 +142,6 @@
                 </li>
               </ul>
             </li>
-            {% else %}
-              <li>
-                <a href="{% url 'user_login' %}">{% trans "Sign In" %}</a>
-              </li>
             {% endif %}
             <li id="profile-menu" class="dropdown navbar-form">
               {% if tcp__ENABLE_TRANSLATIONS %}
@@ -270,7 +274,7 @@
           <div class="col-sm-4">
             <p class="text-right">
               Powered by <a href="http://www.blockcypher.com/">BlockCypher Web Services</a><br>
-              © 2014 - BlockCypher
+              © 2018 - BlockCypher
             </p>
           </div>
 

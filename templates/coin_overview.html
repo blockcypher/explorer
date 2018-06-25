@@ -24,6 +24,13 @@
 
 <div class="container">
 
+  <div class="ad">
+    <a id="ad-link" href="">
+      <img src=""/>
+      <span>Buy and Sell Instantly</span>
+    </a>
+  </div>
+
   <div class="section">
     <h2>Recent Blocks</h2>
 
@@ -35,6 +42,7 @@
           <th>Transactions</th>
           <th>Total Sent</th>
           <th>Total Fees</th>
+          <th>Block Size (in bytes)</th>
         </tr>
         {% for block in recent_blocks %}
           <tr>
@@ -45,6 +53,7 @@
             <td>{{ block.n_tx|intcomma }}</td>
             <td>{% satoshis_to_user_units_trimmed block.total tcp__user_units coin_symbol True 5 %}</td>
             <td>{% satoshis_to_user_units_trimmed block.fees tcp__user_units coin_symbol True 5 %}</td>
+            <td>{{ block.size|intcomma }}</td>
           </tr>
         {% endfor %}
       </table>
@@ -212,7 +221,7 @@
       $('[data-toggle="tooltip"]').tooltip();
 
       var total_ws_received = 0;
-      var MAX_WS_TO_RECEIVE = 1000;
+      var MAX_WS_TO_RECEIVE = 100;
 
       function create_ws() {
         console.log('Creating new websocket...');
@@ -227,7 +236,7 @@
           console.log('Sending websocket ping...');
           ws.send(JSON.stringify({event: "ping"}));
           // Trigger self recursively
-          setTimeout(send_ping, 20000);
+          setTimeout(send_ping, 60000);
         } else {
           console.log('Not sending ping because MAX_WS_TO_RECEIVE reached');
         }
@@ -286,6 +295,37 @@
 
       };
 
+      var sites = {
+        piiko: "https://www.piiko.co",
+        texcent: "http://texcent.com"
+      };
+      var ads = [];
+      if (window.location.href.match(/dash/)) {
+        ads = ["piiko", "texcent"];
+      } else if (window.location.href.match(/[bl]tc/)) {
+        ads = ["texcent"];
+      }
+      if (ads.length > 0) {
+        var chosen_idx = Date.now() % ads.length;
+        var chosen_ad = ads[chosen_idx];
+        var track_url = "https://live.blockcypher.com/ads/"+chosen_ad;
+
+        $('#ad-link img').attr("src", "/static/img/" + chosen_ad + "_ad.png");
+        $('#ad-link').attr("href", sites[chosen_ad]);
+        $('#ad-link').click(function(e) {
+          ga('send', 'event', 'outbound', 'click', track_url, {
+            'transport': 'beacon',
+            'hitCallback': function() {
+              setTimeout(function() {
+                document.location = sites[chosen_ad];
+              }, 200);
+            }
+          });
+          e.preventDefault();
+          e.stopPropagation();
+        });
+        $('div.ad').show();
+      }
 
     })
 

@@ -38,13 +38,14 @@ def scale_confidence(confidence):
 def transaction_overview(request, coin_symbol, tx_hash):
 
     try:
-        TX_LIMIT = 10000
+        TX_LIMIT = 50
         transaction_details = get_transaction_details(
                 tx_hash=tx_hash,
                 coin_symbol=coin_symbol,
                 limit=TX_LIMIT,
                 api_key=BLOCKCYPHER_API_KEY,
-                include_hex=True,
+                include_hex=False,
+                show_confidence=True,
                 )
     except AssertionError:
         msg = _('Invalid Transaction Hash')
@@ -132,6 +133,7 @@ def poll_confidence(request, coin_symbol, tx_hash):
             tx_hash=tx_hash,
             coin_symbol=coin_symbol,
             limit=1,
+            show_confidence=True,
             api_key=BLOCKCYPHER_API_KEY,
             )
 
@@ -219,7 +221,11 @@ def decode_tx(request, coin_symbol):
             tx_hex = form.cleaned_data['tx_hex']
             coin_symbol_to_use = form.cleaned_data['coin_symbol']
 
-            tx_in_json = decodetx(tx_hex=tx_hex, coin_symbol=coin_symbol_to_use)
+            tx_in_json = decodetx(
+                    tx_hex=tx_hex,
+                    coin_symbol=coin_symbol_to_use,
+                    api_key=BLOCKCYPHER_API_KEY,
+                    )
             # import pprint; pprint.pprint(tx_in_json, width=1)
             tx_in_json_str = json.dumps(tx_in_json, indent=4, sort_keys=True)
 

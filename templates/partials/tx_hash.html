@@ -1,110 +1,176 @@
 {% load btc_formats %}
+{% load humanize %}
 
-<div class="col-md-5">
-  <h4 class="text-center">Inputs Consumed ({{ transaction.vin_sz }})</h4>
-  {% for input in transaction.inputs %}
-    <div class="txn-input truncate"
-      {% if input.prev_hash %}
-        id="spentby-{{ input.prev_hash }}-{{ input.output_index }}"
-      {% endif %}
-      >
-      <strong>
-        {% satoshis_to_user_units_trimmed input.output_value tcp__user_units coin_symbol %}
-      </strong>
-      {% if input.prev_hash %}
-        {% if input.addresses %}
-          {# 'pay-to-pubkey-hash` `pay-to-multi-pubkey-hash` `pay-to-pubkey` `pay-to-script-hash` #}
-          {# TODO: something unique for each of these types? #}
-          from<br>
-          <i class="fa fa-qrcode"></i> 
-          <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
-        {% elif input.script_type == 'null-data' %}
-          {# TODO: add explanation #}
-          <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-        {% elif input.script_type == 'empty' %}
-          from
-          <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
-        {% elif input.script_type == 'unknown' %}
-          <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
-        {% endif %}
-        (<a href="{% url 'transaction_overview' coin_symbol input.prev_hash %}#output-index-{{ input.output_index }}">output</a>)
-      {% else %}
-        {# the coinbase! #}
-        from Block Reward
-      {% endif %}
-    </div>
-  {% endfor %}
-  {% if transaction.inputs|length < transaction.vin_sz %}...{% endif %}
-</div>
 
-<div class="col-md-2">
-  <div class="txn-arrow"></div>
-</div>
+<div id="{{ transaction.hash }}" class="well section">
 
-<div class="col-md-5">
-  <h4 class="text-center">Outputs Created ({{ transaction.vout_sz }})</h4>
-{% for output in transaction.outputs %}
-  <div class="txn-output truncate" id="output-index-{{ forloop.counter0 }}">
-    <strong>
-      {% satoshis_to_user_units_trimmed output.value tcp__user_units coin_symbol %}
-    </strong>
-    {% if output.addresses %}
-      to<br>
-      <i class="fa fa-qrcode"></i> 
-      <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
-      <span class="truncate">
-        {% if output.spent_by %}
-          (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}#spentby-{{ transaction.hash }}-{{ forloop.counter0 }}">spent</a>)
+  {% if show_num_confirmations %}
+    <p class="pull-right">
+      <span class="confirmations">
+        {% if transaction.double_spend and transaction.confirmations < 6 %}
+          <span class="unconfirmed">
+            <strong>DOUBLE SPEND ATTEMPT!</strong>
+          </span>
         {% else %}
-            (unspent)
+          {% if transaction.confirmations >= 6 %}
+            <span class="confirmed">
+              <i class="fa fa-lock"></i>
+              <span id="num-confs" title="{{ transaction.confirmations|intcomma }} Confirmations">6+</span>
+            </span>
+          {% elif transaction.confirmations > 0 and transaction.confirmations < 6 %}
+            <span class="pending">
+              <i class="fa fa-unlock"></i>
+              <span id="num-confs">{{ transaction.confirmations }}</span>/6
+            </span>
+          {% else%}
+            <span class="unconfirmed">
+              <i class="fa fa-unlock"></i>
+              <span id="num-confs">{{ transaction.confirmations }}</span>/6
+            </span>
+          {% endif %}
+          confirmations
+        {% endif %}
+        &nbsp;
+      </span>
+      {% comment %}
+      <span class="tx-age">
+        {% if transaction.received %}
+          (<time class="timeago" datetime="{{ transaction.received|date:'Y-m-d\TH:i:s' }}Z">
+            {{ transaction.received|date:'Y-m-d H:i' }} GMT
+          </time>)
+        {% else %}
+          (<time class="timeago" datetime="{{ transaction.confirmed|date:'Y-m-d\TH:i:s' }}Z">
+            {{ transaction.confirmed|date:'Y-m-d H:i' }} GMT
+          </time>)
         {% endif %}
       </span>
-    {% elif output.script_type == 'null-data' %}
-      {# TODO: add explanation #}
-      <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
-    {% elif output.script_type == 'empty' %}
-      <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
-    {% elif output.script_type == 'unknown' %}
-      <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
-    {% else %}
+      {% endcomment %}
+    </p>
+    <div class="clearfix"></div>
+  {% endif %}
+
+  {% if show_tx_hash %}
+    <h4 class="text-center truncate">
+      <i class="fa fa-exchange"></i> 
+      {% if transaction.hash %}
+        <a href="{% url 'transaction_overview' coin_symbol transaction.hash %}">
+          {{ transaction.hash }}
+        </a>
+      {% endif %}
+    </h4>
+  {% endif %}
+
+  <div class="col-md-5">
+    <h4 class="text-center">{{ transaction.vin_sz }} Input{{ transaction.vin_sz|pluralize }} Consumed</h4>
+    {% for input in transaction.inputs %}
+      {% if forloop.counter0 < num_inouts_to_display %}
+        <div class="txn-input truncate"
+          {% if input.prev_hash %}
+            id="spentby-{{ input.prev_hash }}-{{ input.output_index }}"
+          {% endif %}
+          {% if input.addresses.0 and input.addresses.0 == address %}style="background-color:#eee;"{% endif %}
+          >
+          <strong>
+            {% satoshis_to_user_units_trimmed input.output_value tcp__user_units coin_symbol %}
+          </strong>
+          {% if input.prev_hash %}
+            {% if input.addresses %}
+              {# 'pay-to-pubkey-hash` `pay-to-multi-pubkey-hash` `pay-to-pubkey` `pay-to-script-hash` #}
+              {# TODO: something unique for each of these types? #}
+              from<br>
+              <i class="fa fa-qrcode"></i> 
+              <a href="{% url 'address_overview' coin_symbol input.addresses.0 %}">{{ input.addresses.0 }}</a>
+            {% elif input.script_type == 'null-data' %}
+              {# TODO: add explanation #}
+              <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+            {% elif input.script_type == 'empty' %}
+              from
+              <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
+            {% elif input.script_type == 'unknown' %}
+              <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
+            {% endif %}
+            (<a href="{% url 'transaction_overview' coin_symbol input.prev_hash %}#output-index-{{ input.output_index }}">output</a>)
+          {% else %}
+            {# the coinbase! #}
+            from Block Reward
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+    {% if transaction.inputs|length < transaction.vin_sz or transaction.inputs|length > num_inouts_to_display %}...{% endif %}
+  </div>
+
+  <div class="col-md-2">
+    <div class="txn-arrow"></div>
+  </div>
+
+  <div class="col-md-5">
+    <h4 class="text-center">{{ transaction.vout_sz }} Output{{ transaction.vout_sz|pluralize }} Created</h4>
+    {% for output in transaction.outputs %}
+      {% if forloop.counter0 < num_inouts_to_display %}
+        <div
+          class="txn-output truncate" id="output-index-{{ forloop.counter0 }}"
+          {% if output.addresses.0 and output.addresses.0 == address %}style="background-color:#eee;"{% endif %}
+          >
+          <strong>
+            {% satoshis_to_user_units_trimmed output.value tcp__user_units coin_symbol %}
+          </strong>
+          {% if output.addresses %}
+            to<br>
+            <i class="fa fa-qrcode"></i> 
+            <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
+            <span class="truncate">
+              {% if output.spent_by %}
+                (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}#spentby-{{ transaction.hash }}-{{ forloop.counter0 }}">spent</a>)
+              {% else %}
+                  (unspent)
+              {% endif %}
+            </span>
+          {% elif output.script_type == 'null-data' %}
+            {# TODO: add explanation #}
+            <a href="https://bitcoin.org/en/developer-guide#term-null-data">Null Data Transaction</a>
+          {% elif output.script_type == 'empty' %}
+            <a href="http://dev.blockcypher.com/#transactions">Empty Script Type</a>
+          {% elif output.script_type == 'unknown' %}
+            <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
+          {% else %}
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+    {% if transaction.outputs|length < transaction.vout_sz or transaction.outputs|length > num_inouts_to_display %}...{% endif %}
+  </div>
+
+  <div class="clearfix"></div>
+
+  {% estimate_satoshis_from_tx txn_inputs=transaction.inputs txn_outputs=transaction.outputs as estimated_satoshis_transacted %}
+  {# https://docs.djangoproject.com/en/1.8/ref/templates/builtins/#boolean-operators #}
+  <div>
+    {% if estimated_satoshis_transacted != transaction.total and transaction.inputs|length == transaction.vin_sz and transaction.outputs|length == transaction.vout_sz %}
+      <h4 class="text-center">
+        <strong>
+          Estimated Value Sent
+        </strong>:
+        {% satoshis_to_user_units_trimmed estimated_satoshis_transacted tcp__user_units coin_symbol %}
+
+        (<a data-toggle="collapse" href="#{{ transaction.hash }}-readMore" aria-expanded="false" aria-controls="collapseExample">more</a>)
+      </h4>
+
+      <div class="collapse" id="{{ transaction.hash }}-readMore">
+        <div class={% if force_include_tx_amount %}"container"{% else %}"well"{% endif %}>
+            "Estimated Value Sent" excludes known change addresses.
+            For example, let's say we have a single transaction where address A sends 1 BTC to address B and also 1 BTC back to address A as change, then only 1 BTC is estimated to have been sent.
+            Proper use of a new change address for each transaction (like all HD wallet implementations) obfuscate this feature.
+        </div>
+      </div>
+    {% elif force_include_tx_amount %}
+      <h4 class="text-center">
+        <strong>
+          Value Transacted
+        </strong>:
+        {% satoshis_to_user_units_trimmed transaction.total tcp__user_units coin_symbol %}
+      </h4>
     {% endif %}
   </div>
-{% endfor %}
-{% if transaction.outputs|length < transaction.vout_sz %}...{% endif %}
+
 </div>
-
-<div class="clearfix"></div>
-
-{% estimate_satoshis_from_tx txn_inputs=transaction.inputs txn_outputs=transaction.outputs as estimated_satoshis_transacted %}
-{# https://docs.djangoproject.com/en/1.8/ref/templates/builtins/#boolean-operators #}
-{% if estimated_satoshis_transacted != transaction.total and transaction.inputs|length == transaction.vin_sz and transaction.outputs|length == transaction.vout_sz %}
-  <div>
-    <h4 class="text-center">
-      <strong>
-        Estimated Value Sent
-      </strong>:
-      {% satoshis_to_user_units_trimmed estimated_satoshis_transacted tcp__user_units coin_symbol %}
-
-      (<a data-toggle="collapse" href="#estimateReadMe" aria-expanded="false" aria-controls="collapseExample">more</a>)
-    </h4>
-
-    <div class="collapse" id="estimateReadMe">
-      <div class={% if force_include_tx_amount %}"container"{% else %}"well"{% endif %}>
-          "Estimated Value Sent" excludes known change addresses.
-          If in a transaction address A sends 1 BTC to address B and also 1 BTC back to address A as change, then only 1 BTC is estimated to have been sent.
-          Proper use of a new change address for each transaction (like all HD wallet implementations) obfuscate this feature, which is great for privacy.
-          The best practice is to never re-use a change address.
-      </div>
-    </div>
-
-  </div>
-{% elif force_include_tx_amount %}
-  <div>
-    <h4 class="text-center">
-      <strong>
-        Value Transacted
-      </strong>:
-      {% satoshis_to_user_units_trimmed transaction.total tcp__user_units coin_symbol %}
-    </h4>
-  </div>
-{% endif %}

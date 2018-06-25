@@ -39,6 +39,12 @@
 .doge {
   background: url(../img/doge.svg) center no-repeat;
 }
+.dash.coin {
+  background: url(../img/dash.svg) center no-repeat;
+}
+.dash-logo {
+  background: url(../img/dash.svg) center no-repeat;
+}
 .semi {
   opacity:.7;
 }
@@ -114,7 +120,7 @@ body {
   padding:20px 0;
 }
 .page-header {
-  padding:60px 0;
+  padding:45px 0;
   font-size:1.2em;
   color: #fff;
   background: #371456 url(../img/chain.svg) left center no-repeat;
@@ -326,6 +332,14 @@ a.coin:hover {
 }
 .tx-list {
   font-family:monospace;
+}
+.ad {
+  display: none;
+  text-align: center;
+}
+.ad span {
+  display: block;
+  font-weight: bold;
 }
 /* Media queries */
 @media(min-width:1200px){

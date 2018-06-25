@@ -1,0 +1,73 @@
+{% load btc_formats %}
+{% load humanize %}
+
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <th>Hash</th>
+      <th>Amount</th>
+      <th>Confirmations</th>
+      <th>Time</th>
+      <th>Block</th>
+    </tr>
+    {% for flattened_tx in flattened_txs %}
+      <h1>{{ transaction.tx_hash }}</h1>
+      <tr class="tx-row" id="{{ transaction.tx_hash }}">
+        <td class="truncate">
+          {% if flattened_tx.tx_hash %}
+            <a href="{% url 'transaction_overview' coin_symbol flattened_tx.tx_hash %}" class="hidden-xs tx-list small">
+              {{ flattened_tx.tx_hash }}
+            </a>
+            <a href="{% url 'transaction_overview' coin_symbol flattened_tx.tx_hash %}" class="visible-xs">
+              View Transaction
+            </a>
+          {% endif %}
+        </td>
+        <td>
+          {% if transaction.tx_input_n < 0 %}+{% endif %}
+          {% satoshis_to_user_units_trimmed flattened_tx.satoshis_net tcp__user_units coin_symbol True 0 %}
+        </td>
+        <td>
+        {% if flattened_tx.confirmations >= 6 %}
+          <span class="confirmed">
+            <i class="fa fa-lock"></i>
+            <span id="num-confs" title="{{ flattened_tx.confirmations|intcomma }} Confirmations">6+</span>
+          </span>
+        {% elif flattened_tx.confirmations > 0 and flattened_tx.confirmations < 6 %}
+          <span class="pending">
+            <i class="fa fa-unlock"></i>
+            <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6
+          </span>
+        {% elif flattened_tx.double_spend %}
+          <span class="unconfirmed">
+            <strong>DOUBLE SPEND</strong>
+          </span>
+        {% else%}
+          <span class="unconfirmed">
+            <i class="fa fa-unlock"></i>
+            <span id="num-confs">{{ flattened_tx.confirmations }}</span>/6
+          </span>
+        {% endif %}
+        </td>
+        <td>
+          {% if flattened_tx.received_at %}
+            <time class="timeago" datetime="{{ flattened_tx.received_at|date:'Y-m-d\TH:i:s' }}Z">
+              {{ flattened_tx.received_at|date:'Y-m-d H:i' }} GMT
+            </time>
+          {% else %}
+            <time class="timeago" datetime="{{ flattened_tx.confirmed_at|date:'Y-m-d\TH:i:s' }}Z">
+              {{ flattened_tx.confirmed_at|date:'Y-m-d H:i' }} GMT
+            </time>
+          {% endif %}
+        </td>
+        <td>
+          {% if flattened_tx.block_height %}
+            <a href="{% url 'block_overview' coin_symbol flattened_tx.block_height %}">{{ flattened_tx.block_height|intcomma}}</a>
+          {% else %}
+            <span class="label label-danger">Pending</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>

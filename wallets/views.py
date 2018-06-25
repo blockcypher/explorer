@@ -3,7 +3,7 @@ from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 from blockexplorer.settings import BLOCKCYPHER_API_KEY
 
-from blockcypher import get_wallet_transactions, create_hd_wallet
+from blockcypher import get_wallet_transactions, create_hd_wallet, get_wallet_addresses
 from blockcypher.utils import get_blockcypher_walletname_from_mpub, flatten_txns_by_hash
 
 from utils import get_max_pages
@@ -58,6 +58,18 @@ def wallet_overview(request, coin_symbol, pubkey):
 
     assert 'error' not in wallet_details, wallet_details
 
+    wallet_addresses = get_wallet_addresses(
+            wallet_name=wallet_name,
+            api_key=BLOCKCYPHER_API_KEY,
+            is_hd_wallet=True,
+            zero_balance=None,
+            used=None,
+            coin_symbol=coin_symbol,
+            )
+    # import pprint; pprint.pprint(wallet_addresses, width=1)
+
+    assert 'error' not in wallet_addresses, wallet_addresses
+
     all_transactions = wallet_details.get('unconfirmed_txrefs', []) + wallet_details.get('txrefs', [])
 
     # filter address details for pagination. HACK!
@@ -81,4 +93,6 @@ def wallet_overview(request, coin_symbol, pubkey):
             'num_confirmed_txns': wallet_details['n_tx'],
             'num_unconfirmed_txns': wallet_details['unconfirmed_n_tx'],
             'num_all_txns': wallet_details['final_n_tx'],
+            'wallet_addresses': wallet_addresses,
+            'bc_wallet_name': wallet_name,
             }
