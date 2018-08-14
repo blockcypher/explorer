@@ -297,13 +297,14 @@
 
       var sites = {
         piiko: "https://www.piiko.co",
-        texcent: "http://texcent.com"
+        texcent: "http://texcent.com",
+				tradecore: "https://tradecore.com"
       };
       var ads = [];
       if (window.location.href.match(/dash/)) {
-        ads = ["piiko", "texcent"];
+        ads = ["piiko", "texcent", "tradecore"];
       } else if (window.location.href.match(/[bl]tc/)) {
-        ads = ["texcent"];
+        ads = ["texcent", "tradecore"];
       }
       if (ads.length > 0) {
         var chosen_idx = Date.now() % ads.length;

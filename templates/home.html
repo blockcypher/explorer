@@ -184,11 +184,12 @@
         $('.search-filter .active').removeClass('active');
       });
 
-      var ads = ["texcent"];
+      var ads = ["texcent", "tradecore"];
       if (ads.length > 0) {
         var sites = {
           piiko: "https://www.piiko.co",
-          texcent: "http://texcent.com"
+          texcent: "http://texcent.com",
+					tradecore: "https://tradecore.com/"
         };
         var chosen_idx = Date.now() % ads.length;
         var chosen_ad = ads[chosen_idx];
