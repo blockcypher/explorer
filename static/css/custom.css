@@ -36,6 +36,9 @@
 .bc-testnet, .bcy {
   background: url(../img/bc-testnet.svg) center no-repeat;
 }
+.btx {
+  background: url(../img/btx.png) center no-repeat;
+}
 .doge {
   background: url(../img/doge.svg) center no-repeat;
 }

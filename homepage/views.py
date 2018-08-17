@@ -81,9 +81,11 @@ def home(request):
                 if first_char in ('1', ):
                     # Do not force addresses starting with 3 to be BTC because that's also used by LTC
                     kwargs['coin_symbol'] = 'btc'
-                elif first_char in ('m', 'n', '2'):
-                    # Note that addresses starting in 2 can be LTC testnet, but since we don't support that it's okay to include
+                elif first_char in ('m', 'n'):
+                    # Do not force addresses starting with 2 to be BTC-Testnet because that's also used by BTX
                     kwargs['coin_symbol'] = 'btc-testnet'
+		elif first_char in ('2','s','btx'):
+                    kwargs['coin_symbol'] = 'bitcore'
                 elif first_char in ('9', 'A'):
                     kwargs['coin_symbol'] = 'doge'
                 elif first_char in ('X',):
