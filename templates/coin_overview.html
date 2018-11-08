@@ -297,12 +297,13 @@
 
       var sites = {
         piiko: "https://www.piiko.co",
+        dashtext: "https://www.dashtext.io",
         texcent: "http://texcent.com",
 				tradecore: "https://tradecore.com"
       };
       var ads = [];
       if (window.location.href.match(/dash/)) {
-        ads = ["piiko", "texcent", "tradecore"];
+        ads = ["dashtext", "texcent", "tradecore"];
       } else if (window.location.href.match(/[bl]tc/)) {
         ads = ["texcent", "tradecore"];
       }
