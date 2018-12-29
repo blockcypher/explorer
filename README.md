@@ -8,11 +8,11 @@
 ## Install ##
 
 ### OSX ###
-- Follow the instructions [here](http://docs.python-guide.org/en/latest/starting/install/osx/) to install [Homebrew](http://brew.sh/) and then (re)install python.
+- Follow the instructions [here](https://docs.python-guide.org/starting/install/osx/) to install [Homebrew](https://brew.sh/) and then (re)install python.
 - If for some reason the step above does not install pip and virtualenv, follow the instructions [here](https://pip.pypa.io/en/latest/installing.html#python-os-support) to get pip and then install virtualenv using pip install virtualenv.
 - Install the foreman gem for accessing environmental variables:  `$ gem install foreman`
 - Optional (for webhooks): install ngrok with `brew install ngrok` (thanks Homebrew!)
-- Optional (advanced features): Install the latest stable version of postgres 9. (http://postgresapp.com/)[Postgresapp for Mac] is quite easy to install.
+- Optional (advanced features): Install the latest stable version of postgres 9. [Postgresapp for Mac](https://postgresapp.com/) is quite easy to install.
 
 ### Ubuntu ###
 - `$ sudo apt-get install postgresql libpq-dev ngrok-client ngrok-server`
