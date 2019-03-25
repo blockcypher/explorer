@@ -334,7 +334,7 @@ a.coin:hover {
   font-family:monospace;
 }
 .ad {
-  display: none;
+  /* display: none; */
   text-align: center;
 }
 .ad span {
