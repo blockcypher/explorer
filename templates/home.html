@@ -61,10 +61,15 @@
 <div class="bg-white">
   <div class="container">
     <div class="ad">
-      <a id="ad-link" href="">
-        <img src="" style="max-width: 420px;"/>
-        <span>The Grin Mining Pool</span>
-      </a>
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Main explorer -->
+			<ins class="adsbygoogle"
+					 style="display:inline-block;width:728px;height:90px"
+					 data-ad-client="ca-pub-8670884776365868"
+					 data-ad-slot="7521279835"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
     </div>
   </div>
 
@@ -184,13 +189,13 @@
         $('.search-filter .active').removeClass('active');
       });
 
-      var ads = ["grinmint"];
+      var ads = [];
       if (ads.length > 0) {
         var sites = {
           piiko: "https://www.piiko.co",
           texcent: "http://texcent.com",
           grinmint: "https://grinmint.com",
-	  tradecore: "https://tradecore.com/"
+					tradecore: "https://tradecore.com/"
         };
         var chosen_idx = Date.now() % ads.length;
         var chosen_ad = ads[chosen_idx];
