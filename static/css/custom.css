@@ -45,6 +45,9 @@
 .dash-logo {
   background: url(../img/dash.svg) center no-repeat;
 }
+.grin.coin {
+  background: url(../img/grin.svg) center no-repeat;
+}
 .semi {
   opacity:.7;
 }
