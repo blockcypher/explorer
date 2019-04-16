@@ -30,6 +30,9 @@
 .btc-testnet {
   background: url(../img/btc-testnet.svg) center no-repeat;
 }
+.grin {
+  background: url(../img/grin.svg) center no-repeat;
+}
 .ltc {
   background: url(../img/ltc.svg) center no-repeat;
 }
@@ -44,9 +47,6 @@
 }
 .dash-logo {
   background: url(../img/dash.svg) center no-repeat;
-}
-.grin {
-  background: url(../img/grin.svg) center no-repeat;
 }
 .semi {
   opacity:.7;
