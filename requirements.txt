@@ -18,7 +18,7 @@ python-dateutil==2.2
 python-postmark==0.4.7
 pytz==2014.9
 raven==5.1.1
-requests==2.4.3
+requests==2.20.0
 six==1.9.0
 sqlparse==0.1.13
 static3==0.5.1
