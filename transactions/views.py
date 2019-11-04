@@ -94,8 +94,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
         coinbase_msg = None
     else:
         is_coinbase_tx = True
-        total_satoshis_coinbase = inputs[0]['output_value']
-        fee_in_satoshis_coinbase = total_satoshis - total_satoshis_coinbase
+        total_satoshis_coinbase, fee_in_satoshis_coinbase = 0, 0
         coinbase_msg = str(unhexlify(inputs[0]['script']))
 
     api_url = 'https://api.blockcypher.com/v1/%s/%s/txs/%s?limit=%s&includeHex=true' % (
