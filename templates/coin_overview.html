@@ -25,10 +25,15 @@
 <div class="container">
 
   <div class="ad">
-    <a id="ad-link" href="">
-      <img src=""/>
-      <span>Buy and Sell Instantly</span>
-    </a>
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<!-- Main explorer -->
+		<ins class="adsbygoogle"
+				 style="display:inline-block;width:728px;height:90px"
+				 data-ad-client="ca-pub-8670884776365868"
+				 data-ad-slot="7521279835"></ins>
+		<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
   </div>
 
   <div class="section">
@@ -297,13 +302,15 @@
 
       var sites = {
         piiko: "https://www.piiko.co",
-        texcent: "http://texcent.com"
+        dashtext: "https://www.dashtext.io",
+        texcent: "http://texcent.com",
+				tradecore: "https://tradecore.com"
       };
       var ads = [];
       if (window.location.href.match(/dash/)) {
-        ads = ["piiko", "texcent"];
+        ads = ["dashtext", "texcent", "tradecore"];
       } else if (window.location.href.match(/[bl]tc/)) {
-        ads = ["texcent"];
+        ads = ["texcent", "tradecore"];
       }
       if (ads.length > 0) {
         var chosen_idx = Date.now() % ads.length;

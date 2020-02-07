@@ -30,6 +30,9 @@
 .btc-testnet {
   background: url(../img/btc-testnet.svg) center no-repeat;
 }
+.grin {
+  background: url(../img/grin.svg) center no-repeat;
+}
 .ltc {
   background: url(../img/ltc.svg) center no-repeat;
 }
@@ -337,7 +340,7 @@ a.coin:hover {
   font-family:monospace;
 }
 .ad {
-  display: none;
+  /* display: none; */
   text-align: center;
 }
 .ad span {

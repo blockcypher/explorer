@@ -1,5 +1,5 @@
 bitcoin==1.1.29
-blockcypher==1.0.73
+blockcypher==1.0.79
 dj-database-url==0.3.0
 dj-static==0.0.6
 Django==1.7.1
@@ -13,7 +13,7 @@ gunicorn==19.1.1
 ipython==2.3.0
 jsonfield==1.0.2
 newrelic==2.36.0.30
-psycopg2==2.5.4
+psycopg2==2.7.1
 python-dateutil==2.2
 python-postmark==0.4.7
 pytz==2014.9

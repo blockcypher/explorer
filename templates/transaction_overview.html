@@ -72,7 +72,7 @@
             {% if transaction.data_protocol == 'unknown' %}
               Data Embedded in Transaction with Unknown Protocol
             {% elif transaction.data_protocol == 'blockchainid' %}
-              BlockchainID Transaction
+              Stacks Blockchain Transaction
             {% elif transaction.data_protocol == 'openassets' %}
               Open Assets Transaction
             {% elif transaction.data_protocol == 'factom' %}
@@ -88,7 +88,7 @@
               {{ transaction.data_protocol }} Transaction
             {% endif %}
           </strong>
-          (<a href="http://dev.blockcypher.com/#tx">what's this?</a>)
+          (<a href="http://www.blockcypher.com/dev/bitcoin/#tx">what's this?</a>)
           <br />
           <p>
           {% with data_dict=transaction.outputs|txn_outputs_to_data_dict %}

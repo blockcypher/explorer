@@ -61,10 +61,15 @@
 <div class="bg-white">
   <div class="container">
     <div class="ad">
-      <a id="ad-link" href="">
-        <img src=""/>
-        <span>Buy and Sell Instantly</span>
-      </a>
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Main explorer -->
+			<ins class="adsbygoogle"
+					 style="display:inline-block;width:728px;height:90px"
+					 data-ad-client="ca-pub-8670884776365868"
+					 data-ad-slot="7521279835"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
     </div>
   </div>
 
@@ -78,11 +83,11 @@
             <span class="mpsb">Bitcoin</span>
           </a>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
-          <a href="{% url 'coin_overview' 'btc-testnet' %}" class="btc-testnet coin">
-            <span class="mpsb">Bitcoin Testnet</span>
-          </a>
-        </div>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+					<a href="https://grinmint.com/explorer/" class="grin coin">
+						<span class="mpsb">Grin</span>
+					</a>
+				</div>
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
           <a href="{% url 'coin_overview' 'ltc' %}" class="ltc coin">
             <span class="mpsb">Litecoin</span>
@@ -191,11 +196,13 @@
         $('.search-filter .active').removeClass('active');
       });
 
-      var ads = ["texcent"];
+      var ads = [];
       if (ads.length > 0) {
         var sites = {
           piiko: "https://www.piiko.co",
-          texcent: "http://texcent.com"
+          texcent: "http://texcent.com",
+          grinmint: "https://grinmint.com",
+					tradecore: "https://tradecore.com/"
         };
         var chosen_idx = Date.now() % ads.length;
         var chosen_ad = ads[chosen_idx];
