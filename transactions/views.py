@@ -184,7 +184,7 @@ def push_tx(request, coin_symbol):
             elif result.get('error'):
                 messages.error(request, result.get('error'))
             else:
-                success_msg = _('Transaction Successfully Broadcst')
+                success_msg = _('Transaction Successfully Broadcast')
                 messages.success(request, success_msg)
                 url = reverse('transaction_overview', kwargs={
                     'coin_symbol': coin_symbol_to_use,
