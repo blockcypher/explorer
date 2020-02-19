@@ -9,7 +9,7 @@ django-debug-toolbar==1.2.2
 django-storages==1.1.8
 django-toolbelt==0.0.1
 gnureadline==6.3.3
-gunicorn==19.1.1
+gunicorn==19.5.0
 ipython==2.3.0
 jsonfield==1.0.2
 newrelic==2.36.0.30
