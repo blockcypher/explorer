@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('initial_address', models.CharField(db_index=True, max_length=64)),
                 ('destination_address', models.CharField(db_index=True, max_length=64)),
                 ('blockcypher_id', models.CharField(db_index=True, max_length=64)),
-                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True)),
+                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='addresssubscription',
             name='address_forwarding_obj',
-            field=models.ForeignKey(to='addresses.AddressForwarding', null=True, blank=True),
+            field=models.ForeignKey(to='addresses.AddressForwarding', null=True, blank=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

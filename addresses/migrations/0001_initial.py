@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('notify_on_deposit', models.BooleanField(db_index=True, default=True)),
                 ('notify_on_withdrawal', models.BooleanField(db_index=True, default=True)),
                 ('blockcypher_id', models.CharField(db_index=True, choices=[('btc', 'Bitcoin'), ('btc-testnet', 'Bitcoin Testnet'), ('ltc', 'Litecoin'), ('doge', 'Dogecoin'), ('uro', 'Uro'), ('bcy', 'BlockCypher Testnet')], max_length=64)),
-                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

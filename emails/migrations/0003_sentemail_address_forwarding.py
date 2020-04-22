@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sentemail',
             name='address_forwarding',
-            field=models.ForeignKey(blank=True, null=True, to='addresses.AddressForwarding'),
+            field=models.ForeignKey(blank=True, null=True, to='addresses.AddressForwarding', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

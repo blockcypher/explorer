@@ -36,8 +36,8 @@ class Migration(migrations.Migration):
                 ('verified_at', models.DateTimeField(blank=True, db_index=True, null=True)),
                 ('verif_ip', models.IPAddressField(blank=True, db_index=True, null=True)),
                 ('verif_ua', models.CharField(blank=True, db_index=True, max_length=1024)),
-                ('address_subscription', models.ForeignKey(blank=True, to='addresses.AddressSubscription', null=True)),
-                ('auth_user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('address_subscription', models.ForeignKey(blank=True, to='addresses.AddressSubscription', null=True, on_delete=models.CASCADE)),
+                ('auth_user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
             options={
             },

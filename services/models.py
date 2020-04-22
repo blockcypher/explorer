@@ -43,7 +43,7 @@ class WebHook(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     # IP and UA of machine hitting coinsafe
-    ip_address = models.IPAddressField(null=False, blank=False, db_index=True)
+    ip_address = models.GenericIPAddressField(null=False, blank=False, db_index=True)
     user_agent = models.CharField(max_length=1024, blank=True, db_index=True)
     api_name = models.CharField(choices=API_NAME_CHOICES, max_length=3, null=False, blank=False, db_index=True)
     hostname = models.CharField(max_length=512, blank=False, null=False, db_index=True)
@@ -54,7 +54,7 @@ class WebHook(models.Model):
     data_from_post = JSONField(blank=True, null=True)
 
     # optional FKs
-    address_subscription = models.ForeignKey('addresses.AddressSubscription', null=True, blank=True)
+    address_subscription = models.ForeignKey('addresses.AddressSubscription', null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s from %s' % (self.id, self.api_name)

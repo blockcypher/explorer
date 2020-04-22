@@ -11,7 +11,7 @@ class OnChainTransaction(models.Model):
     '''
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     tx_hash = models.CharField(blank=False, null=False, max_length=128, db_index=True)
-    address_subscription = models.ForeignKey('addresses.AddressSubscription', blank=False, null=False)
+    address_subscription = models.ForeignKey('addresses.AddressSubscription', blank=False, null=False, on_delete=models.CASCADE)
     num_confs = models.IntegerField(blank=False, null=False, db_index=True)
     double_spend = models.BooleanField(db_index=True, default=False)
     satoshis_sent = models.BigIntegerField(blank=False, null=False, db_index=True)

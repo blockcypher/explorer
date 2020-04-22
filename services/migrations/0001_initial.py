@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('created_at', models.DateTimeField(db_index=True, auto_now_add=True)),
-                ('ip_address', models.IPAddressField(db_index=True)),
+                ('ip_address', models.GenericIPAddressField(db_index=True)),
                 ('user_agent', models.CharField(max_length=1024, blank=True, db_index=True)),
                 ('api_name', models.CharField(max_length=3, db_index=True, choices=[('BAN', 'blockcypher address notification')])),
                 ('hostname', models.CharField(max_length=512, db_index=True)),
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('succeeded', models.BooleanField(default=False, db_index=True)),
                 ('data_from_get', jsonfield.fields.JSONField(blank=True, null=True)),
                 ('data_from_post', jsonfield.fields.JSONField(blank=True, null=True)),
-                ('address_subscription', models.ForeignKey(to='addresses.AddressSubscription', blank=True, null=True)),
+                ('address_subscription', models.ForeignKey(to='addresses.AddressSubscription', blank=True, null=True, on_delete=models.CASCADE)),
             ],
             options={
             },

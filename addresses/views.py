@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -105,7 +105,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         messages.warning(request, msg)
         return HttpResponseRedirect(reverse('home'))
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         # notify user on page of any forwarding or subscriptions they may have
         for address_subscription in AddressSubscription.objects.filter(
                 auth_user=request.user,
@@ -207,7 +207,7 @@ def subscribe_forwarding(request):
 @render_to('subscribe_address.html')
 def subscribe_address(request, coin_symbol):
 
-    already_authenticated = request.user.is_authenticated()
+    already_authenticated = request.user.is_authenticated
     # kind of tricky because we have to deal with both logged in and new users
 
     initial = {'coin_symbol': coin_symbol}
@@ -640,7 +640,7 @@ def widget_forwarding(request):
 def setup_address_forwarding(request, coin_symbol):
 
     # kind of tricky because we have to deal with both logged in and new users
-    already_authenticated = request.user.is_authenticated()
+    already_authenticated = request.user.is_authenticated
 
     initial = {'coin_symbol': coin_symbol}
 

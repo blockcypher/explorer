@@ -30,9 +30,9 @@ if os.getenv('DEBUG') == 'True':
 else:
     DEBUG = False
 if os.getenv('TEMPLATE_DEBUG') == 'True':
-    TEMPLATE_DEBUG = True
+    TDEBUG = True
 else:
-    TEMPLATE_DEBUG = False
+    TDEBUG = False
 
 # DDT can cause extreme slowness clocking template rendering CPU times
 if os.getenv('DISABLE_DEBUG_TOOLBAR') == 'False':
@@ -77,12 +77,11 @@ INSTALLED_APPS = (
     'services',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -124,7 +123,7 @@ if os.getenv('ENABLE_TRANSLATIONS') == 'False':
     ENABLE_TRANSLATIONS = False
 else:
     ENABLE_TRANSLATIONS = True
-    MIDDLEWARE_CLASSES += ('django.middleware.locale.LocaleMiddleware',)
+    MIDDLEWARE += ('django.middleware.locale.LocaleMiddleware',)
     LANGUAGES += (('es', 'Spanish'),)
 
 # Yay crispy forms
@@ -139,7 +138,30 @@ STATICFILES_DIRS = (
 )
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
-TEMPLATE_DIRS = (os.path.join(PROJECT_PATH, 'templates'),)
+
+TEMPLATES = [
+    {
+        'BACKEND':'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'DIRS': (os.path.join(PROJECT_PATH, 'templates'),),
+        'OPTIONS': {
+            'context_processors': [
+                'blockexplorer.context_processors.get_user_units',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+            ],
+            'debug': TDEBUG,
+        },
+    }
+]
 
 PRODUCTION_DOMAIN = 'live.blockcypher.com'
 STAGING_DOMAIN = 'TODO'
@@ -152,7 +174,7 @@ if SITE_DOMAIN in (PRODUCTION_DOMAIN, STAGING_DOMAIN):
     # FIXME:
     # SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    MIDDLEWARE_CLASSES += ('blockexplorer.middleware.SSLMiddleware',)
+    MIDDLEWARE += ('blockexplorer.middleware.SSLMiddleware',)
 else:
     BASE_URL = 'http://%s' % SITE_DOMAIN
     if not DISABLE_DEBUG_TOOLBAR:
@@ -168,7 +190,7 @@ else:
     EMAIL_DEV_PREFIX = True
     if not DISABLE_DEBUG_TOOLBAR:
         # Enable debug toolbar on local and staging
-        MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
+        MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
         INSTALLED_APPS += ('debug_toolbar', )
 
 if not DISABLE_DEBUG_TOOLBAR:
@@ -177,18 +199,6 @@ if not DISABLE_DEBUG_TOOLBAR:
             '127.0.0.1',
             'localhost',
             )
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    'blockexplorer.context_processors.get_user_units',
-)
 
 BLOCKCYPHER_API_KEY = os.getenv('BLOCKCYPHER_API_KEY')
 BLOCKCYPHER_PUBLIC_KEY = '31c49f33f35c85a8f4d9845a754f7c8e'

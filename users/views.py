@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.utils.html import escape
@@ -24,7 +24,7 @@ from utils import get_client_ip, get_user_agent
 @render_to('admin/login.html')
 def user_login(request):
     user = request.user
-    if user.is_authenticated():
+    if user.is_authenticated:
         # TODO: notification
         return HttpResponseRedirect(reverse_lazy('dashboard'))
 
@@ -82,7 +82,7 @@ def user_login(request):
 @render_to('signup.html')
 def signup(request):
     user = request.user
-    if user.is_authenticated():
+    if user.is_authenticated:
         return HttpResponseRedirect(reverse_lazy('dashboard'))
     form = RegistrationForm()
     if request.method == 'POST':

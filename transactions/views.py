@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
