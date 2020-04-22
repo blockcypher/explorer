@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(help_text='Can login?', default=True)),
                 ('is_staff', models.BooleanField(default=False)),
                 ('is_superuser', models.BooleanField(default=False)),
-                ('creation_ip', models.IPAddressField(db_index=True)),
+                ('creation_ip', models.GenericIPAddressField(db_index=True)),
                 ('creation_user_agent', models.CharField(blank=True, db_index=True, max_length=1024)),
                 ('email_verified', models.BooleanField(default=False, db_index=True)),
             ],
@@ -39,9 +39,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
                 ('login_at', models.DateTimeField(db_index=True, auto_now_add=True)),
-                ('ip_address', models.IPAddressField(db_index=True)),
+                ('ip_address', models.GenericIPAddressField(db_index=True)),
                 ('user_agent', models.CharField(blank=True, db_index=True, max_length=1024)),
-                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('auth_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

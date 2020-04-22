@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.utils.translation import ugettext_lazy as _

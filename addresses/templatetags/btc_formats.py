@@ -12,6 +12,9 @@ register = template.Library()
 
 @register.simple_tag(name='satoshis_to_user_units_trimmed')
 def satoshis_to_user_units_trimmed(input_satoshis, user_unit='btc', coin_symbol='btc', print_cs=True, round_digits=0):
+    # fix for coinbase input
+    if not isinstance(input_satoshis, int):
+        return ""
     return format_crypto_units(
             input_quantity=input_satoshis,
             input_type='satoshi',
@@ -23,7 +26,7 @@ def satoshis_to_user_units_trimmed(input_satoshis, user_unit='btc', coin_symbol=
             )
 
 
-@register.assignment_tag
+@register.simple_tag
 def estimate_satoshis_from_tx(txn_inputs, txn_outputs):
     return estimate_satoshis_transacted(inputs=txn_inputs, outputs=txn_outputs)
 

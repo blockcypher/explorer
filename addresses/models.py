@@ -17,9 +17,9 @@ class AddressSubscription(models.Model):
     notify_on_sixth_confirm = models.BooleanField(db_index=True, default=True)
     notify_on_deposit = models.BooleanField(db_index=True, default=True)
     notify_on_withdrawal = models.BooleanField(db_index=True, default=True)
-    auth_user = models.ForeignKey('users.AuthUser', blank=False, null=False)
+    auth_user = models.ForeignKey('users.AuthUser', blank=False, null=False, on_delete=models.CASCADE)
     blockcypher_id = models.CharField(max_length=64, null=False, blank=False, db_index=True)
-    address_forwarding_obj = models.ForeignKey('addresses.AddressForwarding', blank=True, null=True)
+    address_forwarding_obj = models.ForeignKey('addresses.AddressForwarding', blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s to %s' % (self.id, self.b58_address)
@@ -62,7 +62,7 @@ class AddressForwarding(models.Model):
     coin_symbol = models.CharField(choices=COIN_CHOICES, max_length=16, null=False, blank=False, db_index=True)
     initial_address = models.CharField(blank=False, null=False, max_length=64, db_index=True)
     destination_address = models.CharField(blank=False, null=False, max_length=64, db_index=True)
-    auth_user = models.ForeignKey('users.AuthUser', blank=True, null=True)
+    auth_user = models.ForeignKey('users.AuthUser', blank=True, null=True, on_delete=models.CASCADE)
     blockcypher_id = models.CharField(max_length=64, null=False, blank=False, db_index=True)
 
     def __str__(self):

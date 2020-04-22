@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from emails.trigger import send_and_log
 
@@ -63,7 +63,7 @@ class AuthUser(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
-    creation_ip = models.IPAddressField(null=False, blank=False, db_index=True)
+    creation_ip = models.GenericIPAddressField(null=False, blank=False, db_index=True)
     creation_user_agent = models.CharField(max_length=1024, blank=True, db_index=True)
 
     email_verified = models.BooleanField(default=False, db_index=True)
@@ -122,8 +122,8 @@ class AuthUser(AbstractBaseUser):
 
 class LoggedLogin(models.Model):
     login_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    auth_user = models.ForeignKey(AuthUser, blank=False, null=False)
-    ip_address = models.IPAddressField(null=False, blank=False, db_index=True)
+    auth_user = models.ForeignKey(AuthUser, blank=False, null=False, on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=False, blank=False, db_index=True)
     user_agent = models.CharField(max_length=1024, blank=True, db_index=True)
 
     def __str__(self):

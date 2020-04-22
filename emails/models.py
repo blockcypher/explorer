@@ -21,18 +21,18 @@ class SentEmail(models.Model):
     subject = models.TextField(null=False, blank=False)
     unsub_code = models.CharField(max_length=64, blank=False, null=False, unique=True, db_index=True)
     unsubscribed_at = models.DateTimeField(null=True, blank=True, db_index=True)
-    unsub_ip = models.IPAddressField(null=True, blank=True, db_index=True)
+    unsub_ip = models.GenericIPAddressField(null=True, blank=True, db_index=True)
     unsub_ua = models.CharField(max_length=1024, blank=True, db_index=True)
     verif_code = models.CharField(max_length=64, blank=True, null=True, unique=True, db_index=True)
     verified_at = models.DateTimeField(null=True, blank=True, db_index=True)
-    verif_ip = models.IPAddressField(null=True, blank=True, db_index=True)
+    verif_ip = models.GenericIPAddressField(null=True, blank=True, db_index=True)
     verif_ua = models.CharField(max_length=1024, blank=True, db_index=True)
 
     # optional FK:
-    auth_user = models.ForeignKey('users.AuthUser', null=True, blank=True)
-    address_subscription = models.ForeignKey('addresses.AddressSubscription', null=True, blank=True)
-    transaction_event = models.ForeignKey('transactions.OnChainTransaction', null=True, blank=True)
-    address_forwarding = models.ForeignKey('addresses.AddressForwarding', null=True, blank=True)
+    auth_user = models.ForeignKey('users.AuthUser', null=True, blank=True, on_delete=models.CASCADE)
+    address_subscription = models.ForeignKey('addresses.AddressSubscription', null=True, blank=True, on_delete=models.CASCADE)
+    transaction_event = models.ForeignKey('transactions.OnChainTransaction', null=True, blank=True, on_delete=models.CASCADE)
+    address_forwarding = models.ForeignKey('addresses.AddressForwarding', null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s to %s' % (self.id, self.to_email)

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('double_spend', models.BooleanField(db_index=True, default=False)),
                 ('satoshis_sent', models.BigIntegerField(db_index=True)),
                 ('fee_in_satoshis', models.BigIntegerField(db_index=True)),
-                ('address_subscription', models.ForeignKey(to='addresses.AddressSubscription')),
+                ('address_subscription', models.ForeignKey(to='addresses.AddressSubscription', on_delete=models.CASCADE)),
             ],
             options={
             },
