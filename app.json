@@ -1,0 +1,17 @@
+{
+    "name": "BlockCypher Explorer",
+    "description": "Block explorer showcasing the BlockCypher APIs.",
+    "keywords": [
+      "productivity",
+      "HTML5",
+      "scalpel"
+    ],
+    "website": "https://live.blockcypher.com",
+    "repository": "https://github.com/blockcypher/explorer",
+    "logo": "https://www.blockcypher.com/images/blockcypher_logo_white.svg",
+    "buildpacks": [
+      {
+        "url": "https://github.com/heroku/heroku-buildpack-python.git#remove-sqlite"
+      }
+    ]
+  }
