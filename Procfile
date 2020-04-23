@@ -1,2 +1,1 @@
-release: python manage.py migrate
-web: gunicorn --preload blockexplorer.wsgi
+web: gunicorn blockexplorer.wsgi
