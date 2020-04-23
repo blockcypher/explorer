@@ -1,1 +1,1 @@
-web: newrelic-admin run-program gunicorn blockexplorer.wsgi
+web: gunicorn blockexplorer.wsgi
