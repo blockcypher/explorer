@@ -175,7 +175,9 @@ if SITE_DOMAIN in (PRODUCTION_DOMAIN, STAGING_DOMAIN):
     # FIXME:
     # SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    MIDDLEWARE += ('blockexplorer.middleware.SSLMiddleware',)
+    MIDDLEWARE += ('django.middleware.security.SecurityMiddleware',)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
 else:
     BASE_URL = 'http://%s' % SITE_DOMAIN
     if not DISABLE_DEBUG_TOOLBAR:
