@@ -85,9 +85,8 @@
     {% if not is_wallet_page %}
       <div class="col-md-4 text-center">
         <p>
-          {# TODO: support this for other blockchains #}
-          <a href="{% if coin_symbol == 'btc' %}bitcoin:{{ address }}{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
-            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
+          <a href="{{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}:{{ address }}">
+            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl={{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
           </a>
         </p>
       </div>
