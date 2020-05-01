@@ -34,6 +34,11 @@ def block_overview(request, coin_symbol, block_representation):
     try:
         if not is_valid_hash(block_representation):
             # it's a block num, we want this as a hash
+            if block_representation == "0":
+                msg = _('Sorry, that block was not found')
+                messages.warning(request, msg)
+                return HttpResponseRedirect(reverse('home'))
+
             block_hash = get_block_hash(
                     block_height=block_representation,
                     coin_symbol=coin_symbol,
