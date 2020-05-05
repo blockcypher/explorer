@@ -85,9 +85,8 @@
     {% if not is_wallet_page %}
       <div class="col-md-4 text-center">
         <p>
-          {# TODO: support this for other blockchains #}
-          <a href="{% if coin_symbol == 'btc' %}bitcoin:{{ address }}{% else %}{% url 'address_overview' coin_symbol address %}{% endif %}">
-            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl=bitcoin%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
+          <a href="{{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}:{{ address }}">
+            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl={{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
           </a>
         </p>
       </div>
@@ -123,13 +122,6 @@
 
       {% if not is_wallet_page %}
         <p class="text-center">
-          {% if num_all_txns < 1000 %}
-            <a href="{% url 'subscribe_address' coin_symbol %}?a={{ address }}" class="btn btn-lg btn-default">
-              <i class="fa fa-inbox"></i>
-              Subscribe
-          </a>
-          {% endif %}
-
           <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
             Advanced Details 
             <b class="caret"></b>
