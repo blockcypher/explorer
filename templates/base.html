@@ -219,13 +219,6 @@
           <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
         </p>
       </div>
-    {% elif coin_symbol == 'btc-testnet' %}
-      <div class="container">
-        <p>
-          Check out our
-          <a href="https://accounts.blockcypher.com/testnet-faucet{% if address %}?a={{ address }}{% endif %}">Free Bitcoin Testnet Faucet</a>.
-        </p>
-      </div>
     {% elif coin_symbol == 'bcy' %}
       <div class="container">
         <p>
