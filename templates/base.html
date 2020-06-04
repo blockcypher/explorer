@@ -19,7 +19,7 @@
 
     <title>
       {% block title %}
-        {% trans "Block Explorer for Bitcoin, Litecoin, Dogecoin and More" %}
+        {% trans "Block Explorer for Bitcoin, Ethereum, Litecoin and More" %}
       {% endblock %}
       | BlockCypher
     </title>
@@ -73,11 +73,12 @@
                     </button>
                     <ul class="dropdown-menu" role="menu">
                       <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
-                      <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('eth', 'ETH')">Ethereum</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('dash', 'DASH')">Dash</a></li>
                       <li><a href="javascript:void(0);" onclick="setCoin('bcy', 'BC Testnet')">BlockCypher Testnet</a></li>
+                      <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                     </ul>
                   </div>
                   <input {% if not is_input_page %}autofocus="autofocus"{% endif %} name="search_string" id="id_search_string" type="text" class="form-control search-input" placeholder="Address, transaction or block">
