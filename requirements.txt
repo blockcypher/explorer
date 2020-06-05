@@ -1,4 +1,4 @@
-blockcypher==1.0.83
+blockcypher==1.0.84
 dj-database-url==0.5.0
 dj-static== 0.0.6
 Django==3.0.5
