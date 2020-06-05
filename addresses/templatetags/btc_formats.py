@@ -15,16 +15,16 @@ def satoshis_to_user_units_trimmed(input_satoshis, user_unit='btc', coin_symbol=
     # fix for coinbase input
     if not isinstance(input_satoshis, int):
         return ""
+    input_type = 'satoshis' if coin_symbol != 'eth' else 'wei'
     return format_crypto_units(
             input_quantity=input_satoshis,
-            input_type='satoshi',
+            input_type=input_type,
             output_type=user_unit,
             coin_symbol=coin_symbol,
             print_cs=print_cs,
             safe_trimming=True,
             round_digits=round_digits,
             )
-
 
 @register.simple_tag
 def estimate_satoshis_from_tx(txn_inputs, txn_outputs):

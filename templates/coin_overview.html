@@ -78,72 +78,87 @@
     </h2>
 
     <div class="table-responsive">
-      <table class="table">
-        <tr>
-          <th>High Priority <small>(1-2 blocks)</small></th>
-          <th>Medium Priority <small>(3-6 blocks)</small></th>
-          <th>Low Priority <small>(7+ blocks)</small></th>
-        </tr>
-        <tr>
-          <td>
-            <span>
-              {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
-              <button
-                class="btn-link"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="
-                  About
-                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
-                  -
-                  {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
-                  per transaction, depending on the # of inputs/outputs
-                  "
-              >
-                <i class="fa fa-info-circle"></i>
-              </button>
-            </span>
-          </td>
-          <td>
-            <span>
-              {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
-              <button
-                class="btn-link"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="
-                  About
-                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
-                  -
-                  {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
-                  per transaction, depending on the # of inputs/outputs
-                  "
-              >
-                <i class="fa fa-info-circle"></i>
-              </button>
-            </span>
-          </td>
-          <td>
-            <span>
-              {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
-              <button
-                class="btn-link"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="
-                  About
-                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
-                  -
-                  {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
-                  per transaction, depending on the # of inputs/outputs
-                  "
-              >
-                <i class="fa fa-info-circle"></i>
-              </button>
-            </span>
-          </td>
-        </tr>
-      </table>
+      {% if coin_symbol == 'eth' %}
+        <table class="table">
+          <tr>
+            <th>Recommended Gas Price <small>(1-4 blocks)</small></th>
+          </tr>
+          <tr>
+            <td>
+              <span>
+                {% satoshis_to_user_units_trimmed fees.high_fee_per_kb 'gwei' coin_symbol 'True' 3 %} GWei
+              </span>
+            </td>
+          </tr>
+        </table>
+      {% else %}
+        <table class="table">
+          <tr>
+            <th>High Priority <small>(1-2 blocks)</small></th>
+            <th>Medium Priority <small>(3-6 blocks)</small></th>
+            <th>Low Priority <small>(7+ blocks)</small></th>
+          </tr>
+          <tr>
+            <td>
+              <span>
+                {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+                <button
+                  class="btn-link"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="
+                    About
+                    {% satoshis_to_user_units_trimmed fees.high_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                    -
+                    {% satoshis_to_user_units_trimmed fees.high_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                    per transaction, depending on the # of inputs/outputs
+                    "
+                >
+                  <i class="fa fa-info-circle"></i>
+                </button>
+              </span>
+            </td>
+            <td>
+              <span>
+                {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+                <button
+                  class="btn-link"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="
+                    About
+                    {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                    -
+                    {% satoshis_to_user_units_trimmed fees.medium_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                    per transaction, depending on the # of inputs/outputs
+                    "
+                >
+                  <i class="fa fa-info-circle"></i>
+                </button>
+              </span>
+            </td>
+            <td>
+              <span>
+                {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}/KB
+                <button
+                  class="btn-link"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="
+                    About
+                    {% satoshis_to_user_units_trimmed fees.low_fee_per_kb__smalltx tcp__user_units coin_symbol 'False' 3 %}
+                    -
+                    {% satoshis_to_user_units_trimmed fees.low_fee_per_kb tcp__user_units coin_symbol 'True' 3 %}
+                    per transaction, depending on the # of inputs/outputs
+                    "
+                >
+                  <i class="fa fa-info-circle"></i>
+                </button>
+              </span>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
     </div>
     <p>
       <i>
