@@ -88,7 +88,7 @@ def transaction_overview(request, coin_symbol, tx_hash):
     else:
         time_to_use = received_at
 
-    if 'prev_hash' in inputs[0]:
+    if 'prev_hash' in inputs[0] or coin_symbol == 'eth':
         is_coinbase_tx = False
         total_satoshis_coinbase, fee_in_satoshis_coinbase = None, None
         coinbase_msg = None
