@@ -86,7 +86,7 @@
           <tr>
             <td>
               <span>
-                {% satoshis_to_user_units_trimmed fees.high_fee_per_kb 'gwei' coin_symbol 'True' 3 %} GWei
+                {% satoshis_to_user_units_trimmed fees.high_fee_per_kb 'gwei' coin_symbol 'True' 3 %}
               </span>
             </td>
           </tr>
@@ -195,7 +195,11 @@
               </td>
               <td>
                 {# always in BTC/BCY/LTC/DOGE because JS streaming in new transactions will be and don't want to mix units #}
-                {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}
+                {% if coin_symbol == 'eth' %}
+                  {% satoshis_to_user_units_trimmed recent_tx.total 'ether' coin_symbol True 15 %}
+                {% else %}
+                  {% satoshis_to_user_units_trimmed recent_tx.total 'btc' coin_symbol %}
+                {% endif %}
               </td>
               <td>
                 <time class="timeago" datetime="{{ recent_tx.received|date:'Y-m-d\TH:i:s' }}Z">
