@@ -73,7 +73,7 @@
           <strong>
             {% satoshis_to_user_units_trimmed input.output_value tcp__user_units coin_symbol %}
           </strong>
-          {% if input.prev_hash %}
+          {% if input.prev_hash or coin_symbol == "eth" %}
             {% if input.addresses %}
               {# 'pay-to-pubkey-hash` `pay-to-multi-pubkey-hash` `pay-to-pubkey` `pay-to-script-hash` #}
               {# TODO: something unique for each of these types? #}
@@ -89,7 +89,10 @@
             {% elif input.script_type == 'unknown' %}
               <a href="http://dev.blockcypher.com/#transactions">Unknown Script Type</a>
             {% endif %}
+            {# Ethereum does not have prev_hash #}
+            {% if input.prev_hash %}
             (<a href="{% url 'transaction_overview' coin_symbol input.prev_hash %}#output-index-{{ input.output_index }}">output</a>)
+            {% endif %}
           {% else %}
             {# the coinbase! #}
             from Block Reward
