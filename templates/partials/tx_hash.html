@@ -61,7 +61,9 @@
   {% endif %}
 
   <div class="col-md-5">
-    <h4 class="text-center">{{ transaction.vin_sz }} Input{{ transaction.vin_sz|pluralize }} Consumed</h4>
+    {% if coin_symbol != "eth" %}
+      <h4 class="text-center">{{ transaction.vin_sz }} Input{{ transaction.vin_sz|pluralize }} Consumed</h4>
+    {% endif %}
     {% for input in transaction.inputs %}
       {% if forloop.counter0 < num_inouts_to_display %}
         <div class="txn-input truncate"
@@ -108,7 +110,9 @@
   </div>
 
   <div class="col-md-5">
-    <h4 class="text-center">{{ transaction.vout_sz }} Output{{ transaction.vout_sz|pluralize }} Created</h4>
+    {% if coin_symbol != "eth" %}
+      <h4 class="text-center">{{ transaction.vout_sz }} Output{{ transaction.vout_sz|pluralize }} Created</h4>
+    {% endif %}
     {% for output in transaction.outputs %}
       {% if forloop.counter0 < num_inouts_to_display %}
         <div
@@ -123,10 +127,12 @@
             <i class="fa fa-qrcode"></i> 
             <a href="{% url 'address_overview' coin_symbol output.addresses.0 %}">{{ output.addresses.0 }}</a>
             <span class="truncate">
+              {% if coin_symbol != "eth" %}
               {% if output.spent_by %}
                 (<a href="{% url 'transaction_overview' coin_symbol output.spent_by %}#spentby-{{ transaction.hash }}-{{ forloop.counter0 }}">spent</a>)
               {% else %}
                   (unspent)
+              {% endif %}
               {% endif %}
             </span>
           {% elif output.script_type == 'null-data' %}

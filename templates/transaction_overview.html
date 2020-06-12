@@ -181,6 +181,7 @@
 
         <div class="row">
 
+          {% if coin_symbol != "eth" %}
           <div {% if transaction.block_hash or transaction.double_spend %} style="display:none;"{% endif %} id="confidence-section" class="col-md-3 text-center">
             <strong>Confidence</strong>
             <button id="confidence-popover" type='button' class='btn-link'>
@@ -199,6 +200,7 @@
               <span class="val">{{ transaction.preference }}</span>
             </div>
           </div>
+          {% endif %}
 
         {% if transaction.block_hash %}
           <p class="text-center">
