@@ -21,9 +21,9 @@ def get_user_units(request):
         user_units = DEFAULT_USER_UNIT
 
     is_eth = "eth" in request.path
-    if is_eth && user_units not in ["ether", "gwei", "wei"]:
+    if is_eth and user_units not in ["ether", "gwei", "wei"]:
         user_units = "ether"
-    if (not is_eth) && user_units in ["ether", "gwei", "wei"]:
+    if (not is_eth) and user_units in ["ether", "gwei", "wei"]:
         user_units = DEFAULT_USER_UNIT
 
     # tcp = template context processor, added to prevent namespace collisions
