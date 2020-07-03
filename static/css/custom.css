@@ -27,6 +27,9 @@
 .btc {
   background: url(../img/btc.svg) center no-repeat;
 }
+.eth {
+  background: url(../img/eth.svg) center no-repeat;
+}
 .btc-testnet {
   background: url(../img/btc-testnet.svg) center no-repeat;
 }

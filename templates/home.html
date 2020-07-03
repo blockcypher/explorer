@@ -26,6 +26,7 @@
               </button>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="javascript:void(0);" onclick="setCoin('btc', 'BTC')">Bitcoin</a></li>
+                <li><a href="javascript:void(0);" onclick="setCoin('eth', 'ETH')">Ethereum</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('btc-testnet', 'BTC Testnet')">Bitcoin Testnet</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('ltc', 'LTC')">Litecoin</a></li>
                 <li><a href="javascript:void(0);" onclick="setCoin('doge', 'DOGE')">DogeCoin</a></li>
@@ -78,32 +79,37 @@
     <div class="row text-center">
       <h2>Browse the Blockchain</h2>
       <div class="col-lg-12">
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
           <a href="{% url 'coin_overview' 'btc' %}" class="btc coin">
             <span class="mpsb">Bitcoin</span>
           </a>
         </div>
-				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+          <a href="{% url 'coin_overview' 'eth' %}" class="eth coin">
+            <span class="mpsb">Ethereum</span>
+          </a>
+        </div>
+				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
 					<a href="https://grinmint.com/explorer/" class="grin coin">
 						<span class="mpsb">Grin</span>
 					</a>
 				</div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
           <a href="{% url 'coin_overview' 'ltc' %}" class="ltc coin">
             <span class="mpsb">Litecoin</span>
           </a>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
           <a href="{% url 'coin_overview' 'doge' %}" class="doge coin">
             <span class="mpsb">Dogecoin</span>
           </a>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
           <a href="{% url 'coin_overview' 'dash' %}" class="dash-logo coin">
             <span class="mpsb">Dash</span>
           </a>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
           <a href="{% url 'coin_overview' 'bcy' %}" class="bc-testnet coin">
             <span class="mpsb">BlockCypher Testnet</span>
           </a>
