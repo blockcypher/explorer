@@ -12,8 +12,8 @@ from blockexplorer.walletname import lookup_wallet_name, is_valid_wallet_name
 from homepage.forms import SearchForm, UnitChoiceForm
 
 from blockcypher.api import get_transaction_details, get_block_overview, get_blocks_overview, get_latest_block_height, get_broadcast_transactions, get_blockchain_fee_estimates
-from blockcypher.utils import is_valid_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address
-from blockcypher.constants import SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
+from blockcypher.utils import is_valid_hash, is_valid_ethash_block_hash, is_valid_block_num, is_valid_sha_block_hash, is_valid_address, is_valid_eth_address
+from blockcypher.constants import ETHASH_COINS, SHA_COINS, SCRYPT_COINS, COIN_SYMBOL_MAPPINGS
 
 from operator import itemgetter
 
@@ -71,7 +71,36 @@ def home(request):
                         kwargs['tx_hash'] = search_string
                         redirect_url = reverse('transaction_overview', kwargs=kwargs)
 
-            elif is_valid_address(search_string):
+                elif coin_symbol in ETHASH_COINS:
+                    # Try to see if it's a valid TX hash
+                    tx_details = get_transaction_details(
+                            tx_hash=search_string,
+                            coin_symbol=coin_symbol,
+                            limit=1,
+                            api_key=BLOCKCYPHER_API_KEY,
+                            )
+                    if 'error' in tx_details:
+                        # Not a valid TX hash, see if it's a block hash by checking blockchain
+                        block_details = get_block_overview(
+                                block_representation=search_string,
+                                coin_symbol=coin_symbol,
+                                txn_limit=1,
+                                api_key=BLOCKCYPHER_API_KEY,
+                                )
+                        if 'error' in block_details:
+                            msg = _("Sorry, '%(search_string)s' is not a valid transaction or block hash for %(currency)s" % {
+                                'currency': coin_symbol,
+                                'search_string': search_string,
+                                })
+                            messages.error(request, msg)
+                        else:
+                            kwargs['block_representation'] = search_string
+                            redirect_url = reverse('block_overview', kwargs=kwargs)
+                    else:
+                        kwargs['tx_hash'] = search_string
+                        redirect_url = reverse('transaction_overview', kwargs=kwargs)
+
+            elif is_valid_address(search_string) or is_valid_eth_address(search_string):
                 # It's an address
                 kwargs['address'] = search_string
                 first_char = search_string[0]
