@@ -26,6 +26,7 @@ def home(request):
         })
     if request.method == 'POST':
         form = SearchForm(data=request.POST)
+        print(form.is_valid())
         if form.is_valid():
             redirect_url = None
             search_string = form.cleaned_data['search_string']
