@@ -26,7 +26,6 @@ def home(request):
         })
     if request.method == 'POST':
         form = SearchForm(data=request.POST)
-        print(form.is_valid())
         if form.is_valid():
             redirect_url = None
             search_string = form.cleaned_data['search_string']
@@ -116,7 +115,7 @@ def home(request):
                     kwargs['coin_symbol'] = 'btc-testnet'
                 elif first_char in ('9', 'A'):
                     kwargs['coin_symbol'] = 'doge'
-                elif first_char in ('X',):
+                elif first_char in ('X', '7'):
                     kwargs['coin_symbol'] = 'dash'
                 elif first_char in ('L', 'l', ):
                     # Do not force addresses starting with 3 to be LTC because that's also used by BTC
