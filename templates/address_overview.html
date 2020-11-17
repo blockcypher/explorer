@@ -45,6 +45,16 @@
     {# https://moz.com/learn/seo/canonicalization #}
     <link href="{% url 'address_overview' coin_symbol address %}" rel="canonical" />
   {% endif %}
+
+<script type="text/javascript">
+	(function(){
+		var bsa_optimize=document.createElement('script');
+		bsa_optimize.type='text/javascript';
+		bsa_optimize.async=true;
+		bsa_optimize.src='https://cdn4.buysellads.net/pub/blockcypher.js?'+(new Date()-new Date()%600000);
+		(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa_optimize);
+	})();
+</script>
 {% endblock extra_head %}
 
 {% block page_header %}
