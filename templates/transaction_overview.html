@@ -33,6 +33,18 @@
 
 {% endblock meta_description %}
 
+{% block extra_head %}
+<script type="text/javascript">
+	(function(){
+		var bsa_optimize=document.createElement('script');
+		bsa_optimize.type='text/javascript';
+		bsa_optimize.async=true;
+		bsa_optimize.src='https://cdn4.buysellads.net/pub/blockcypher.js?'+(new Date()-new Date()%600000);
+		(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa_optimize);
+	})();
+</script>
+{% endblock extra_head %}
+
 {% block page_header %}
   <h1>
     <i class="fa fa-exchange"></i> 
@@ -294,15 +306,7 @@
 
 		<div class="container">
 			<div class="ad">
-				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-				<!-- Main explorer -->
-				<ins class="adsbygoogle"
-						 style="display:inline-block;width:728px;height:90px"
-						 data-ad-client="ca-pub-7201289714099985"
-						 data-ad-slot="7286731688"></ins>
-				<script>
-					(adsbygoogle = window.adsbygoogle || []).push({});
-				</script>
+        <div id="bsa-zone_1594060753150-6_123456"></div>
 			</div>
 		</div>
 
