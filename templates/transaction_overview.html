@@ -266,6 +266,13 @@
                   <td>{{ transaction.size }} bytes</td>
                 </tr>
 
+                {% if transaction.vsize %}
+                <tr>
+                  <th>Virtual Size</th>
+                  <td>{{ transaction.vsize }} vbytes</td>
+                </tr>
+                {% endif %}
+
                 <tr>
                   <th>Lock Time</th>
                   <td>{{ transaction.lock_time }}</td>
