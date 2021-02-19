@@ -64,7 +64,6 @@ def is_bot(user_agent):
 @assert_valid_coin_symbol
 @render_to('address_overview.html')
 def address_overview(request, coin_symbol, address, wallet_name=None):
-
     TXNS_PER_PAGE = 10
 
     if request.GET.get('page'):
