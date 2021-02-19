@@ -100,32 +100,46 @@ def home(request):
                         kwargs['tx_hash'] = search_string
                         redirect_url = reverse('transaction_overview', kwargs=kwargs)
 
-            elif is_valid_address(search_string) or is_valid_eth_address(search_string):
+            elif is_valid_address(search_string):
                 # It's an address
                 kwargs['address'] = search_string
-                first_char = search_string[0]
-                # Override coin_symbol if we can infer it from the blockchain
-                # There is now generic constants in the python library (constants.py)
-                # Not migrating because this is custom (those constants have overlap/ambiguity)
-                if first_char in ('1', 'b', ):
-                    # Do not force addresses starting with 3 to be BTC because that's also used by LTC
+                # Look first for bech32 address
+                if search_string.startswith('bc1'):
                     kwargs['coin_symbol'] = 'btc'
-                elif first_char in ('m', 'n', '2', 't', ):
-                    # Note that addresses starting in 2 can be LTC testnet, but since we don't support that it's okay to include
-                    kwargs['coin_symbol'] = 'btc-testnet'
-                elif first_char in ('9', 'A'):
-                    kwargs['coin_symbol'] = 'doge'
-                elif first_char in ('X', '7'):
-                    kwargs['coin_symbol'] = 'dash'
-                elif first_char in ('L', 'l', ):
-                    # Do not force addresses starting with 3 to be LTC because that's also used by BTC
+                elif search_string.startswith('ltc1'):
                     kwargs['coin_symbol'] = 'ltc'
-                elif first_char in ('B', 'C'):
+                elif search_string.startswith('tb1'):
+                    kwargs['coin_symbol'] = 'btc-testnet'
+                elif search_string.startswith('bcy1'):
                     kwargs['coin_symbol'] = 'bcy'
-                elif first_char == '0':
-                    kwargs['coin_symbol'] = 'eth'
-
+                    print(kwargs)
+                else:
+                    # After look at first char
+                    first_char = search_string[0]
+                    # Override coin_symbol if we can infer it from the blockchain
+                    # There is now generic constants in the python library (constants.py)
+                    # Not migrating because this is custom (those constants have overlap/ambiguity)
+                    if first_char in ('1', 'b', ):
+                        # Do not force addresses starting with 3 to be BTC because that's also used by LTC
+                        kwargs['coin_symbol'] = 'btc'
+                    elif first_char in ('m', 'n', '2', 't', ):
+                        # Note that addresses starting in 2 can be LTC testnet, but since we don't support that it's okay to include
+                        kwargs['coin_symbol'] = 'btc-testnet'
+                    elif first_char in ('9', 'A', 'D',):
+                        kwargs['coin_symbol'] = 'doge'
+                    elif first_char in ('X', '7'):
+                        kwargs['coin_symbol'] = 'dash'
+                    elif first_char in ('L', 'l','M', ):
+                        # Do not force addresses starting with 3 to be LTC because that's also used by BTC
+                        kwargs['coin_symbol'] = 'ltc'
+                    elif first_char in ('B', 'C'):
+                        kwargs['coin_symbol'] = 'bcy'
                 redirect_url = reverse('address_overview', kwargs=kwargs)
+            elif is_valid_eth_address(search_string):
+                    # It's an address
+                    kwargs['address'] = search_string
+                    kwargs['coin_symbol'] = 'eth'
+                    redirect_url = reverse('address_overview', kwargs=kwargs)
 
             elif is_valid_wallet_name(search_string):
                 addr = lookup_wallet_name(search_string, kwargs['coin_symbol'])
