@@ -4,7 +4,7 @@ dj-static== 0.0.6
 Django==3.0.14
 django-annoying==0.10.6
 django-crispy-forms==1.9.0
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 django-storages==1.9.1
 gunicorn==20.0.4
 jsonfield==3.1.0
