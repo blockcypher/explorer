@@ -73,6 +73,7 @@ def home(request):
 
                 elif coin_symbol in ETHASH_COINS:
                     # Try to see if it's a valid TX hash
+                    search_string = search_string.lower()
                     tx_details = get_transaction_details(
                             tx_hash=search_string,
                             coin_symbol=coin_symbol,

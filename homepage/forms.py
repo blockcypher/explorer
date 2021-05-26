@@ -29,7 +29,7 @@ class SearchForm(forms.Form):
 
         # get rid of non alphanumerics
         if search_string.lower().startswith("0x"):
-            search_string = search_string[2:]
+            search_string = search_string[2:].lower()
         search_string = re.sub(r'[^a-zA-Z0-9]+', '', search_string)
         if is_valid_hash(search_string) or is_valid_address(search_string) or is_valid_eth_address(search_string) or is_valid_block_num(search_string):
             return search_string
