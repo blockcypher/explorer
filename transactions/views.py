@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.decorators import render_to
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from transactions.forms import RawTXForm, EmbedDataForm
+from transactions.forms import RawTXForm
 
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY
 
