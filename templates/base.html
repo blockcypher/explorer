@@ -216,14 +216,7 @@
       </div>
     {% endif %}
 
-    {% if coin_symbol == 'btc' and not is_embed_page %}
-      <div class="container">
-        <p>
-          You can also
-          <a href="{% url 'embed_txdata' coin_symbol %}">embed data into the {{ coin_symbol|coin_symbol_to_display_name }} blockchain</a>.
-        </p>
-      </div>
-    {% elif coin_symbol == 'bcy' %}
+    {% if coin_symbol == 'bcy' %}
       <div class="container">
         <p>
           Check out our
