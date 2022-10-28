@@ -44,7 +44,7 @@ ALLOWED_HOSTS = [
         'live.blockcypher.com',
         'blockcypher.herokuapp.com',
         'blockcypher-dev.herokuapp.com',
-        'blockcypher-heroku-22.herokuapp.com'
+        'blockcypher-heroku-22.herokuapp.com',
         '127.0.0.1',
         'localhost'
         ]
