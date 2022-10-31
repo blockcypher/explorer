@@ -59,6 +59,7 @@ IGNORABLE_404_URLS = (
     re.compile(r'^/robots\.txt$'),
 )
 
+
 # Application definition
 
 INSTALLED_APPS = (
