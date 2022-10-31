@@ -60,17 +60,6 @@ $ ngrok -subdomain=pick_this_yourself 8000
 
 Now visit http://pick_this_yourself.ngrok.com to confirm it's working (you could even do this on your phone)
 
-## Check Out the Admin Section ##
-
-- Create a superuser admin for yourself, by entering the following into `$ foreman run python3 manage.py shell`:
-
-```python
-from users.models import AuthUser
-AuthUser.objects.create_superuser(email='YOURCHOICE', password='PASSWORDGOESHERE')
-```
-
-Now visit http://127.0.0.1:8000/admin
-
 
 ## Submit Your First Pull Request ##
 

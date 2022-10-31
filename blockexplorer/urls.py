@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from django.contrib import admin
 
 from addresses import views as addresses_views
 from blocks import views as blocks_views
@@ -33,10 +32,6 @@ urlpatterns = [
 
     # Webhooks:
     url(r'^address-webhook/(?P<secret_key>[-\w]+)/(?P<ignored_key>[-\w]+)?$', addresses_views.address_webhook, name='address_webhook'),
-
-    # Admin
-    url(r'^admin/', admin.site.urls),
-    url(r'^set-units/?$', homepage_views.set_units, name='set_units'),
 
     # App pages
     url(r'^$', homepage_views.home, name='home'),

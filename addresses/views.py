@@ -14,8 +14,6 @@ from annoying.functions import get_object_or_None
 
 from blockexplorer.decorators import assert_valid_coin_symbol
 
-from blockexplorer.raven import client
-
 from blockexplorer.settings import BLOCKCYPHER_PUBLIC_KEY, BLOCKCYPHER_API_KEY, WEBHOOK_SECRET_KEY, BASE_URL
 
 from blockcypher.api import get_address_full, get_address_overview, subscribe_to_address_webhook, get_forwarding_address_details, unsubscribe_from_webhook
@@ -103,70 +101,6 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
         msg = _('Sorry, that address was not found')
         messages.warning(request, msg)
         return HttpResponseRedirect(reverse('home'))
-
-    if request.user.is_authenticated:
-        # notify user on page of any forwarding or subscriptions they may have
-        for address_subscription in AddressSubscription.objects.filter(
-                auth_user=request.user,
-                b58_address=address,
-                coin_symbol=coin_symbol,
-                unsubscribed_at=None,
-                ):
-            if address_subscription.auth_user.email_verified:
-                msg = _('Private Message: you are subscribed to this address and will receive email notifications at <b>%(user_email)s</b> (<a href="%(unsub_url)s">unsubscribe</a>)' % {
-                    'user_email': request.user.email,
-                    'unsub_url': reverse('user_unsubscribe_address', kwargs={
-                        'address_subscription_id': address_subscription.id,
-                        }),
-                    })
-                messages.info(request, msg, extra_tags='safe')
-            else:
-                msg = _('Private Message: you are not subscribed to this address because you have not clicked the link sent to <b>%(user_email)s</b>' % {
-                    'user_email': request.user.email,
-                    })
-                messages.error(request, msg, extra_tags='safe')
-                print('ERROR')
-
-        # there can be only one
-        af_initial = get_object_or_None(AddressForwarding,
-                auth_user=request.user,
-                initial_address=address,
-                coin_symbol=coin_symbol,
-                )
-        if af_initial:
-            msg = _('''
-            Private Message: this address will automatically forward to <a href="%(destination_addr_uri)s">%(destination_address)s</a>
-            any time a payment is received.
-            <br /><br /> <i>%(small_payments_msg)s</i>
-            ''' % {
-                'destination_address': af_initial.destination_address,
-                'destination_addr_uri': reverse('address_overview', kwargs={
-                    'address': af_initial.destination_address,
-                    'coin_symbol': coin_symbol,
-                    }),
-                'small_payments_msg': SMALL_PAYMENTS_MSG,
-                })
-            messages.info(request, msg, extra_tags='safe')
-
-        # There could be many
-        for af_destination in AddressForwarding.objects.filter(
-                auth_user=request.user,
-                destination_address=address,
-                coin_symbol=coin_symbol,
-                ):
-            msg = _('''
-            Private Message: this address will automatically receive forwarded transactions from
-            <a href="%(initial_addr_uri)s">%(initial_address)s</a>.
-            <br /><br /> <i>%(small_payments_msg)s</i>
-            ''' % {
-                'initial_address': af_destination.initial_address,
-                'initial_addr_uri': reverse('address_overview', kwargs={
-                    'address': af_destination.initial_address,
-                    'coin_symbol': coin_symbol,
-                    }),
-                'small_payments_msg': SMALL_PAYMENTS_MSG,
-                })
-            messages.info(request, msg, extra_tags='safe')
 
     all_transactions = address_details.get('txs', [])
     # import pprint; pprint.pprint(all_transactions, width=1)
@@ -527,7 +461,6 @@ def address_webhook(request, secret_key, ignored_key):
 
         if recent_emails_sent > 100:
             # too many emails, unsubscribe
-            tx_event.address_subscription.admin_unsubscribe_subscription()
             client.captureMessage('TX Event %s unsubscribed' % tx_event.id)
             # TODO: notify user they've been unsubscribed
 

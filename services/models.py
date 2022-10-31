@@ -1,7 +1,5 @@
 from django.db import models
 
-from blockexplorer.raven import client
-
 from jsonfield import JSONField
 
 from utils import get_client_ip, uri_to_url, is_good_status_code, get_user_agent
