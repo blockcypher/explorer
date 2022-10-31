@@ -65,7 +65,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
@@ -80,7 +79,6 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -174,7 +172,6 @@ if SITE_DOMAIN in (PRODUCTION_DOMAIN, STAGING_DOMAIN):
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
     BASE_URL = 'https://%s' % SITE_DOMAIN
     # FIXME:
-    # SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     MIDDLEWARE += ('django.middleware.security.SecurityMiddleware',)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

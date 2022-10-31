@@ -232,7 +232,6 @@ def set_units(request):
         form = UnitChoiceForm(data=request.POST)
         if form.is_valid():
             unit_choice = form.cleaned_data['unit_choice']
-            request.session['user_units'] = unit_choice
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 

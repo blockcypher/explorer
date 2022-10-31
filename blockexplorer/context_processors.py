@@ -11,14 +11,7 @@ UNIT_CHOICES_SET = set(UNIT_CHOICES)
 
 def get_user_units(request):
 
-    user_units = request.session.get('user_units')
-    if not user_units:
-        user_units = DEFAULT_USER_UNIT
-        request.session['user_units'] = DEFAULT_USER_UNIT
-
-    if user_units not in UNIT_CHOICES_SET:
-        # shouldn't be possible, defensive check to fail gracefully
-        user_units = DEFAULT_USER_UNIT
+    user_units = DEFAULT_USER_UNIT
 
     is_eth = "eth" in request.path
     if is_eth and user_units not in ["ether", "gwei", "wei"]:
