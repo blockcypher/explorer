@@ -1,7 +1,7 @@
 blockcypher==1.0.93
 dj-database-url==0.5.0
 dj-static== 0.0.6
-Django==3.1.12
+Django==3.1.14
 django-annoying==0.10.6
 django-crispy-forms==1.9.0
 django-debug-toolbar>=2.2.1
