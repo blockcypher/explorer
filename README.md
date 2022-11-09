@@ -11,7 +11,6 @@
 - Follow the instructions [here](http://docs.python-guide.org/en/latest/starting/install/osx/) to install [Homebrew](http://brew.sh/) and then (re)install python.
 - If for some reason the step above does not install pip and virtualenv, follow the instructions [here](https://pip.pypa.io/en/latest/installing.html#python-os-support) to get pip and then install virtualenv using pip install virtualenv.
 - Install the foreman gem for accessing environmental variables:  `$ gem install foreman`
-- Optional (for webhooks): install ngrok with `brew install ngrok` (thanks Homebrew!)
 - Optional (advanced features): Install the latest stable version of postgres 9. (http://postgresapp.com/)[Postgresapp for Mac] is quite easy to install.
 
 ### Ubuntu ###
@@ -52,14 +51,6 @@ $ foreman run python3 manage.py runserver
 ```
 
 Now visit: http://127.0.0.1:8000/
-
-To receive webhooks locally, you need to also run `ngrok` in the terminal (use the same `SITE_DOMAIN` from your `.env` file above):
-```
-$ ngrok -subdomain=pick_this_yourself 8000
-```
-
-Now visit http://pick_this_yourself.ngrok.com to confirm it's working (you could even do this on your phone)
-
 
 ## Submit Your First Pull Request ##
 

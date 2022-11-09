@@ -25,18 +25,10 @@ urlpatterns = [
     url(r'^change-password/?$', users_views.change_password, name='change_password'),
     url(r'^forgot-password/?$', users_views.forgot_password, name='forgot_password'),
     url(r'^reset-pw/(?P<verif_code>[-\w@.+]+)?$', users_views.reset_pw, name='reset_pw'),
-    url(r'^unsubscribe/(?P<unsub_code>[-\w]+)/$', addresses_views.unsubscribe_address, name='unsubscribe_address'),
-    url(r'^remove-subscription/(?P<address_subscription_id>[-\w]+)/$', addresses_views.user_unsubscribe_address, name='user_unsubscribe_address'),
-    url(r'^archive-forwarding-address/(?P<address_forwarding_id>[-\w]+)/$', addresses_views.user_archive_forwarding_address, name='user_archive_forwarding_address'),
     url(r'^dashboard/?$', users_views.dashboard, name='dashboard'),
-
-    # Webhooks:
-    url(r'^address-webhook/(?P<secret_key>[-\w]+)/(?P<ignored_key>[-\w]+)?$', addresses_views.address_webhook, name='address_webhook'),
 
     # App pages
     url(r'^$', homepage_views.home, name='home'),
-    url(r'^(?P<coin_symbol>[-\w]+)/forwarding/$', addresses_views.setup_address_forwarding, name='setup_address_forwarding'),
-    url(r'^(?P<coin_symbol>[-\w]+)/subscribe/$', addresses_views.subscribe_address, name='subscribe_address'),
     url(r'^(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/$', addresses_views.address_overview, name='address_overview'),
     url(r'^(?P<coin_symbol>[-\w]+)/address/(?P<address>[-\w]+)/(?P<wallet_name>[-\w\.]+)/$', addresses_views.address_overview, name='address_overview'),
     url(r'^(?P<coin_symbol>[-\w]+)/tx/(?P<tx_hash>[-\w]+)/$', transactions_views.transaction_overview, name='transaction_overview'),
@@ -60,8 +52,6 @@ urlpatterns = [
 
     # Forwarding Pages (URL hacks)
     url(r'^widgets/$', addresses_views.widget_forwarding, name='widget_forwarding'),
-    url(r'^forwarding/$',addresses_views.forward_forwarding, name='forward_forwarding'),  # awesome name
-    url(r'^subscribe/$', addresses_views.subscribe_forwarding, name='subscribe_forwarding'),
     url(r'^pushtx/$', transactions_views.pushtx_forwarding, name='pushtx_forwarding'),
     url(r'^decodetx/$', transactions_views.decodetx_forwarding, name='decodetx_forwarding'),
     url(r'^metadata/$', metadata_views.metadata_forwarding, name='metadata_forwarding'),
