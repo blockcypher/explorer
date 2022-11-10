@@ -340,12 +340,9 @@ a.coin:hover {
   font-family:monospace;
 }
 .ad {
-  /* display: none; */
+  display: flex;
   text-align: center;
-}
-.ad span {
-  display: block;
-  font-weight: bold;
+  justify-content: center;
 }
 /* Media queries */
 @media(min-width:1200px){
