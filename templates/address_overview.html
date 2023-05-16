@@ -6,76 +6,76 @@
 {% load static %}
 
 {% block title %}
-  {{ coin_symbol|coin_symbol_to_currency_name }}
-  {% if is_wallet_page %}
-    Extended Public Key {{ pubkey }}
-  {% else %}
-    Address {{ address }}
-  {% endif %}
+{{ coin_symbol|coin_symbol_to_currency_name }}
+{% if is_wallet_page %}
+Extended Public Key {{ pubkey }}
+{% else %}
+Address {{ address }}
+{% endif %}
 {% endblock title %}
 
 {% block meta_description %}
-  {{ coin_symbol|coin_symbol_to_currency_name }}
-  {% if is_wallet_page %}
-    Extended Public Key {{ pubkey }}
-  {% else %}
-    Address {{ address }}
-  {% endif %}
-  has had
-  {% if num_all_txns %}
-    {{ num_all_txns|intcomma }} transaction{{ num_all_txns|pluralize }}
-    and has a balance of
-    {% satoshis_to_user_units_trimmed total_balance_satoshis 'btc' coin_symbol True %}
-    {% if total_balance_satoshis %}
-      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
-      received and
-      {% satoshis_to_user_units_trimmed total_sent_satoshis 'btc' coin_symbol True %}
-      sent).
-    {% else %}
-      ({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
-      sent and received)
-    {% endif %}
-  {% else %}
-    no transactions.
-  {% endif %}
+{{ coin_symbol|coin_symbol_to_currency_name }}
+{% if is_wallet_page %}
+Extended Public Key {{ pubkey }}
+{% else %}
+Address {{ address }}
+{% endif %}
+has had
+{% if num_all_txns %}
+{{ num_all_txns|intcomma }} transaction{{ num_all_txns|pluralize }}
+and has a balance of
+{% satoshis_to_user_units_trimmed total_balance_satoshis 'btc' coin_symbol True %}
+{% if total_balance_satoshis %}
+({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+received and
+{% satoshis_to_user_units_trimmed total_sent_satoshis 'btc' coin_symbol True %}
+sent).
+{% else %}
+({% satoshis_to_user_units_trimmed total_received_satoshis 'btc' coin_symbol True %}
+sent and received)
+{% endif %}
+{% else %}
+no transactions.
+{% endif %}
 {% endblock meta_description %}
 
 {% block extra_head %}
-  {% if before_bh %}
-    {# https://moz.com/learn/seo/canonicalization #}
-    <link href="{% url 'address_overview' coin_symbol address %}" rel="canonical" />
-  {% endif %}
+{% if before_bh %}
+{# https://moz.com/learn/seo/canonicalization #}
+<link href="{% url 'address_overview' coin_symbol address %}" rel="canonical" />
+{% endif %}
 {% endblock extra_head %}
 
 {% block page_header %}
-  <h1>
-    <i class="fa fa-qrcode"></i> 
-    {{ coin_symbol|coin_symbol_to_display_name }}
-    {% if is_wallet_page %}
-      Extended Public Key
-    {% else %}
-      Address
-    {% endif %}
-  </h1>
-
-  <h2 class="tagline wrapit semi">
-    {% if is_wallet_page %}
-      {{ pubkey }}
-    {% else %}
-      {{ address }}
-    {% endif %}
-  </h2>
-
-  {% if is_wallet_page and subchain_indices %}
-    <h4 class="tagline wrapit semi">
-      Subchain Indices:
-      {% for subchain_index in subchain_indices %}
-        {{ subchain_index }}{% include "partials/comma.html" %}
-      {% endfor %}
-    </h4>
+<h1>
+  <i class="fa fa-qrcode"></i>
+  {{ coin_symbol|coin_symbol_to_display_name }}
+  {% if is_wallet_page %}
+  Extended Public Key
+  {% else %}
+  Address
   {% endif %}
+</h1>
 
-  {%  if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{%  endif %}
+<h2 class="tagline wrapit semi">
+  {% if is_wallet_page %}
+  {{ pubkey }}
+  {% else %}
+  {{ address }}
+  {% endif %}
+</h2>
+
+{% if is_wallet_page and subchain_indices %}
+<h4 class="tagline wrapit semi">
+  Subchain Indices:
+  {% for subchain_index in subchain_indices %}
+  {{ subchain_index }}{% include "partials/comma.html" %}
+  {% endfor %}
+</h4>
+{% endif %}
+
+{% if wallet_name %}<h2 class="tagline wrapit semi">{{ wallet_name }}</h2>{% endif %}
 {% endblock page_header %}
 
 {% block content %}
@@ -83,13 +83,15 @@
   <div class="section">
 
     {% if not is_wallet_page %}
-      <div class="col-md-4 text-center">
-        <p>
-          <a href="{{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}:{{ address }}">
-            <img src="//chart.googleapis.com/chart?cht=qr&amp;chl={{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300" alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
-          </a>
-        </p>
-      </div>
+    <div class="col-md-4 text-center">
+      <p>
+        <a href="{{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}:{{ address }}">
+          <img
+            src="//chart.googleapis.com/chart?cht=qr&amp;chl={{ coin_symbol|coin_symbol_to_display_name|lower|cut:" " }}%3A{{ address }}&amp;choe=UTF-8&amp;chs=300x300"
+            alt="{{ address }}" title="{{ address }}" class="img-responsive img-center">
+        </a>
+      </p>
+    </div>
     {% endif %}
 
     <div class="col-md-{% if is_wallet_page %}12{% else %}8{% endif %}">
@@ -108,10 +110,11 @@
             <span class="dash-label">Balance</span><br>
             {% satoshis_to_user_units_trimmed total_balance_satoshis tcp__user_units coin_symbol True %}
             {% if unconfirmed_balance_satoshis %}
-              <br>
-              <span class="dash-label">
-                ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol True %} unconfirmed)
-              </span>
+            <br>
+            <span class="dash-label">
+              ({% satoshis_to_user_units_trimmed unconfirmed_balance_satoshis tcp__user_units coin_symbol True %}
+              unconfirmed)
+            </span>
             {% endif %}
           </li>
         </ul>
@@ -121,217 +124,215 @@
       <br />
 
       {% if not is_wallet_page %}
-        <p class="text-center">
-          <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
-            Advanced Details 
-            <b class="caret"></b>
-          </button>
-        </p>
-        <div class="col-md-12 collapse" id="advanced-details">
-          <div class="table-responsive">
-            <table class="table">
-              {% comment %}
-              <tr>
-                <td colspan="2" class="text-center">
-                  <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
-                    <i class="fa fa-mail-forward"></i>
-                    Get Forwarding Address
-                  </a>
-                </td>
-              </tr>
-              {% endcomment %}
-              <tr>
-                <td colspan="2" class="text-center">
-                  <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
-                    <i class="fa fa-line-chart"></i>
-                    Get Embeddable Widget
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2" class="text-center">
-                  <a href="{{ api_url }}?unspentOnly=true&includeScript=true" class="btn btn-default">
-                    <i class="fa fa-code"></i>
-                    Unspent Outputs
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2" class="text-center">
-                  <a href="{{ api_url }}" class="btn btn-default">
-                    <i class="fa fa-code"></i>
-                    API Call
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2" class="text-center">
-                  <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
-                    <i class="fa fa-external-link"></i>
-                    API Docs
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      {% endif %}
-
-      </div>
-      <div class="clearfix"></div>
-    </div>
-
-		<div class="section">
-			<div class="ad">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8670884776365868"
-               crossorigin="anonymous"></script>
-        <!-- Main explorer -->
-        <ins class="adsbygoogle"
-               style="display:block;min-width:400px;max-width:970px;width:100%;height:90px"
-                    data-ad-client="ca-pub-8670884776365868"
-                         data-ad-slot="7521279835"></ins>
-        <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-			</div>
-		</div>
-
-    {% if flattened_txs %}
-
-      <h2>
-        {% if flattened_txs|length != num_all_txns %}
-          {{ flattened_txs|length }}
-          of
-        {% endif %}
-        {{ num_all_txns|intcomma }} Transaction{{ num_all_txns|pluralize }}
-        {% if num_unconfirmed_txns %}
-          ({{ num_unconfirmed_txns|intcomma }} unconfirmed)
-        {% endif %}
-      </h2>
-
-      {% if is_wallet_page %}
-
-        {% include "partials/tx_list.html" %}
-
-      {% else %}
-
-        {% if before_bh %}
-          <p>
-            Showing transactions before block {{ before_bh|intcomma }}
-            (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
-          </p>
-        {% endif %}
-
-        {% for transaction in flattened_txs %}
-          {% with force_include_tx_amount=True show_tx_hash=True show_num_confirmations=True num_inouts_to_display=5 %}
-            {% include "partials/tx_hash.html" %}
-          {% endwith %}
-        {% endfor %}
-
-        {% if has_more %}
-
-          {% with flattened_txs|last as last_tx %}
-            <a href="?before={{ last_tx.block_height }}" class="btn btn-default pull-right" rel=“nofollow">
-              More
-              <i class="fa fa-angle-double-right"></i>
-            </a>
-          {% endwith %}
-
-        {% endif %}
-
-      {% endif %}
-
-    {% else %}
-
-      <p>
-        No transactions detected{% if before_bh %} before block {{ before_bh|intcomma }}{% endif %}
-        {% if is_wallet_page and not subchain_indices %}
-          . <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
-        {% elif before_bh %}
-            (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
-        {% endif %}
+      <p class="text-center">
+        <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#advanced-details">
+          Advanced Details
+          <b class="caret"></b>
+        </button>
       </p>
-
-    {% endif %}
-
-    {% if is_wallet_page %}
-
-      {% if wallet_addresses.chains.0.chain_addresses %}
-        <h2>Wallet Addresses</h2>
+      <div class="col-md-12 collapse" id="advanced-details">
         <div class="table-responsive">
           <table class="table">
-            <thead>
-              <tr>
-                <td>
-                  Address
-                </td>
-                <td>
-                  Path
-                </td>
-                {% if 'index' in wallet_addresses.chains.0 %}
-                  <td>
-                    Subchain Index
-                  </td>
-                {% endif %}
-              </tr>
-            </thead>
-            {% for chain in wallet_addresses.chains %}
-              {% for chain_address in chain.chain_addresses %}
-                <tr>
-                  <td>
-                    <a href="{% url 'address_overview' coin_symbol chain_address.address %}">
-                      {{ chain_address.address }}
-                    </a>
-                  </td>
-                  <td>
-                    {{ chain_address.path }}
-                  </td>
-                  {% if 'index' in chain %}
-                    <td>
-                      {{ chain.index }}
-                    </td>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-            {% endfor %}
+            {% comment %}
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{% url 'setup_address_forwarding' coin_symbol %}?a={{ address }}" class="btn btn-default">
+                  <i class="fa fa-mail-forward"></i>
+                  Get Forwarding Address
+                </a>
+              </td>
+            </tr>
+            {% endcomment %}
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{% url 'widgets_overview' coin_symbol address %}" class="btn btn-default">
+                  <i class="fa fa-line-chart"></i>
+                  Get Embeddable Widget
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{{ api_url }}&unspentOnly=true&includeScript=true" class="btn btn-default">
+                  <i class="fa fa-code"></i>
+                  Unspent Outputs
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="{{ api_url }}" class="btn btn-default">
+                  <i class="fa fa-code"></i>
+                  API Call
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-center">
+                <a href="http://dev.blockcypher.com/#transactions" class="btn btn-default">
+                  <i class="fa fa-external-link"></i>
+                  API Docs
+                </a>
+              </td>
+            </tr>
           </table>
         </div>
+      </div>
       {% endif %}
 
-    {% else %}
+    </div>
+    <div class="clearfix"></div>
+  </div>
 
-      <div class="clearfix"></div>
+  <div class="section">
+    <div class="ad">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8670884776365868"
+        crossorigin="anonymous"></script>
+      <!-- Main explorer -->
+      <ins class="adsbygoogle" style="display:block;min-width:400px;max-width:970px;width:100%;height:90px"
+        data-ad-client="ca-pub-8670884776365868" data-ad-slot="7521279835"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
 
-      {% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
-      {% include "partials/metadata.html" %}
+  {% if flattened_txs %}
 
+  <h2>
+    {% if flattened_txs|length != num_all_txns %}
+    {{ flattened_txs|length }}
+    of
     {% endif %}
+    {{ num_all_txns|intcomma }} Transaction{{ num_all_txns|pluralize }}
+    {% if num_unconfirmed_txns %}
+    ({{ num_unconfirmed_txns|intcomma }} unconfirmed)
+    {% endif %}
+  </h2>
+
+  {% if is_wallet_page %}
+
+  {% include "partials/tx_list.html" %}
+
+  {% else %}
+
+  {% if before_bh %}
+  <p>
+    Showing transactions before block {{ before_bh|intcomma }}
+    (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
+  </p>
+  {% endif %}
+
+  {% for transaction in flattened_txs %}
+  {% with force_include_tx_amount=True show_tx_hash=True show_num_confirmations=True num_inouts_to_display=5 %}
+  {% include "partials/tx_hash.html" %}
+  {% endwith %}
+  {% endfor %}
+
+  {% if has_more %}
+
+  {% with flattened_txs|last as last_tx %}
+  <a href="?before={{ last_tx.block_height }}" class="btn btn-default pull-right" rel=“nofollow">
+    More
+    <i class="fa fa-angle-double-right"></i>
+  </a>
+  {% endwith %}
+
+  {% endif %}
+
+  {% endif %}
+
+  {% else %}
+
+  <p>
+    No transactions detected{% if before_bh %} before block {{ before_bh|intcomma }}{% endif %}
+    {% if is_wallet_page and not subchain_indices %}
+    . <a href="?subchain-indices=0-1">Check subchain indices 0 & 1</a>.
+    {% elif before_bh %}
+    (<a href="{% url 'address_overview' coin_symbol address %}">show latest</a>)
+    {% endif %}
+  </p>
+
+  {% endif %}
+
+  {% if is_wallet_page %}
+
+  {% if wallet_addresses.chains.0.chain_addresses %}
+  <h2>Wallet Addresses</h2>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <td>
+            Address
+          </td>
+          <td>
+            Path
+          </td>
+          {% if 'index' in wallet_addresses.chains.0 %}
+          <td>
+            Subchain Index
+          </td>
+          {% endif %}
+        </tr>
+      </thead>
+      {% for chain in wallet_addresses.chains %}
+      {% for chain_address in chain.chain_addresses %}
+      <tr>
+        <td>
+          <a href="{% url 'address_overview' coin_symbol chain_address.address %}">
+            {{ chain_address.address }}
+          </a>
+        </td>
+        <td>
+          {{ chain_address.path }}
+        </td>
+        {% if 'index' in chain %}
+        <td>
+          {{ chain.index }}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
+
+  {% else %}
+
+  <div class="clearfix"></div>
+
+  {% url 'add_metadata_to_address' coin_symbol address as add_metadata_uri %}
+  {% include "partials/metadata.html" %}
+
+  {% endif %}
 
   {# section div: #}
-  </div>
+</div>
 
 {# no end container div!? #}
 
 {% endblock content %}
 
 {% block extra_js %}
-  <script src="{% static "js/jquery.timeago.js" %}" type="text/javascript"></script>
+<script src="{% static " js/jquery.timeago.js" %}" type="text/javascript"></script>
 
-  <script>
+<script>
 
-    $(document).ready(function(){
+  $(document).ready(function () {
 
-      $("time.timeago").timeago();
+    $("time.timeago").timeago();
 
-      if (window.location.hash == '#advanced-details') {
-        $('#advanced-details').collapse('show');
-      }
+    if (window.location.hash == '#advanced-details') {
+      $('#advanced-details').collapse('show');
+    }
 
-      {% if not is_wallet_page %}
-        fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
-      {% endif %}
+    {% if not is_wallet_page %}
+    fetch_metadata('{{ coin_symbol }}', 'addr', '{{ address }}');
+    {% endif %}
 
-    })
+  })
 
-  </script>
+</script>
 {% endblock extra_js %}
