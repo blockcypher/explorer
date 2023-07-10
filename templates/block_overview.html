@@ -236,9 +236,6 @@
   </p>
 {% endif %}
 
-{% url 'add_metadata_to_block' coin_symbol block_details.hash as add_metadata_uri %}
-{% include "partials/metadata.html" %}
-
 </div>
 
 {% endblock content %}
@@ -255,8 +252,6 @@
       if (window.location.hash == '#advanced-details') {
         $('#advanced-details').collapse('show');
       }
-
-      fetch_metadata('{{ coin_symbol }}', 'block', '{{ block_details.hash }}');
 
     })
 

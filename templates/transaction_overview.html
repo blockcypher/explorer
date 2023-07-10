@@ -326,9 +326,6 @@
       {% include "partials/tx_hash.html" %}
     {% endwith %}
 
-    {% url 'add_metadata_to_tx' coin_symbol tx_hash as add_metadata_uri %}
-    {% include "partials/metadata.html" %}
-
   </div> {# opening section #}
 </div> {# opening container #}
 
@@ -433,8 +430,6 @@
       if (window.location.hash.slice(1,8) == 'spentby') {
         $(window.location.hash).attr('style', "background-color:#eee;")
       }
-
-      fetch_metadata('{{ coin_symbol }}', 'tx', '{{ tx_hash }}');
 
     })
 

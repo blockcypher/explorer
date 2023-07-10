@@ -42,37 +42,3 @@ function format_seconds_ago(seconds_ago) {
   }
 }
 
-function fetch_metadata(coin_symbol, identifier_type, identifier) {
-  $.ajax({
-    type: 'get',
-    url: '/metadata/' + coin_symbol + '/' + identifier_type + '/' + identifier + '/',
-    success: function (data) {
-      console.log('fetch_metadata API Call Success');
-      // console.log('data:');
-      // console.log(data);
-
-      var is_empty = true;
-      for (var key in data.metadata) {
-        if (data.metadata.hasOwnProperty(key)) {
-          $('#metadata-tbody').append('<tr><td><pre>' + key + '</pre></td><td><pre>' + data.metadata[key] + '</pre></td></tr>');
-          is_empty = false;
-        }
-      }
-
-      if (is_empty === true) {
-        $('#metadata-empty-notice').fadeIn()
-      }
-      else {
-        $('#metadata-table').fadeIn()
-      }
-
-      if (window.location.hash == '#metadata') {
-        $('html,body').animate({scrollTop: $("#metadata").offset().top},'slow');
-      }
-
-    },
-    error: function(data) {
-      console.log('fetch_metadata API Call Failure');
-    }
-  });
-}

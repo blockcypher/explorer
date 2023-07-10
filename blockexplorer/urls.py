@@ -3,7 +3,6 @@ from django.conf.urls import url
 from addresses import views as addresses_views
 from blocks import views as blocks_views
 from homepage import views as homepage_views
-from metadata import views as metadata_views
 from transactions import views as transactions_views
 from users import views as users_views
 from wallets import views as wallets_views
@@ -36,13 +35,9 @@ urlpatterns = [
     url(r'^(?P<coin_symbol>[-\w]+)/xpub/(?P<pubkey>[-\w]+)/$', wallets_views.wallet_overview, name='wallet_overview_default'),
     url(r'^(?P<coin_symbol>[-\w]+)/pushtx/$', transactions_views.push_tx, name='push_tx'),
     url(r'^(?P<coin_symbol>[-\w]+)/decodetx/$', transactions_views.decode_tx, name='decode_tx'),
-    url(r'^(?P<coin_symbol>[-\w]+)/metadata/address/(?P<address>[-\w]+)/$', metadata_views.add_metadata_to_address, name='add_metadata_to_address'),
-    url(r'^(?P<coin_symbol>[-\w]+)/metadata/tx/(?P<tx_hash>[-\w]+)/$', metadata_views.add_metadata_to_tx, name='add_metadata_to_tx'),
-    url(r'^(?P<coin_symbol>[-\w]+)/metadata/block/(?P<block_hash>[-\w]+)/$', metadata_views.add_metadata_to_block, name='add_metadata_to_block'),
     url(r'^highlights/$', homepage_views.highlights, name='highlights'),
     # AJAX calls
     url(r'^(?P<coin_symbol>[-\w]+)/tx-confidence/(?P<tx_hash>[-\w]+)/$', transactions_views.poll_confidence, name='poll_confidence'),
-    url(r'^metadata/(?P<coin_symbol>[-\w]+)/(?P<identifier_type>[\w]+)/(?P<identifier>[-\w]+)/$', metadata_views.poll_metadata, name='poll_metadata'),
 
     # Widget
     url(r'^widgets/(?P<coin_symbol>[-\w]+)/?$', addresses_views.search_widgets, name='search_widgets'),
@@ -54,8 +49,6 @@ urlpatterns = [
     url(r'^widgets/$', addresses_views.widget_forwarding, name='widget_forwarding'),
     url(r'^pushtx/$', transactions_views.pushtx_forwarding, name='pushtx_forwarding'),
     url(r'^decodetx/$', transactions_views.decodetx_forwarding, name='decodetx_forwarding'),
-    url(r'^metadata/$', metadata_views.metadata_forwarding, name='metadata_forwarding'),
-    url(r'^(?P<coin_symbol>[-\w]+)/metadata/$', metadata_views.add_metadata, name='add_metadata'),
     url(r'^latest-block/$', blocks_views.latest_block_forwarding, name='latest_block_forwarding'),
     url(r'^(?P<coin_symbol>[-\w]+)/latest-block/$', blocks_views.latest_block, name='latest_block'),
     url(r'^latest-unconfirmed-tx/$', transactions_views.latest_unconfirmed_tx_forwarding, name='latest_unconfirmed_tx_forwarding'),
