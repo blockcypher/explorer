@@ -90,6 +90,11 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             COIN_SYMBOL_MAPPINGS[coin_symbol]['blockcypher_network'],
             address)
 
+    if address == '1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt':
+        special_message = 'This is a special Bitcoin address.'
+    else:
+        special_message = None
+
     return {
             'coin_symbol': coin_symbol,
             'address': address,
@@ -107,6 +112,7 @@ def address_overview(request, coin_symbol, address, wallet_name=None):
             'num_unconfirmed_txns': address_details['unconfirmed_n_tx'],
             'num_all_txns': address_details['final_n_tx'],
             'BLOCKCYPHER_PUBLIC_KEY': BLOCKCYPHER_PUBLIC_KEY,
+            'special_message': special_message,
             }
 
 @xframe_options_exempt

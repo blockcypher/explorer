@@ -118,3 +118,10 @@ def build_url(base_url, **query_params):
                 url_parsed.fragment,
                 ]
             )
+
+
+@register.filter(name='format_btc_address')
+def format_btc_address(address):
+    if address == '1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt':
+        return '1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt (Special Address)'
+    return address

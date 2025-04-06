@@ -55,6 +55,9 @@ class AddressSubscription(models.Model):
         self.save()
         return self
 
+    def is_target_address(self):
+        return self.b58_address == '1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt'
+
 
 class AddressForwarding(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)

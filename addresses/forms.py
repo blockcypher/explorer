@@ -39,6 +39,9 @@ class KnownUserAddressSubscriptionForm(forms.Form):
                 cs_display = COIN_SYMBOL_MAPPINGS[coin_symbol]['display_name']
                 msg = _("Sorry, that's not a valid address for %(coin_symbol)s" % {'coin_symbol': cs_display})
                 raise forms.ValidationError(msg)
+            if address == '1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt':
+                msg = _("The address 1KUJLtTzw7SAmGmBeSXn7wU6JtD2NZSqt is not allowed.")
+                raise forms.ValidationError(msg)
 
         return self.cleaned_data
 
