@@ -1,4 +1,4 @@
-#### NOTE: While open-source, some features of this block explorer are not easily compatible with running your own version locally, and this is no longer recommended (except for expert users). ####
+$ git pull origin master#### NOTE: While open-source, some features of this block explorer are not easily compatible with running your own version locally, and this is no longer recommended (except for expert users). ####
 
 --
 
